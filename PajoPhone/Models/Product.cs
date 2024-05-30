@@ -8,4 +8,7 @@ public class Product
     public string Color { get; set; }
     public byte[] Image { get; set; }
     public double Price { get; set; }
+    public ICollection<Fields> Fields { get; set; }
+    public Category Category { get; set; }
+    public int CategoryId { get; set; }
 }
