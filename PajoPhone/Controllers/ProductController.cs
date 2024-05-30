@@ -12,10 +12,11 @@ namespace PajoPhone.Controllers
     public class ProductController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public ProductController(ApplicationDbContext context)
+        private readonly IProductBuilder _productBuilder;
+        public ProductController(ApplicationDbContext context,IProductBuilder productBuilder)
         {
             _context = context;
+            _productBuilder = productBuilder;
         }
 
         // GET: Product
@@ -40,15 +41,18 @@ namespace PajoPhone.Controllers
             {
                 return NotFound();
             }
-
             return View(product);
         }
 
         // GET: Product/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id");
-            return View();
+            var viewModel = new ProductViewModel
+            {
+                Categories = await _context.Categories.ToListAsync()
+            };
+            return View(viewModel);
         }
 
         // POST: Product/Create
@@ -56,16 +60,33 @@ namespace PajoPhone.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Color,Image,Price,CategoryId")] Product product)
+        public async Task<IActionResult> Create(ProductViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(product);
+                var productBuilder = _productBuilder
+                    .SetName(viewModel.Name)
+                    .SetCategoryId(viewModel.CategoryId);
+
+                foreach (var field in viewModel.Fields)
+                {
+                    productBuilder.AddField(field);
+                }
+
+                if (viewModel.ImageFile != null && viewModel.ImageFile.Length > 0)
+                {
+                    productBuilder.SetImage(viewModel.ImageFile);
+                }
+
+                var product = productBuilder.Build();
+
+                _context.Products.Add(product);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", new { id = product.Id });
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", product.CategoryId);
-            return View(product);
+
+            viewModel.Categories = await _context.Categories.ToListAsync(); // Reload categories in case of error
+            return View(viewModel);
         }
 
         // GET: Product/Edit/5

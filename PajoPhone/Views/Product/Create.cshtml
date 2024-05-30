@@ -1,4 +1,5 @@
-@model PajoPhone.Models.Product
+@using Microsoft.EntityFrameworkCore
+@model PajoPhone.Models.ProductViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -10,7 +11,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -28,9 +29,11 @@
                 <span asp-validation-for="Color" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
+                <input type="hidden" asp-for="Id" />
+                  <div>
+                      <label asp-for="ImageFile">Upload Image</label>
+                      <input asp-for="ImageFile" type="file" />
+                  </div>
             </div>
             <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>
@@ -38,8 +41,15 @@
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <select asp-for="CategoryId" class ="form-control" asp-items="ViewBag.CategoryId"></select>
+             <label asp-for="CategoryId">Category</label>
+                <select asp-for="CategoryId" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))" class="form-control">
+                    @foreach (Category m in Model.Categories)
+                    {
+                        <option value="@m.Id">
+                            @m.Name
+                        </option>
+                    }
+                </select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
