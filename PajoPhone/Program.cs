@@ -1,10 +1,10 @@
-using Microsoft.Build.Tasks.Deployment.Bootstrapper;
+
 using Microsoft.EntityFrameworkCore;
+using PajoPhone;
 using PajoPhone.Models;
 using Product = PajoPhone.Models.Product;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 // DI
@@ -12,11 +12,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString ,ServerVersion.AutoDetect(connectionString) )
 );
-
 builder.Services.AddScoped<IProductBuilder,ProductBuilder>();
 var app = builder.Build();
-
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

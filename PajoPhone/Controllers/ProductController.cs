@@ -64,21 +64,9 @@ namespace PajoPhone.Controllers
         {
             if (ModelState.IsValid)
             {
-                var productBuilder = _productBuilder
-                    .SetName(viewModel.Name)
-                    .SetCategoryId(viewModel.CategoryId);
-
-                foreach (var field in viewModel.Fields)
-                {
-                    productBuilder.AddField(field);
-                }
-
-                if (viewModel.ImageFile != null && viewModel.ImageFile.Length > 0)
-                {
-                    productBuilder.SetImage(viewModel.ImageFile);
-                }
-
-                var product = productBuilder.Build();
+                var productBuilder = _productBuilder;
+                
+                var product = productBuilder.Build(viewModel);
 
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();

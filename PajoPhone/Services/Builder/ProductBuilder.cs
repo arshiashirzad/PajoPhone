@@ -5,17 +5,14 @@ namespace PajoPhone;
 public class ProductBuilder: IProductBuilder
 {
     private readonly Product _product;
-    private readonly ApplicationDbContext _context;
 
-    public ProductBuilder(ApplicationDbContext context)
+    public ProductBuilder( )
     {
         _product = new Product();
-        _context = context;
     }
 
     public IProductBuilder SetName(string name)
     {
-        _product.Name = name;
         return this;
     }
 
@@ -25,12 +22,17 @@ public class ProductBuilder: IProductBuilder
         return this;
     }
 
-    public IProductBuilder AddField(Fields field)
+    public IProductBuilder AddField(ICollection<Fields> field)
     {
-        _product.Fields.Add(field);
+        _product.Fields = field;
         return this;
     }
 
+    public IProductBuilder SetColor(string color)
+    {
+        _product.Color = color;
+        return this;
+    }
     public IProductBuilder SetImage(IFormFile imageFile)
     {
         if (imageFile != null && imageFile.Length > 0)
@@ -44,8 +46,13 @@ public class ProductBuilder: IProductBuilder
         return this;
     }
 
-    public Product Build()
+    public Product Build(ProductViewModel viewModel)
     {
+        SetName(viewModel.Name);
+        SetColor(viewModel.Color);
+        SetImage(viewModel.ImageFile);
+        SetCategoryId(viewModel.CategoryId);
+        AddField(viewModel.Fields);
         return _product;
     }
 }

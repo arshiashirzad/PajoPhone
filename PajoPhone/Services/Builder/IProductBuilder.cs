@@ -5,7 +5,8 @@ public interface IProductBuilder
 {
     IProductBuilder SetName(string name);
     IProductBuilder SetCategoryId(int categoryId);
-    IProductBuilder AddField(Fields field);
+    IProductBuilder SetColor(string color);
+    IProductBuilder AddField(ICollection<Fields> field);
     IProductBuilder SetImage(IFormFile imageFile);
-    Product Build();
+    Product Build(ProductViewModel viewModel);
 }
