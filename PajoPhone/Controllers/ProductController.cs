@@ -6,17 +6,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PajoPhone.Models;
+using PajoPhone.Services.Factory;
 
 namespace PajoPhone.Controllers
 {
     public class ProductController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly IProductBuilder _productBuilder;
-        public ProductController(ApplicationDbContext context,IProductBuilder productBuilder)
+        private readonly IProductFactory _productFactory;
+        public ProductController(ApplicationDbContext context,IProductFactory productFactory)
         {
             _context = context;
-            _productBuilder = productBuilder;
+            _productFactory = productFactory;
         }
 
         // GET: Product
@@ -64,11 +65,10 @@ namespace PajoPhone.Controllers
         {
             if (ModelState.IsValid)
             {
-                var productBuilder = _productBuilder;
+                var productFactory = _productFactory;
                 
-                var product = productBuilder.Build(viewModel);
-
-                _context.Products.Add(product);
+                var product = productFactory.Save(viewModel);
+                
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Details", new { id = product.Id });
             }

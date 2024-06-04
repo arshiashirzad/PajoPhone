@@ -1,10 +1,11 @@
+using Microsoft.EntityFrameworkCore;
 using PajoPhone.Models;
 namespace PajoPhone;
 
 public abstract class IProductBuilder
 
 {
-    protected readonly Product _product = new Product();
+    protected readonly Product _product = new Product() ;
     public IProductBuilder SetName(string name)
     {
         return this;
@@ -34,7 +35,7 @@ public abstract class IProductBuilder
     }
     public abstract  IProductBuilder SetImage(IFormFile imageFile);
 
-    Product Build(ProductViewModel viewModel)
+    public Product Build(ProductViewModel viewModel)
     {
         SetName(viewModel.Name);
         SetColor(viewModel.Color);

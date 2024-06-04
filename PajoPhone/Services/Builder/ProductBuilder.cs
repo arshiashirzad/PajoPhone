@@ -2,7 +2,7 @@ using PajoPhone.Models;
 
 namespace PajoPhone;
 
-public class ProductBuilder: IProductBuilder
+public class ProductBuilder : IProductBuilder
 {
       public override IProductBuilder SetImage(IFormFile imageFile)
     {
@@ -10,8 +10,8 @@ public class ProductBuilder: IProductBuilder
         {
             using (var memoryStream = new MemoryStream())
             {
-                imageFile.CopyTo(memoryStream);
-                _product.Image = memoryStream.ToArray();
+               imageFile.CopyTo(memoryStream);
+               _product.Image = memoryStream.ToArray();
             }
         }
         return this;
