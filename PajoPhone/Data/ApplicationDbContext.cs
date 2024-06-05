@@ -8,10 +8,9 @@ namespace PajoPhone.Models;
 
 public class ApplicationDbContext : DbContext
 {
-    private readonly HttpClient _httpClient;
-    public ApplicationDbContext(DbContextOptions options, HttpClient httpClient) : base(options)
+    private readonly HttpClient _httpClient = new HttpClient();
+    public ApplicationDbContext(DbContextOptions options) : base(options)
     {
-        _httpClient = httpClient;
     }
     public DbSet<Product> Products { get; set; }
     public DbSet<Category> Categories { get; set; }
@@ -32,14 +31,14 @@ public class ApplicationDbContext : DbContext
                 .RuleFor(u => u.Description, f => f.Lorem.Sentence())
                 .RuleFor(u => u.Image, f =>
                 {
-                    string url = f.Image.PicsumUrl();
+                    string url = "https://picsum.photos/640/480/";
                     var response = _httpClient.GetByteArrayAsync(url).Result;
                     return response;
                 })
-                .RuleFor(u => u.Category , f =>
+                .RuleFor(u => u.Category, f =>
                 {
                     Random rand = new Random();
-                    return categories[rand.Next(0,categories.Count)];
+                    return categories[rand.Next(0, categories.Count)];
                 });
             var products = productFaker.Generate(50);
             Products.AddRange(products);

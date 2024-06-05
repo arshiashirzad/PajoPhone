@@ -289,3 +289,4 @@
 /Users/arshia/RiderProjects/PajoPhone/PajoPhone/bin/Debug/net6.0/MySqlConnector.dll
 /Users/arshia/RiderProjects/PajoPhone/PajoPhone/bin/Debug/net6.0/Pomelo.EntityFrameworkCore.MySql.dll
 /Users/arshia/RiderProjects/PajoPhone/PajoPhone/bin/Debug/net6.0/AutoMapper.dll
+/Users/arshia/RiderProjects/PajoPhone/PajoPhone/bin/Debug/net6.0/Bogus.dll

@@ -9,6 +9,7 @@
       "PajoPhone/1.0.0": {
         "dependencies": {
           "AutoMapper": "13.0.1",
+          "Bogus": "35.5.1",
           "Microsoft.EntityFrameworkCore": "6.0.0",
           "Microsoft.EntityFrameworkCore.Design": "6.0.0",
           "Microsoft.EntityFrameworkCore.SqlServer": "6.0.0",
@@ -29,6 +30,14 @@
           "lib/net6.0/AutoMapper.dll": {
             "assemblyVersion": "13.0.0.0",
             "fileVersion": "13.0.1.0"
+          }
+        }
+      },
+      "Bogus/35.5.1": {
+        "runtime": {
+          "lib/net6.0/Bogus.dll": {
+            "assemblyVersion": "35.5.1.0",
+            "fileVersion": "35.5.1.0"
           }
         }
       },
@@ -2453,6 +2462,13 @@
       "sha512": "sha512-/Fx1SbJ16qS7dU4i604Sle+U9VLX+WSNVJggk6MupKVkYvvBm4XqYaeFuf67diHefHKHs50uQIS2YEDFhPCakQ==",
       "path": "automapper/13.0.1",
       "hashPath": "automapper.13.0.1.nupkg.sha512"
+    },
+    "Bogus/35.5.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-GBp2peww04szEJ0GlBlzCYilFDaSkL7Ja4m37YeTRjC/mgoiZnUuifmgUxVD/oLU2MC1uoXfQYK91doGp7Zkpg==",
+      "path": "bogus/35.5.1",
+      "hashPath": "bogus.35.5.1.nupkg.sha512"
     },
     "Humanizer.Core/2.8.26": {
       "type": "package",
