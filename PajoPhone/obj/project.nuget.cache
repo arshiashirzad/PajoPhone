@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "TtegouCnezk3y+oUGwQV5MtfF3ttp1inpIKC7F9R4I3Y+qkWGryOg6VbeNGODbKm5c96RROeJvKxxuuZA2JZbA==",
+  "dgSpecHash": "PyOkoshWstOy1y7frH+TZf3wL9kNXEpEKtGFRqunueVZ8CM+cz/l7dFHUKbBzC16MKWPbnxDFk+xmHM9rkN+Cg==",
   "success": true,
   "projectFilePath": "/Users/arshia/RiderProjects/PajoPhone/PajoPhone/PajoPhone.csproj",
   "expectedPackageFiles": [
+    "/Users/arshia/.nuget/packages/automapper/13.0.1/automapper.13.0.1.nupkg.sha512",
+    "/Users/arshia/.nuget/packages/bogus/35.5.1/bogus.35.5.1.nupkg.sha512",
     "/Users/arshia/.nuget/packages/humanizer.core/2.8.26/humanizer.core.2.8.26.nupkg.sha512",
     "/Users/arshia/.nuget/packages/messagepack/2.1.152/messagepack.2.1.152.nupkg.sha512",
     "/Users/arshia/.nuget/packages/messagepack.annotations/2.1.152/messagepack.annotations.2.1.152.nupkg.sha512",

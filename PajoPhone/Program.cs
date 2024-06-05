@@ -1,4 +1,5 @@
-
+using AutoMapper;   
+using PajoPhone.AutoMapperProfiles;
 using Microsoft.EntityFrameworkCore;
 using PajoPhone;
 using PajoPhone.Models;
@@ -8,6 +9,7 @@ using Product = PajoPhone.Models.Product;
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddAutoMapper(typeof(ProductProfile));
 // DI
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

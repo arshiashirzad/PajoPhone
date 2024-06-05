@@ -1,19 +1,30 @@
 using PajoPhone.Models;
-
+using AutoMapper;
 namespace PajoPhone;
 
 public class ProductBuilder : IProductBuilder
 {
-      public override IProductBuilder SetImage(IFormFile imageFile)
+    private readonly ApplicationDbContext _context;
+    private readonly IMapper _mapper;
+    public ProductBuilder(IMapper mapper, ApplicationDbContext dbContext)
     {
-        if (imageFile != null && imageFile.Length > 0)
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-               imageFile.CopyTo(memoryStream);
-               _product.Image = memoryStream.ToArray();
-            }
-        }
+        _mapper = mapper;
+        _context = dbContext;
+    }
+    
+    public IProductBuilder SetImage(IFormFile image)
+    {
         return this;
+    }
+
+    public void Finalize(Product product)
+    {
+        _context.Products.Add(product);
+    }
+
+    public Product Build(ProductViewModel viewModel)
+    {
+        Product product = _mapper.Map<Product>(viewModel);
+        return product;
     }
 }

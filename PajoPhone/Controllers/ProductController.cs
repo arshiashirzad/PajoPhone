@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PajoPhone.Models;
 using PajoPhone.Services.Factory;
-
+using AutoMapper;
 namespace PajoPhone.Controllers
 {
     public class ProductController : Controller
@@ -65,10 +65,11 @@ namespace PajoPhone.Controllers
         {
             if (ModelState.IsValid)
             {
+                // var product = _mapper.Map<Product>(viewModel);
                 var productFactory = _productFactory;
-                
                 var product = await productFactory.Save(viewModel);
-                
+                //Mapping
+                // var productViewModel = _mapper.Map<ProductViewModel>(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Details", new { id = product.Id });
             }

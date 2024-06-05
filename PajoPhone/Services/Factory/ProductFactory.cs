@@ -1,3 +1,5 @@
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using PajoPhone.Models;
 
 namespace PajoPhone.Services.Factory;
@@ -5,9 +7,11 @@ namespace PajoPhone.Services.Factory;
 public class ProductFactory : IProductFactory
 {
     private readonly ApplicationDbContext _context;
-    public ProductFactory(ApplicationDbContext context)
+    private readonly IMapper _mapper;
+    public ProductFactory(ApplicationDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<Product> Save(ProductViewModel viewModel)
@@ -16,14 +20,15 @@ public class ProductFactory : IProductFactory
         product ??= new();
         if (viewModel.Id == 0)
         {
-            var productBuilder = new ProductBuilder();
+            var productBuilder = new ProductBuilder(_mapper,_context);
              product = productBuilder.Build(viewModel);
-            _context.Products.Add(product);
+             productBuilder.Finalize(product);
         }
         else
         {
-            var productEditor = new ProductEditor();
+            var productEditor = new ProductEditor(_mapper);
             product = productEditor.Build(viewModel);
+            productEditor.Finalize(product);
         }
         return product;
     }
