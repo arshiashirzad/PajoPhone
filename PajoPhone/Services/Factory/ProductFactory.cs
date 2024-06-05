@@ -12,8 +12,8 @@ public class ProductFactory : IProductFactory
 
     public async Task<Product> Save(ProductViewModel viewModel)
     {
-        Product product = await _context.Products.FindAsync(viewModel.Id);
-        product = (product == null) ? new Product() : product;
+        var product = await _context.Products.FindAsync(viewModel.Id);
+        product ??= new();
         if (viewModel.Id == 0)
         {
             var productBuilder = new ProductBuilder();
@@ -24,9 +24,7 @@ public class ProductFactory : IProductFactory
         {
             var productEditor = new ProductEditor();
             product = productEditor.Build(viewModel);
-            _context.Products.Update(product);
         }
-        await _context.SaveChangesAsync();
         return product;
     }
 }

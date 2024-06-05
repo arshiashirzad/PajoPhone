@@ -8,6 +8,7 @@ public abstract class IProductBuilder
     protected readonly Product _product = new Product() ;
     public IProductBuilder SetName(string name)
     {
+        _product.Name = name;
         return this;
     }
 

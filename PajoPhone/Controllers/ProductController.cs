@@ -67,7 +67,7 @@ namespace PajoPhone.Controllers
             {
                 var productFactory = _productFactory;
                 
-                var product = productFactory.Save(viewModel);
+                var product = await productFactory.Save(viewModel);
                 
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Details", new { id = product.Id });
