@@ -290,3 +290,12 @@
 /Users/arshia/RiderProjects/PajoPhone/PajoPhone/bin/Debug/net6.0/Pomelo.EntityFrameworkCore.MySql.dll
 /Users/arshia/RiderProjects/PajoPhone/PajoPhone/bin/Debug/net6.0/AutoMapper.dll
 /Users/arshia/RiderProjects/PajoPhone/PajoPhone/bin/Debug/net6.0/Bogus.dll
+/Users/arshia/RiderProjects/PajoPhone/PajoPhone/bin/Debug/net6.0/global.json
+/Users/arshia/RiderProjects/PajoPhone/PajoPhone/bin/Debug/net6.0/package-lock.json
+/Users/arshia/RiderProjects/PajoPhone/PajoPhone/bin/Debug/net6.0/package.json
+/Users/arshia/RiderProjects/PajoPhone/PajoPhone/obj/Debug/net6.0/PajoPhone.sourcelink.json
+/Users/arshia/RiderProjects/PajoPhone/PajoPhone/obj/Debug/net6.0/staticwebassets/msbuild.PajoPhone.Microsoft.AspNetCore.StaticWebAssets.props
+/Users/arshia/RiderProjects/PajoPhone/PajoPhone/obj/Debug/net6.0/staticwebassets/msbuild.build.PajoPhone.props
+/Users/arshia/RiderProjects/PajoPhone/PajoPhone/obj/Debug/net6.0/staticwebassets/msbuild.buildMultiTargeting.PajoPhone.props
+/Users/arshia/RiderProjects/PajoPhone/PajoPhone/obj/Debug/net6.0/staticwebassets/msbuild.buildTransitive.PajoPhone.props
+/Users/arshia/RiderProjects/PajoPhone/PajoPhone/obj/Debug/net6.0/staticwebassets.pack.json

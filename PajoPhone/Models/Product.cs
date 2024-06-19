@@ -11,4 +11,7 @@ public class Product
     public ICollection<Fields> Fields { get; set; }
     public Category Category { get; set; }
     public int CategoryId { get; set; }
+    
+    public virtual ICollection<FieldsValue> FieldsValues { get; set; } = new List<FieldsValue>();
+
 }
