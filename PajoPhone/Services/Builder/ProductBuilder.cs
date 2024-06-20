@@ -11,7 +11,6 @@ public class ProductBuilder : IProductBuilder
         _mapper = mapper;
         _context = dbContext;
     }
-    
     public IProductBuilder SetImage(IFormFile image)
     {
         return this;
