@@ -14,7 +14,8 @@ public class ApplicationDbContext : DbContext
     }
     public DbSet<Product> Products { get; set; }
     public DbSet<Category> Categories { get; set; }
-    public DbSet<Fields> Fields { get; set; }
+    public DbSet<FieldsKey> FieldsKeys{ get; set; }
+    public DbSet<FieldsValue> FieldsValues { get; set; }
 
     public void SeedData()
     {

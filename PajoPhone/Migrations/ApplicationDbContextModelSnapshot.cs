@@ -29,33 +29,62 @@ namespace PajoPhone.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int?>("ParentCategoryId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentCategoryId");
 
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("PajoPhone.Models.Fields", b =>
+            modelBuilder.Entity("PajoPhone.Models.FieldsKey", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Information")
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Key")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("FieldsKeys");
+                });
+
+            modelBuilder.Entity("PajoPhone.Models.FieldsValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("FieldKeyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IntValue")
+                        .HasColumnType("int");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<string>("StringValue")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("FieldKeyId");
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Fields");
+                    b.ToTable("FieldsValues");
                 });
 
             modelBuilder.Entity("PajoPhone.Models.Product", b =>
@@ -93,21 +122,19 @@ namespace PajoPhone.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("PajoPhone.Models.Fields", b =>
+            modelBuilder.Entity("PajoPhone.Models.Category", b =>
                 {
-                    b.HasOne("PajoPhone.Models.Product", "Product")
-                        .WithMany("Fields")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("PajoPhone.Models.Category", "ParentCategory")
+                        .WithMany("ChildCategories")
+                        .HasForeignKey("ParentCategoryId");
 
-                    b.Navigation("Product");
+                    b.Navigation("ParentCategory");
                 });
 
-            modelBuilder.Entity("PajoPhone.Models.Product", b =>
+            modelBuilder.Entity("PajoPhone.Models.FieldsKey", b =>
                 {
                     b.HasOne("PajoPhone.Models.Category", "Category")
-                        .WithMany()
+                        .WithMany("FieldsKeys")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -115,9 +142,48 @@ namespace PajoPhone.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("PajoPhone.Models.FieldsValue", b =>
+                {
+                    b.HasOne("PajoPhone.Models.FieldsKey", "FieldKey")
+                        .WithMany()
+                        .HasForeignKey("FieldKeyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PajoPhone.Models.Product", "Product")
+                        .WithMany("FieldsValues")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FieldKey");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("PajoPhone.Models.Product", b =>
                 {
-                    b.Navigation("Fields");
+                    b.HasOne("PajoPhone.Models.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("PajoPhone.Models.Category", b =>
+                {
+                    b.Navigation("ChildCategories");
+
+                    b.Navigation("FieldsKeys");
+
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("PajoPhone.Models.Product", b =>
+                {
+                    b.Navigation("FieldsValues");
                 });
 #pragma warning restore 612, 618
         }

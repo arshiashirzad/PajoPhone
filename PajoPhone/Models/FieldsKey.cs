@@ -2,11 +2,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PajoPhone.Models;
 
-public class Fields
+public class FieldsKey
 {
     [Key]
     public int Id { get; set; }
-    public string Name { get; set; }
+    public string Key { get; set; }
     public int CategoryId { get; set; }
-    public virtual Category Category { get; set; }
+    public Category Category { get; set; }
 }
