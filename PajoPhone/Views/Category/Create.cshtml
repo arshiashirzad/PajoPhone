@@ -8,21 +8,32 @@
 <hr class="my-4" />
 <div class="container">
     <form asp-action="Create" method="post">
+        <label class="my-2 ">
+                      Choose Parent Category
+                </label>
         <div id="categoryTreeContainer" class="mb-3">
             @await Html.PartialAsync("_CategoryTreePartial")
         </div>
-        
+        <label class="my-2">
+            Category Name
+        </label>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="mb-3">
+            <input asp-for="Name" class="form-control"/>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <label class="my-2">Fields</label>
         <div id="field-keys-container">
             @for (int i = 0; i < Model.FieldsKeys.Count; i++)
             {
-                <div class="form-group field-key-item d-flex align-items-center mb-2">
-                    <input type="hidden" name="FieldKeys[@i].Id" value="@Model.FieldsKeys[i].Id" />
+                <div class="form-group field-key-item align-items-center d-flex my-4 gap-2">
+                    <input type="hidden" name="FieldKeys[@i].Id" value="@Model.FieldsKeys[i].Id"/>
+                    <input type="text" name="FieldKeys[@i].Name" value="@Model.FieldsKeys[i].Name" class="form-control"/>
                     <button type="button" class="btn btn-danger remove-field-button">Remove</button>
-                    @* <input type="text" name="FieldKeys[@i].Name" value="@Model.FieldsKeys[i].Name" class="form-control" /> *@
                 </div>
             }
         </div>
-              
+
         <button type="button" class="btn btn-primary" id="add-field-button">Add Field</button>
         <button type="submit" class="btn btn-success">Save</button>
     </form>
@@ -35,9 +46,8 @@
             document.getElementById('add-field-button').addEventListener('click', function () {
                 const container = document.getElementById('field-keys-container');
                 const newField = document.createElement('div');
-                newField.className = 'form-group field-key-item';
+                newField.className = 'form-group field-key-item d-flex mb-4 gap-2';
                 newField.innerHTML = `
-                    <label>Field ${fieldKeyIndex + 1}</label>
                     <input type="hidden" name="FieldKeys[${fieldKeyIndex}].Id" value="${fieldKeyIndex + 1}" />
                     <input type="text" name="FieldKeys[${fieldKeyIndex}].Name" class="form-control" />
                     <button type="button" class="btn btn-danger remove-field-button">Remove</button>

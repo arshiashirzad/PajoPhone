@@ -76,15 +76,37 @@ namespace PajoPhone.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Create(CategoryViewModel categoryViewModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
-                await _context.SaveChangesAsync();
+                var category = new Category()
+                {
+                    Name = categoryViewModel.Name,
+                    ParentCategoryId = categoryViewModel.ParentCategoryId,
+                    FieldsKeys = categoryViewModel.FieldsKeys.Select(f => new FieldsKey
+                    {
+                        Key = f.Name
+                    }).ToList()
+                };
+                if (Request.Form["NewFields[]"].Any())
+                {
+                    foreach (var fieldName in Request.Form["NewFields[]"])
+                    {
+                        category.FieldsKeys.Add(new FieldsKey { Key = fieldName });
+                    }
+                }
+                
+                _context.Categories.Add(category);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
-            return View();
+            categoryViewModel.ParentCategories = _context.Categories.Select(c => new CategoryViewModel
+            {
+                Id = c.Id,
+                Name = c.Name
+            }).ToList();
+            return View(categoryViewModel);
         }
 
         // GET: Category/Edit/5
