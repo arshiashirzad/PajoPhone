@@ -12,12 +12,37 @@ namespace PajoPhone.Controllers
     public class CategoryController : Controller
     {
         private readonly ApplicationDbContext _context;
-
+        private void PopulateParentCategories(CategoryViewModel viewModel)
+        {
+            viewModel.ParentCategories = _context.Categories
+                .Select(c => new CategoryViewModel
+                {
+                    Id = c.Id,
+                    Name = c.Name
+                })
+                .ToList();
+        }
+        private List<object> GetCategoryTree(List<Category> categories, int? parentId)
+        {
+            return categories
+                .Where(c => c.ParentCategoryId == parentId)
+                .Select(c => new
+                {
+                    id = c.Id,
+                    text = c.Name,
+                    children = GetCategoryTree(categories, c.Id)
+                }).ToList<object>();
+        }
+        public IActionResult GetCategoryTreeData()
+        {
+            var categories = _context.Categories.ToList();
+            var categoryTreeData = GetCategoryTree(categories, null);
+            return Json(categoryTreeData);
+        }
         public CategoryController(ApplicationDbContext context)
         {
             _context = context;
         }
-
         // GET: Category
         public async Task<IActionResult> Index()
         {
@@ -45,8 +70,9 @@ namespace PajoPhone.Controllers
         // GET: Category/Create
         public IActionResult Create()
         {
-            return View();
-        }
+            var viewModel = new CategoryViewModel();
+            PopulateParentCategories(viewModel); 
+            return View(viewModel);        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -58,7 +84,7 @@ namespace PajoPhone.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return View();
         }
 
         // GET: Category/Edit/5

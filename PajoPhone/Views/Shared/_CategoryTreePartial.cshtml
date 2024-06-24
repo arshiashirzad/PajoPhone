@@ -1,0 +1,17 @@
+<div id="categoryTree"></div>
+<input type="hidden" id="selectedParentCategoryId" name="ParentCategoryId" />
+<script>
+    $(document).ready(function () {
+        $('#categoryTree').jstree({
+            'core': {
+                'data': {
+                    'url': '@Url.Action("GetCategoryTreeData", "Category")',
+                    'dataType': 'json'
+                }
+            }
+        }).on('select_node.jstree', function (e, data) {
+            var selectedNodeId = data.node.id;
+            $('#selectedParentCategoryId').val(selectedNodeId);
+        });
+    });
+</script>
