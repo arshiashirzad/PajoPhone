@@ -72,35 +72,13 @@ namespace PajoPhone.Controllers
         {
             var viewModel = new CategoryViewModel();
             PopulateParentCategories(viewModel); 
-            return View(viewModel);        }
+            return View("Edit",viewModel);
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CategoryViewModel categoryViewModel)
-        {
-            if (ModelState.IsValid)
-            {
-                var category = new Category()
-                {
-                    Name = categoryViewModel.Name,
-                    ParentCategoryId = categoryViewModel.ParentCategoryId,
-                };
-                category.FieldsKeys = categoryViewModel.FieldsKeys.Select(f => new FieldsKey
-                {
-                    Key = f.Name,
-                    CategoryId = category.Id
-                }).ToList();
-                _context.Categories.Add(category);
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
-            }
-            categoryViewModel.ParentCategories = _context.Categories.Select(c => new CategoryViewModel
-            {
-                Id = c.Id,
-                Name = c.Name
-            }).ToList();
-            return View(categoryViewModel);
-        }
+        public IActionResult Create(CategoryViewModel categoryViewModel)
+            => Edit(categoryViewModel);
 
         // GET: Categories/Edit/5
         public IActionResult Edit(int id)
@@ -108,7 +86,6 @@ namespace PajoPhone.Controllers
             var category = _context.Categories
                 .Include(c => c.FieldsKeys)
                 .FirstOrDefault(c => c.Id == id);
-
             if (category == null)
             {
                 return NotFound();
@@ -136,31 +113,30 @@ namespace PajoPhone.Controllers
             {
                 var category = _context.Categories
                     .Include(c => c.FieldsKeys)
-                    .FirstOrDefault(c => c.Id == model.Id);
+                    .FirstOrDefault(c => c.Id == model.Id) ?? new Category();
+             
+                    category.Name = model.Name;
+                    category.ParentCategoryId = model.ParentCategoryId;
+                    _context.FieldsKeys.RemoveRange(category.FieldsKeys);
+                    _context.SaveChanges();
 
-                if (category == null)
-                {
-                    return NotFound();
-                }
-                category.Name = model.Name;
-                category.ParentCategoryId = model.ParentCategoryId;
-                _context.FieldsKeys.RemoveRange(category.FieldsKeys);
-                _context.SaveChanges();
-
-                category.FieldsKeys.Clear();
-                foreach (var field in model.FieldsKeys)
-                {
-                    category.FieldsKeys.Add(new FieldsKey
+                    category.FieldsKeys.Clear();
+                    foreach (var field in model.FieldsKeys)
                     {
-                        Key = field.Name,
-                        CategoryId = category.Id
-                    });
+                        category.FieldsKeys.Add(new FieldsKey
+                        {
+                            Key = field.Name,
+                            CategoryId = category.Id
+                        });
+                    }
+
+                    if (category.Id==0)
+                    {
+                        _context.Add(category);
+                    }
+                    _context.SaveChanges();
+                    return RedirectToAction("Index");
                 }
-
-                _context.SaveChanges();
-
-                return RedirectToAction("Index");
-            }
             return View(model);
         }
 
