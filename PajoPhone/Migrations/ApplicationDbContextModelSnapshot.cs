@@ -50,11 +50,18 @@ namespace PajoPhone.Migrations
 
                     b.Property<string>("Key")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<bool>("isDisabled")
+                        .HasColumnType("tinyint(1)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("CategoryId", "Key")
+                        .IsUnique()
+                        .HasFilter("[isDisabled] = 0");
 
                     b.ToTable("FieldsKeys");
                 });

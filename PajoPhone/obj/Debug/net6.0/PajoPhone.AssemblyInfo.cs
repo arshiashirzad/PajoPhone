@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PajoPhone")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c3f2939cf5f2210d4b76ea4e70489ca513a24364")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ff945a9959da56c294fa28f89e457f17fa385454")]
 [assembly: System.Reflection.AssemblyProductAttribute("PajoPhone")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PajoPhone")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

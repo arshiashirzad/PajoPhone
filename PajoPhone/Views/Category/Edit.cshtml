@@ -1,23 +1,26 @@
 @model PajoPhone.Models.CategoryViewModel
+
 @{
     ViewData["Title"] = "Edit Category";
 }
-<h1 class="text-2xl font-bold mb-4">Edit Category</h1>
+
+<h1 class="text-2xl font-bold mb-4">@ViewData["Title"]</h1>
+
 <hr class="my-4" />
 <div class="container">
-    <form asp-action="Edit" method="post">
-        <label class="my-2">
-            Choose Parent Category
-        </label>
+    <form  method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <label class="my-2">Choose Parent Category</label>
         <div id="categoryTreeContainer" class="mb-3">
             @await Html.PartialAsync("_CategoryTreePartial")
         </div>
-        <label class="my-2">
-            Category Name
-        </label>
+        <input type="hidden" asp-for="ParentCategoryId" id="ParentCategoryId" />
+
+        <label class="my-2">Category Name</label>
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="mb-3">
-            <input asp-for="Name" class="form-control"/>
+            <input asp-for="Name" class="form-control" />
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
         <label class="my-2">Fields</label>
@@ -26,7 +29,7 @@
             {
                 <div class="form-group field-key-item d-flex mb-4 gap-2">
                     <input type="hidden" name="FieldsKeys[@i].Id" value="@Model.FieldsKeys[i].Id" />
-                    <input type="text" name="FieldsKeys[@i].Name" value="@Model.FieldsKeys[i].Name" class="form-control" />
+                    <input type="text" name="FieldsKeys[@i].Key" value="@Model.FieldsKeys[i].Name" class="form-control" />
                     <button type="button" class="btn btn-danger remove-field-button">Remove</button>
                 </div>
             }
@@ -45,7 +48,7 @@
             const newField = document.createElement('div');
             newField.className = 'form-group field-key-item d-flex mb-4 gap-2';
             newField.innerHTML = `
-                <input type="hidden" name="FieldsKeys[${fieldKeyIndex}].Id" value="${fieldKeyIndex + 1}" />
+                <input type="hidden" name="FieldsKeys[${fieldKeyIndex}].Id" value="0" />
                 <input type="text" name="FieldsKeys[${fieldKeyIndex}].Name" class="form-control" />
                 <button type="button" class="btn btn-danger remove-field-button">Remove</button>
             `;
@@ -53,6 +56,7 @@
             fieldKeyIndex++;
             addRemoveEventListeners();
         });
+
         function addRemoveEventListeners() {
             document.querySelectorAll('.remove-field-button').forEach(button => {
                 button.removeEventListener('click', removeField);
@@ -69,13 +73,17 @@
             const fieldItems = document.querySelectorAll('.field-key-item');
             fieldItems.forEach((item, index) => {
                 item.querySelector('input[type="hidden"]').setAttribute('name', `FieldsKeys[${index}].Id`);
-                item.querySelector('input[type="hidden"]').value = index + 1;
-                item.querySelector('input[type="text"]').setAttribute('name', `FieldsKeys[${index}].Name`);
+                item.querySelector('input[type="text"]').setAttribute('name', `FieldsKeys[${index}].Key`);
             });
             fieldKeyIndex = fieldItems.length;
         }
-        $('#categoryTree').on('loaded.jstree', function() {
-                                $('#categoryTree').jstree("select_node", '@Model.ParentCategoryId');
-                          });
+
+        document.addEventListener('DOMContentLoaded', addRemoveEventListeners);
+
+        // Handle tree selection
+        $('#categoryTreeContainer').on('changed.jstree', function (e, data) {
+            var selectedNode = data.instance.get_node(data.selected[0]);
+            $('#ParentCategoryId').val(selectedNode.id);
+        });
     </script>
 }
