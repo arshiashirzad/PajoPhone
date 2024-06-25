@@ -84,19 +84,12 @@ namespace PajoPhone.Controllers
                 {
                     Name = categoryViewModel.Name,
                     ParentCategoryId = categoryViewModel.ParentCategoryId,
-                    FieldsKeys = categoryViewModel.FieldsKeys.Select(f => new FieldsKey
-                    {
-                        Key = f.Name
-                    }).ToList()
                 };
-                if (Request.Form["NewFields[]"].Any())
+                category.FieldsKeys = categoryViewModel.FieldsKeys.Select(f => new FieldsKey
                 {
-                    foreach (var fieldName in Request.Form["NewFields[]"])
-                    {
-                        category.FieldsKeys.Add(new FieldsKey { Key = fieldName });
-                    }
-                }
-                
+                    Key = f.Name,
+                    CategoryId = category.Id
+                }).ToList();
                 _context.Categories.Add(category);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
@@ -109,55 +102,66 @@ namespace PajoPhone.Controllers
             return View(categoryViewModel);
         }
 
-        // GET: Category/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: Categories/Edit/5
+        public IActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var category = _context.Categories
+                .Include(c => c.FieldsKeys)
+                .FirstOrDefault(c => c.Id == id);
 
-            var category = await _context.Categories.FindAsync(id);
             if (category == null)
             {
                 return NotFound();
             }
-            return View(category);
-        }
-
-        // POST: Category/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Category category)
-        {
-            if (id != category.Id)
+            var viewModel = new CategoryViewModel
             {
-                return NotFound();
-            }
-
+                Id = category.Id,
+                Name = category.Name,
+                ParentCategoryId = category.ParentCategoryId,
+                FieldsKeys = category.FieldsKeys
+                    .Select(fk => new CategoryFieldViewModel()
+                    {
+                        Id = fk.Id,
+                        Name = fk.Key
+                    }).ToList()
+            };
+            return View(viewModel);
+        }
+        
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public IActionResult Edit(CategoryViewModel model)
+        {
             if (ModelState.IsValid)
             {
-                try
+                var category = _context.Categories
+                    .Include(c => c.FieldsKeys)
+                    .FirstOrDefault(c => c.Id == model.Id);
+
+                if (category == null)
                 {
-                    _context.Update(category);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                category.Name = model.Name;
+                category.ParentCategoryId = model.ParentCategoryId;
+                _context.FieldsKeys.RemoveRange(category.FieldsKeys);
+                _context.SaveChanges();
+
+                category.FieldsKeys.Clear();
+                foreach (var field in model.FieldsKeys)
                 {
-                    if (!CategoryExists(category.Id))
+                    category.FieldsKeys.Add(new FieldsKey
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                        Key = field.Name,
+                        CategoryId = category.Id
+                    });
                 }
-                return RedirectToAction(nameof(Index));
+
+                _context.SaveChanges();
+
+                return RedirectToAction("Index");
             }
-            return View(category);
+            return View(model);
         }
 
         // GET: Category/Delete/5

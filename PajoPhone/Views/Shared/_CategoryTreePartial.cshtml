@@ -1,7 +1,5 @@
-<!-- Views/Shared/_CategoryTreePartial.cshtml -->
 <div id="categoryTree"></div>
 <input type="hidden" id="selectedParentCategoryId" name="ParentCategoryId" />
-
 <script>
     $(document).ready(function () {
         $('#categoryTree').jstree({
@@ -12,7 +10,6 @@
                 }
             }
         }).on('select_node.jstree', function (e, data) {
-            // Get the ID of the selected node
             var selectedNodeId = data.node.id;
             $('#selectedParentCategoryId').val(selectedNodeId);
         });

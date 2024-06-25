@@ -1,31 +1,81 @@
-@model PajoPhone.Models.Category
-
+@model PajoPhone.Models.CategoryViewModel
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Category";
 }
-
-<h1>Edit</h1>
-
-<h4>Category</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<h1 class="text-2xl font-bold mb-4">Edit Category</h1>
+<hr class="my-4" />
+<div class="container">
+    <form asp-action="Edit" method="post">
+        <label class="my-2">
+            Choose Parent Category
+        </label>
+        <div id="categoryTreeContainer" class="mb-3">
+            @await Html.PartialAsync("_CategoryTreePartial")
+        </div>
+        <label class="my-2">
+            Category Name
+        </label>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="mb-3">
+            <input asp-for="Name" class="form-control"/>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <label class="my-2">Fields</label>
+        <div id="field-keys-container">
+            @for (int i = 0; i < Model.FieldsKeys.Count; i++)
+            {
+                <div class="form-group field-key-item d-flex mb-4 gap-2">
+                    <input type="hidden" name="FieldsKeys[@i].Id" value="@Model.FieldsKeys[i].Id" />
+                    <input type="text" name="FieldsKeys[@i].Name" value="@Model.FieldsKeys[i].Name" class="form-control" />
+                    <button type="button" class="btn btn-danger remove-field-button">Remove</button>
+                </div>
+            }
+        </div>
+        <button type="button" class="btn btn-primary" id="add-field-button">Add Field</button>
+        <button type="submit" class="btn btn-success">Save</button>
+    </form>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@section Scripts {
+    <script>
+        let fieldKeyIndex = @Model.FieldsKeys.Count;
 
+        document.getElementById('add-field-button').addEventListener('click', function () {
+            const container = document.getElementById('field-keys-container');
+            const newField = document.createElement('div');
+            newField.className = 'form-group field-key-item d-flex mb-4 gap-2';
+            newField.innerHTML = `
+                <input type="hidden" name="FieldsKeys[${fieldKeyIndex}].Id" value="${fieldKeyIndex + 1}" />
+                <input type="text" name="FieldsKeys[${fieldKeyIndex}].Name" class="form-control" />
+                <button type="button" class="btn btn-danger remove-field-button">Remove</button>
+            `;
+            container.appendChild(newField);
+            fieldKeyIndex++;
+            addRemoveEventListeners();
+        });
+        function addRemoveEventListeners() {
+            document.querySelectorAll('.remove-field-button').forEach(button => {
+                button.removeEventListener('click', removeField);
+                button.addEventListener('click', removeField);
+            });
+        }
+
+        function removeField(event) {
+            event.target.closest('.field-key-item').remove();
+            reindexFields();
+        }
+
+        function reindexFields() {
+            const fieldItems = document.querySelectorAll('.field-key-item');
+            fieldItems.forEach((item, index) => {
+                item.querySelector('input[type="hidden"]').setAttribute('name', `FieldsKeys[${index}].Id`);
+                item.querySelector('input[type="hidden"]').value = index + 1;
+                item.querySelector('input[type="text"]').setAttribute('name', `FieldsKeys[${index}].Name`);
+            });
+            fieldKeyIndex = fieldItems.length;
+        }
+        $('#categoryTree').on('loaded.jstree', function() {
+                                $('#categoryTree').jstree("select_node", '@Model.ParentCategoryId');
+                          });
+    </script>
+}

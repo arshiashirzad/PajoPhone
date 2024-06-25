@@ -17,6 +17,12 @@ public class ApplicationDbContext : DbContext
     public DbSet<FieldsKey> FieldsKeys{ get; set; }
     public DbSet<FieldsValue> FieldsValues { get; set; }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<FieldsKey>().HasIndex(x => new {x.CategoryId, x.Key}).HasFilter().IsUnique(true);
+    }
+
     public void SeedData()
     {
         if (Products.Count() < 50)
