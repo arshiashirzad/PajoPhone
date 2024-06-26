@@ -13,11 +13,9 @@ public class ProductFactory : IProductFactory
         _context = context;
         _mapper = mapper;
     }
-
     public async Task<Product> Save(ProductViewModel viewModel)
     {
-        var product = await _context.Products.FindAsync(viewModel.Id);
-        product ??= new();
+        var product = await _context.Products.FindAsync(viewModel.Id) ?? new Product();
         if (viewModel.Id == 0)
         {
             var productBuilder = new ProductBuilder(_mapper,_context);

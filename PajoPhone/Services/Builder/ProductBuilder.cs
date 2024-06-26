@@ -4,7 +4,7 @@ namespace PajoPhone;
 
 public class ProductBuilder : IProductBuilder
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ApplicationDbContext _context ;
     private readonly IMapper _mapper;
     public ProductBuilder(IMapper mapper, ApplicationDbContext dbContext)
     {

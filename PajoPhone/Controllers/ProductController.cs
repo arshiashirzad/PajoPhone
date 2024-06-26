@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PajoPhone.Models;
 using PajoPhone.Services.Factory;
+using System.Web;
 using AutoMapper;
 namespace PajoPhone.Controllers
 {
@@ -51,14 +52,16 @@ namespace PajoPhone.Controllers
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id");
             var viewModel = new ProductViewModel
             {
-                Categories = await _context.Categories.ToListAsync()
+                Categories = await _context.Categories.ToListAsync(),
             };
             return View(viewModel);
         }
+        public JsonResult GetFieldKeys(int categoryId)
+        {
+            var keys = _context.FieldsKeys.Where(fk => fk.CategoryId == categoryId).ToList();
+            return Json(keys);
+        }
 
-        // POST: Product/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductViewModel viewModel)
@@ -95,9 +98,7 @@ namespace PajoPhone.Controllers
             return View(product);
         }
 
-        // POST: Product/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Color,Image,Price,CategoryId")] Product product)
