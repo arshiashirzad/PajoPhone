@@ -9,6 +9,8 @@ using PajoPhone.Models;
 using PajoPhone.Services.Factory;
 using System.Web;
 using AutoMapper;
+using Microsoft.VisualBasic;
+
 namespace PajoPhone.Controllers
 {
     public class ProductController : Controller
@@ -56,6 +58,7 @@ namespace PajoPhone.Controllers
             };
             return View(viewModel);
         }
+        [HttpGet]
         public JsonResult GetFieldKeys(int categoryId)
         {
             var keys = _context.FieldsKeys.Where(fk => fk.CategoryId == categoryId).ToList();
@@ -68,16 +71,17 @@ namespace PajoPhone.Controllers
         {
             if (ModelState.IsValid)
             {
-                // var product = _mapper.Map<Product>(viewModel);
                 var productFactory = _productFactory;
                 var product = await productFactory.Save(viewModel);
-                //Mapping
-                // var productViewModel = _mapper.Map<ProductViewModel>(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Details", new { id = product.Id });
             }
-
-            viewModel.Categories = await _context.Categories.ToListAsync(); // Reload categories in case of error
+            var errors = ModelState.Values.SelectMany(v => v.Errors);
+            foreach (var error in errors)
+            {
+                Console.WriteLine(error.ErrorMessage);
+            }
+            viewModel.Categories = await _context.Categories.ToListAsync(); 
             return View(viewModel);
         }
 

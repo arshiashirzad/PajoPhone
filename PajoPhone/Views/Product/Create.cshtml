@@ -4,12 +4,9 @@
 @{
     ViewData["Title"] = "Create";
 }
-
-<h1>Create</h1>
-
 <h4>Product</h4>
 <hr />
-<div class="row">
+<div class="row d-grid">
     <div class="col-md-4">
         <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -30,26 +27,32 @@
             </div>
             <div class="form-group">
                 <input type="hidden" asp-for="Id" />
-                  <div>
-                      <label asp-for="ImageFile">Upload Image</label>
-                      <input asp-for="ImageFile" type="file" />
-                  </div>
+                <div>
+                    <label asp-for="ImageFile">Upload Image</label>
+                    <input asp-for="ImageFile" type="file" class="form-control" />
+                </div>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-2">
                 <label asp-for="Price" class="control-label"></label>
                 <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
-            <div class="form-group">
-             <label asp-for="CategoryId">Category</label>
-                <select asp-for="CategoryId" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))" class="form-control">
-                    @foreach (Category m in Model.Categories)
-                    {
-                        <option value="@m.Id">
-                            @m.Name
-                        </option>
-                    }
-                </select>
+            <div id="categoryTreeContainer" class="mb-3">
+                <input type="hidden" id="selectedParentCategoryId" name="CategoryId"/>
+                @await Html.PartialAsync("_CategoryTreePartial")
+            </div>
+            <div id="fieldKeysContainer">
+                <div id="fieldKeysList">
+                    @* @for (int i = 0; i < Model.FieldsValues.Count; i++) *@
+                    @* { *@
+                    @*     <div class="form-group field-key-item d-flex mb-4 gap-2"> *@
+                    @*         <input type="hidden" name="FieldsValues[@i].FieldKeyId" value="@Model.FieldsValues[i].FieldKeyId" /> *@
+                    @*         <input type="hidden" name="FieldsValues[@i].ProductId" value="@Model.FieldsValues[i].ProductId" /> *@
+                    @*         <label class="control-label">@Model.FieldsValues[i].FieldKey.Key</label> *@
+                    @*         <input type="text" name="FieldsValues[@i].StringValue" value="@Model.FieldsValues[i].StringValue" class="form-control" /> *@
+                    @*     </div> *@
+                    @* } *@
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -57,8 +60,37 @@
         </form>
     </div>
 </div>
+<script>
+    $('#categoryTree').on("select_node.jstree", function (e, data) {
+        var categoryId = data.node.id;
+        $('#selectedParentCategoryId').val(categoryId);
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
+        $.ajax({
+            url: '@Url.Action("GetFieldKeys", "Product")',
+            data: { categoryId: categoryId },
+            success: function (data) {
+                var fieldKeysList = $('#fieldKeysList');
+                let fieldValueIndex = $('#fieldKeysList > div').length; 
+                fieldKeysList.empty();
+                if (data.length > 0) {
+                    $.each(data, function (i, item) {
+                        const newField = document.createElement('div');
+                        newField.classList.add('form-group', 'field-key-item', 'd-flex', 'mb-4', 'gap-2');
+                        newField.innerHTML = `
+                            <input type="hidden" name="FieldsValues[${fieldValueIndex + i}].FieldKeyId" value="${item.id}" />
+                            <input type="hidden" name="FieldsValues[${fieldValueIndex + i}].ProductId" value="${@Model.Id}" />
+                            <label class="control-label">${item.key}</label>
+                            <input type="text" name="FieldsValues[${fieldValueIndex + i}].StringValue" class="form-control" />
+                        `;
+                        fieldKeysList.append(newField);
+                    });
+                } else {
+                    fieldKeysList.append('<li>No Fields found.</li>');
+                }
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log('Error:', errorThrown);
+            }
+        });
+    });
+</script>

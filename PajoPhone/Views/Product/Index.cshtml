@@ -1,65 +1,208 @@
-@model IEnumerable<PajoPhone.Models.Product>
 
-@{
-    ViewData["Title"] = "Index";
-}
+  <!DOCTYPE html>
+  <html lang="fa" dir="rtl">
+    <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Pajo Phone</title>
+      <link rel="stylesheet" href="~/css/output.css"/>
+      <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
+    </head>
+    <body class="bg-gray-100" x-data="{ isOpen: false }">
+      <!--  navbar -->
+      <nav class="sticky top-0 z-10 block p-4 bg-white shadow-lg md:mb-8 ">
+        <div class="container flex items-center justify-between mx-auto max-w-screen-2xl">
+          <div class="p-4 md:hidden">
+            <button onclick="isOpen =!isOpen" class="text-orange-500 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </div>
+          <ul class="flex items-center gap-x-0 lg:gap-x-4 text-slate-800 lg:text-lg">
+            <li>
+              <a class="block px-4 py-2 font-bold text-orange-500 transition-all duration-500 rounded-md hover:bg-gray-100" href="#">PajoPhone</a>
+            </li>
+          </ul>
+          <!-- Search bar-->
+              <div class="flex-1 max-w-xl mr-4">
+                <div class="flex items-center p-1 bg-gray-100 rounded-lg">
+                  <span class="ml-3 mr-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg
+                  ></span>
+                  <input type="text" placeholder="نام محصول ..." class="w-full p-2 bg-transparent focus:outline-none text-slate-800" />
+                </div>
+              </div>
+        </div>
+      </nav>
+      <!-- content -->
+      <div class="container md:px-4 lg:px-6  mx-auto xl:max-w-screen-2xl grid grid-cols-12 md:grid-rows-[55px_minmax(500px,_1fr)] md:gap-8">
+      <!-- sidebar -->
+<div class="col-span-12 row-span-2 md:block lg:col-span-3 xl:col-span-2">
+  <!-- Backdrop -->
+  <div x-show="isOpen" class="fixed inset-0 bg-black bg-opacity-50 md:hidden" onclick="isOpen = false"></div>
+  <div :class="{ 'block': isOpen, 'hidden': !isOpen }" class="hidden md:block bg-white p-5 md:rounded-xl max-h-[calc(100vh_-_140px)] overflow-y-auto sticky md:top-28 md:static md:max-h-full">
+      <!-- Categories -->
+      <div>
+          <div class="text-xl font-bold text-orange-500">دسته بندی</div>
+          <div class="p-2">
+              <a href="#" class="flex items-center py-2 rounded-md cursor-pointer hover:bg-gray-50 text-slate-800">
+                  <span class="relative w-5 h-5 bg-gray-100 rounded-full">
+                      <svg class="w-4 h-5 absolute top-1.5 right-1" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M13 4.75v7.5c0 3-.75 3.75-3.75 3.75h-4.5c-3 0-3.75-.75-3.75-3.75v-7.5C1 1.75 1.75 1 4.75 1h4.5c3 0 3.75.75 3.75 3.75ZM8.5 3.625h-3" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round"></path>
+                          <path d="M7 13.825A1.163 1.163 0 1 0 7 11.5a1.163 1.163 0 0 0 0 2.325Z" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round"></path>
+                      </svg>
+                  </span>
+                  <span class="mr-2">کالای دیجیتال</span>
+              </a>
+          </div>
+      </div>
+      <!-- Desktop Filters -->
+      <div>
+          <div class="mb-5 text-xl font-bold text-orange-500">فیلتر</div>
+          <!-- ACC. No. 3 -->
+          <div x-data="{ isOpenPrice: true }">
+              <!-- ACC #3 header -->
+              <div onclick="isOpenPrice = !isOpenPrice" class="flex items-center justify-between w-full p-2 mb-4 rounded-lg cursor-pointer hover:bg-gray-50">
+                  <div class="flex items-center">
+                      <div class="relative mb-6">
+                          <label for="labels-range-input" class="sr-only">قیمت</label>
+                          <input id="labels-range-input" type="range" value="1000" min="100" max="1500" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                      </div>
+                  </div>
+              </div>
+              <!-- Acc #3 Content -->
+              <div x-show="isOpenPrice === true" class="flex flex-col px-2 gap-y-2"></div>
+          </div>
+      </div>
+  </div>
+</div>
+@*         <!-- products section --> *@
+@*         <div class="col-span-12 md:col-span-8 lg:col-span-9 xl:col-span-10"> *@
+@*           <div *@
+@*             x-data="{ *@
+@*           products : [ *@
+@*           {id:1, title:'ساعت هوشمند اپل سری 7', price : '۱۲,۳۵۰,۸۹۰ تومان'}, *@
+@*           {id:2, title:'ساعت هوشمند اپل سری 4', price : '۱۲,۳۵۴,۸۹۰ تومان'}, *@
+@*           {id:3, title:'ساعت هوشمند اپل سری 5', price : '۱۲,۳۵۴,۸۹۰ تومان'}, *@
+@*           {id:4, title:'ساعت هوشمند اپل سری 7', price : '۱۲,۳۵۴,۸۹۰ تومان'}, *@
+@*           {id:5, title:'ساعت هوشمند اپل سری 6', price : '۱۲,۳۵۴,۸۹۰ تومان'}, *@
+@*           {id:6, title:'ساعت هوشمند اپل سری 7', price : '۱۲,۳۵۴,۸۹۰ تومان'}, *@
+@*           {id:7, title:'ساعت هوشمند اپل سری 7', price : '۱۲,۳۵۰,۸۹۰ تومان'}, *@
+@*           {id:8, title:'ساعت هوشمند اپل سری 4', price : '۱۲,۳۵۴,۸۹۰ تومان'}, *@
+@*           {id:9, title:'ساعت هوشمند اپل سری 5', price : '۱۲,۳۵۴,۸۹۰ تومان'}, *@
+@*           {id:10, title:'ساعت هوشمند اپل سری 7', price : '۱۲,۳۵۴,۸۹۰ تومان'}, *@
+@*           {id:11, title:'ساعت هوشمند اپل سری 6', price : '۱۲,۳۵۴,۸۹۰ تومان'}, *@
+@*           {id:12, title:'ساعت هوشمند اپل سری 7', price : '۱۲,۳۵۴,۸۹۰ تومان'}, *@
+@*           ] *@
+@*         }" *@
+@*             class="grid grid-cols-2 px-2 gap-x-2 gap-y-4 lg:grid-cols-4 md:p-0 sm:gap-x-4 md:gap-x-6 md:gap-y-10" *@
+@*           > *@
+@*             <!-- products --> *@
+@*             <template x-for="product in products" :key="product.id"> *@
+@*               <div class="p-2 mt-3 transition-all bg-white hover:shadow-lg duration-50 rounded-xl" onclick="openModal()"> *@
+@*                 <div class="p-2 bg-gray-100 rounded-xl"> *@
+@*                   <img src="/assets/images/iphone-13.png" /> *@
+@*                 </div> *@
+@*                 <div x-text="product.title" class="mb-3 text-xs font-bold text-black sm:text-base"></div> *@
+@*                 <div x-text="product.price" class="mb-3 text-sm font-medium text-center text-gray-600 sm:text-lg"></div> *@
+@*                 <hr class="" /> *@
+@*                 <button type="button" class="w-full py-2 my-2 font-bold text-orange-500 transition-all duration-500 rounded-lg modal-button hover:bg-gray-200 md:text-lg">مشاهده </button> *@
+@*               </div> *@
+@*             </template> *@
+@*             <!--modals--> *@
+@*             <template x-for="product in products" :key="product.id"> *@
+@*               <div id="backDrop" class="fixed inset-0 hidden bg-gray-500 opacity-50 modal-backdrop"></div> *@
+@*               <div  id="myModal" dir="rtl" class="modal hidden pd-overlay cursor-pointer w-full h-full fixed top-20 left-0 z-[60] overflow-hidden"> *@
+@*                 <div class="m-3 transition-all lg:max-w-4xl lg:w-full lg:mx-auto"> *@
+@*                   <div class="flex flex-col px-5 py-4 bg-white rounded-2xl"> *@
+@*                     <div class="flex items-center justify-between pb-4 border-b border-gray-200"> *@
+@*                       <h4 class="text-sm font-medium text-gray-900"></h4> *@
+@*                       <button class="block cursor-pointer close" onclick="closeModal()"> *@
+@*                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> *@
+@*                           <path d="M7.75732 7.75739L16.2426 16.2427M16.2426 7.75739L7.75732 16.2427" stroke="black" stroke-width="1.6" stroke-linecap="round"></path> *@
+@*                         </svg> *@
+@*                       </button> *@
+@*                     </div> *@
+@*                     <!--content--> *@
+@*                     <div class="grid grid-cols-12 w-full overflow-y-auto py-4 min-h-[100px] gap-x-6"> *@
+@*                        *@
+@*                       <div class="grid col-span-4"> *@
+@*                         <div class="grid items-center justify-center grid-cols-subgrid"> *@
+@*                           <div class="grid col-span-12"> *@
+@*                             <img src="/assets/images/iphone-13.png"> *@
+@*                           </div> *@
+@*                           <div class="grid col-span-12"> *@
+@*                             <h2 class="mx-auto font-bold text-orange-500"> *@
+@*                               ۱۲,۳۵۰,۸۹۰ تومان *@
+@*                             </h2> *@
+@*                           </div> *@
+@*                         </div> *@
+@*                       </div> *@
+@*                       <div class="grid col-span-12 md:col-span-8"> *@
+@*                         <div class="p-1 "> *@
+@*                           <p class="font-bold text-gray-600 "> *@
+@*                           گوشی موبایل ایفون ۱۳ پرومکس *@
+@*                           </p> *@
+@*                           <p class="my-1 text-sm text-gray-400 text-"> *@
+@*                             کالای دیجیتال *@
+@*                           </p> *@
+@*                            *@
+@*                         </div> *@
+@*                         <div> *@
+@*                           <div class="grid grid-cols-12 my-2"> *@
+@*                             <div class="flex justify-center col-span-2 rounded-lg bg-slate-100"> *@
+@*                                 <h1 class="pt-2 font-black text-gray-500 text-md"> *@
+@*                                      توضیحات *@
+@*                                 </h1> *@
+@*                             </div> *@
+@*                             <div class="col-span-8 p-2 rounded-lg "> *@
+@*                               <p class="my-1 text-sm text-gray-700"> *@
+@*                                 گوشی موبایل iPhone 13  پرچم‌دار جدید شرکت اپل است که با چند ویژگی جدید و دوربین دوگانه روانه بازار شده است. نمایشگر آیفون 13 به پنل Super Retina مجهز ‌شده است تا تصاویر بسیار مطلوبی را به کاربر عرضه کند. این نمایشگر رزولوشن بسیار بالایی دارد؛ به‌طوری‌که در اندازه­‌ی 6.1 اینچی‌اش، حدود 460 پیکسل را در هر اینچ جا داده است. امکان شارژ بی‌‌سیم باتری در این گوشی وجود دارد. تشخیص چهره با استفاده از دوربین جلو دیگر ویژگی است که در آیفون جدید اپل به کار گرفته شده است. از نظر سخت‌‌افزاری این گوشی از تراشه­‌ی جدید A15 بهره می‌برد که دارای 15 میلیارد ترانزیستور است که دارای کنترل گرمای مطلوبی بوده که تا بتواند علاوه بر کارهای معمول، از قابلیت‌های جدید واقعیت مجازی که اپل این روزها روی آن تمرکز خاصی دارد، پشتیبانی کند. *@
+@*                               </p> *@
+@*                             </div> *@
+@*                           </div> *@
+@*                         <div class="grid grid-cols-12 my-2"> *@
+@*                           <div class="flex items-center justify-center col-span-2"> *@
+@*                               <h1 class="font-black text-gray-500 text-md"> *@
+@*                                    حافظه *@
+@*                               </h1> *@
+@*                           </div> *@
+@*                           <div class="col-span-8 p-2 rounded-lg bg-slate-100"> *@
+@*                               <p class="text-sm text-gray-600"> *@
+@*                                   256 گیگابایت *@
+@*                               </p> *@
+@*                           </div> *@
+@*                         </div> *@
+@*                         <div class="grid grid-cols-12 my-2"> *@
+@*                           <div class="flex items-center justify-center col-span-2"> *@
+@*                               <h1 class="font-black text-gray-500 text-md"> *@
+@*                                   رم *@
+@*                               </h1> *@
+@*                           </div> *@
+@*                           <div class="col-span-8 p-2 rounded-lg bg-slate-100"> *@
+@*                               <p class="text-sm text-gray-600"> *@
+@*                                   6 گیگابایت *@
+@*                               </p> *@
+@*                           </div> *@
+@*                         </div> *@
+@*                       </div> *@
+@*                       </div> *@
+@*                     </div> *@
+@*                     <div class="flex items-center justify-end pt-4 space-x-4 border-t border-gray-200"> *@
+@*                       <button onclick="closeModal()" type="button" class="py-2.5 px-5 text-xs  bg-orange-500 text-white rounded-full cursor-pointer font-semibold text-center shadow-xs transition-all duration-500 hover:bg-indigo-700"> بستن</button> *@
+@*                     </div> *@
+@*                   </div> *@
+@*                 </div> *@
+@*                 </div> *@
+@*             </template> *@
+      </div>
+      @*   </div> *@
+      @* </div> *@
+      <script src="~/js/site.js"></script>
+    </body>
+  </html>
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Color)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Image)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Color)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Image)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+ 

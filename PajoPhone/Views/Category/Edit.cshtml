@@ -11,6 +11,7 @@
         </label>
         <div id="categoryTreeContainer" class="mb-3">
             @await Html.PartialAsync("_CategoryTreePartial")
+            <input type="hidden" id="selectedParentCategoryId" name="ParentCategoryId" />
         </div>
         <label class="my-2">
             Category Name

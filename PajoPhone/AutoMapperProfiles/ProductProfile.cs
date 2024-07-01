@@ -13,7 +13,9 @@ namespace PajoPhone.AutoMapperProfiles
             CreateMap<ProductViewModel, Product>()
                 .ForMember(opt => opt.Image,
                     dest => dest.MapFrom(src =>
-                        src.ImageFile));
+                        src.ImageFile))
+                .ForMember(dest => dest.FieldsValues, opt => opt.MapFrom(src => src.FieldsValues));
+
         }
     }
 }
