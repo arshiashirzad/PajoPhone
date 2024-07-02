@@ -9,6 +9,7 @@ using PajoPhone.Models;
 using PajoPhone.Services.Factory;
 using System.Web;
 using AutoMapper;
+using Microsoft.CodeAnalysis.Differencing;
 using Microsoft.VisualBasic;
 
 namespace PajoPhone.Controllers
@@ -47,7 +48,12 @@ namespace PajoPhone.Controllers
             }
             return View(product);
         }
-
+        [HttpGet]
+        public JsonResult GetFieldKeys(int categoryId)
+        {
+            var keys = _context.FieldsKeys.Where(fk => fk.CategoryId == categoryId).ToList();
+            return Json(keys);
+        }
         // GET: Product/Create
         public async Task<IActionResult> Create()
         {
@@ -56,37 +62,16 @@ namespace PajoPhone.Controllers
             {
                 Categories = await _context.Categories.ToListAsync(),
             };
-            return View(viewModel);
-        }
-        [HttpGet]
-        public JsonResult GetFieldKeys(int categoryId)
-        {
-            var keys = _context.FieldsKeys.Where(fk => fk.CategoryId == categoryId).ToList();
-            return Json(keys);
+            return View("Edit",viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ProductViewModel viewModel)
-        {
-            if (ModelState.IsValid)
-            {
-                var productFactory = _productFactory;
-                var product = await productFactory.Save(viewModel);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Details", new { id = product.Id });
-            }
-            var errors = ModelState.Values.SelectMany(v => v.Errors);
-            foreach (var error in errors)
-            {
-                Console.WriteLine(error.ErrorMessage);
-            }
-            viewModel.Categories = await _context.Categories.ToListAsync(); 
-            return View(viewModel);
-        }
+        public IActionResult Create(ProductViewModel viewModel)
+            => Edit(viewModel);
 
         // GET: Product/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
@@ -105,8 +90,22 @@ namespace PajoPhone.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Color,Image,Price,CategoryId")] Product product)
+        public async Task<IActionResult> Edit(ProductViewModel productViewModel)
         {
+            // if (ModelState.IsValid)
+            // {
+            //     var productFactory = _productFactory;
+            //     var product = await productFactory.Save(viewModel);
+            //     await _context.SaveChangesAsync();
+            //     return RedirectToAction("Details", new { id = product.Id });
+            // }
+            // var errors = ModelState.Values.SelectMany(v => v.Errors);
+            // foreach (var error in errors)
+            // {
+            //     Console.WriteLine(error.ErrorMessage);
+            // }
+            // viewModel.Categories = await _context.Categories.ToListAsync(); 
+            // return View(viewModel);
             if (id != product.Id)
             {
                 return NotFound();

@@ -4,18 +4,29 @@ namespace PajoPhone.AutoMapperProfiles
 {
     public class ProductProfile : Profile
     {
-        public ProductProfile()
+        public ProductProfile(ApplicationDbContext dbContext)
         {
             CreateMap<Product, ProductViewModel>()
-                .ForMember(dest => dest.ImageFile ,
-                    opt=>
+                .ForMember(dest => dest.ImageFile,
+                    opt =>
                         opt.MapFrom(src => src.Image));
             CreateMap<ProductViewModel, Product>()
                 .ForMember(opt => opt.Image,
-                    dest => dest.MapFrom(src =>
-                        src.ImageFile))
-                .ForMember(dest => dest.FieldsValues, opt => opt.MapFrom(src => src.FieldsValues));
-
+                    dest => dest.MapFrom(x => GetByteArray(x.ImageFile)))
+                .ForMember(opt => opt.FieldsValues, src => src.MapFrom(x => x.FieldsValues.Select(f =>
+                    dbContext.FieldsValues.FirstOrDefault(x=> x.FieldKeyId == f.Id) ?? new FieldsValue()
+                    {
+                        FieldKeyId = f.Id,
+                        StringValue = f.StringValue,
+                        IntValue =f.IntValue
+                    })));
         }
-    }
+
+        public byte[] GetByteArray(IFormFile iformfile)
+        {
+            var ms = new MemoryStream();
+            iformfile.CopyTo(ms);
+            return ms.ToArray();
+        }
+}
 }

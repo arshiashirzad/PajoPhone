@@ -77,8 +77,7 @@
                         const newField = document.createElement('div');
                         newField.classList.add('form-group', 'field-key-item', 'd-flex', 'mb-4', 'gap-2');
                         newField.innerHTML = `
-                            <input type="hidden" name="FieldsValues[${fieldValueIndex + i}].FieldKeyId" value="${item.id}" />
-                            <input type="hidden" name="FieldsValues[${fieldValueIndex + i}].ProductId" value="${@Model.Id}" />
+                            <input type="hidden" name="FieldsValues[${fieldValueIndex + i}].Id" value="${item.id}" />
                             <label class="control-label">${item.key}</label>
                             <input type="text" name="FieldsValues[${fieldValueIndex + i}].StringValue" class="form-control" />
                         `;
