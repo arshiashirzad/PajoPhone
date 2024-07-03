@@ -17,11 +17,17 @@ public class ProductEditor: IProductBuilder
     }
     public void Finalize(Product product)
     {
-        _context.Products.Add(product);
+        _context.Products.Update(product);
     }
     public Product Build(ProductViewModel viewModel)
     {
         Product product = _mapper.Map<Product>(viewModel);
+        product.FieldsValues = (ICollection<FieldsValue>)viewModel.FieldsValues.Select(fk => new FieldsValue()
+        {
+            Id = fk.Id,
+            IntValue = fk.IntValue,
+            StringValue = fk.StringValue
+        });
         if (viewModel.ImageFile.Length == 0)
         {
         }else

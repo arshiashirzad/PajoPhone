@@ -4,7 +4,7 @@ namespace PajoPhone.AutoMapperProfiles
 {
     public class ProductProfile : Profile
     {
-        public ProductProfile(ApplicationDbContext dbContext)
+        public ProductProfile()
         {
             CreateMap<Product, ProductViewModel>()
                 .ForMember(dest => dest.ImageFile,
@@ -14,7 +14,7 @@ namespace PajoPhone.AutoMapperProfiles
                 .ForMember(opt => opt.Image,
                     dest => dest.MapFrom(x => GetByteArray(x.ImageFile)))
                 .ForMember(opt => opt.FieldsValues, src => src.MapFrom(x => x.FieldsValues.Select(f =>
-                    dbContext.FieldsValues.FirstOrDefault(x=> x.FieldKeyId == f.Id) ?? new FieldsValue()
+                     new FieldsValue()
                     {
                         FieldKeyId = f.Id,
                         StringValue = f.StringValue,

@@ -2,13 +2,13 @@
 @model PajoPhone.Models.ProductViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit/Create";
 }
 <h4>Product</h4>
 <hr />
 <div class="row d-grid">
     <div class="col-md-4">
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <form  method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -55,7 +55,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                        <button type="submit" class="btn btn-success">Save</button>
             </div>
         </form>
     </div>
@@ -64,7 +64,7 @@
     $('#categoryTree').on("select_node.jstree", function (e, data) {
         var categoryId = data.node.id;
         $('#selectedParentCategoryId').val(categoryId);
-
+    
         $.ajax({
             url: '@Url.Action("GetFieldKeys", "Product")',
             data: { categoryId: categoryId },
@@ -92,4 +92,7 @@
             }
         });
     });
+      $('#categoryTree').on('loaded.jstree', function() {
+                                    $('#categoryTree').jstree("select_node", '@Model.CategoryId');
+                              });
 </script>

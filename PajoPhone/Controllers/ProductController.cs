@@ -55,6 +55,7 @@ namespace PajoPhone.Controllers
             return Json(keys);
         }
         // GET: Product/Create
+        [HttpGet]
         public async Task<IActionResult> Create()
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id");
@@ -67,24 +68,39 @@ namespace PajoPhone.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(ProductViewModel viewModel)
+        public Task<IActionResult> Create(ProductViewModel viewModel)
             => Edit(viewModel);
 
         // GET: Product/Edit/5
-        public IActionResult Edit(int? id)
+        public  IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
-            var product = await _context.Products.FindAsync(id);
+            var product =  _context.Products.Find(id);
             if (product == null)
             {
                 return NotFound();
             }
+            var productViewModel = new ProductViewModel()
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Price = product.Price,
+                Description = product.Description,
+                Color = product.Color,
+                CategoryId = product.CategoryId,
+                FieldsValues = product.FieldsValues
+                    .Select(fk => new FieldsValueViewModel()
+                    {
+                        Id = fk.Id,
+                        StringValue = fk.StringValue,
+                        IntValue = fk.IntValue
+                    }).ToList()
+            };
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", product.CategoryId);
-            return View(product);
+            return View(productViewModel);
         }
 
 
@@ -92,47 +108,14 @@ namespace PajoPhone.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(ProductViewModel productViewModel)
         {
-            // if (ModelState.IsValid)
-            // {
-            //     var productFactory = _productFactory;
-            //     var product = await productFactory.Save(viewModel);
-            //     await _context.SaveChangesAsync();
-            //     return RedirectToAction("Details", new { id = product.Id });
-            // }
-            // var errors = ModelState.Values.SelectMany(v => v.Errors);
-            // foreach (var error in errors)
-            // {
-            //     Console.WriteLine(error.ErrorMessage);
-            // }
-            // viewModel.Categories = await _context.Categories.ToListAsync(); 
-            // return View(viewModel);
-            if (id != product.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductExists(product.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                var product = await _productFactory.Save(productViewModel);
+                 _context.SaveChanges();
+                return RedirectToAction("Details", new { id = product.Id });
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", product.CategoryId);
-            return View(product);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", productViewModel.CategoryId);
+            return View();
         }
 
         // GET: Product/Delete/5
