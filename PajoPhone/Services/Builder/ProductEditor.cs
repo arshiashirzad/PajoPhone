@@ -1,39 +1,45 @@
+using System.Net.Mime;
 using PajoPhone.Models;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+
 namespace PajoPhone;
 
 public class ProductEditor: IProductBuilder
 {
     private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
-    public ProductEditor(IMapper mapper)
+    public ProductEditor(IMapper mapper, ApplicationDbContext dbContext)
     {
         _mapper = mapper;
+        _context = dbContext;
+    }
+
+    public void SetName(string name)
+    {
+        
+    }
+    public void SetDescription(string description)
+    {
+        
+    }   
+    public void SetPrice(double Price)
+    {
+        
     }
     public IProductBuilder SetImage(IFormFile image)
     {
-        
         return this;
     }
+    
     public void Finalize(Product product)
     {
-        _context.Products.Update(product);
     }
     public Product Build(ProductViewModel viewModel)
     {
-        Product product = _mapper.Map<Product>(viewModel);
-        product.FieldsValues = (ICollection<FieldsValue>)viewModel.FieldsValues.Select(fk => new FieldsValue()
-        {
-            Id = fk.Id,
-            IntValue = fk.IntValue,
-            StringValue = fk.StringValue
-        });
-        if (viewModel.ImageFile.Length == 0)
-        {
-        }else
-        {
-            SetImage(viewModel.ImageFile);
-        }
+        var product = _context.Products.Find(viewModel.Id);
+        product = _mapper.Map<Product>(viewModel);
         return product;
     }
+   
 }

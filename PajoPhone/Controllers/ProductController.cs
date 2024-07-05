@@ -16,6 +16,7 @@ namespace PajoPhone.Controllers
 {
     public class ProductController : Controller
     {
+        private readonly ILogger<Product> _logger;
         private readonly ApplicationDbContext _context;
         private readonly IProductFactory _productFactory;
         public ProductController(ApplicationDbContext context,IProductFactory productFactory)
@@ -99,7 +100,6 @@ namespace PajoPhone.Controllers
                         IntValue = fk.IntValue
                     }).ToList()
             };
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", product.CategoryId);
             return View(productViewModel);
         }
 
@@ -111,10 +111,9 @@ namespace PajoPhone.Controllers
             if (ModelState.IsValid)
             {
                 var product = await _productFactory.Save(productViewModel);
-                 _context.SaveChanges();
+                _context.SaveChanges();
                 return RedirectToAction("Details", new { id = product.Id });
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", productViewModel.CategoryId);
             return View();
         }
 

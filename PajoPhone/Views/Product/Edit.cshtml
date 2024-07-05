@@ -43,15 +43,13 @@
             </div>
             <div id="fieldKeysContainer">
                 <div id="fieldKeysList">
-                    @* @for (int i = 0; i < Model.FieldsValues.Count; i++) *@
-                    @* { *@
-                    @*     <div class="form-group field-key-item d-flex mb-4 gap-2"> *@
-                    @*         <input type="hidden" name="FieldsValues[@i].FieldKeyId" value="@Model.FieldsValues[i].FieldKeyId" /> *@
-                    @*         <input type="hidden" name="FieldsValues[@i].ProductId" value="@Model.FieldsValues[i].ProductId" /> *@
-                    @*         <label class="control-label">@Model.FieldsValues[i].FieldKey.Key</label> *@
-                    @*         <input type="text" name="FieldsValues[@i].StringValue" value="@Model.FieldsValues[i].StringValue" class="form-control" /> *@
-                    @*     </div> *@
-                    @* } *@
+                    @foreach(var f in @Model.FieldsValues)
+                    {
+                        <div class="form-group field-key-item d-flex mb-4 gap-2">
+                            <input type="hidden" name="@f.Id" value="@f.Id" />
+                            <input type="text" value="@f.StringValue" class="form-control" />
+                        </div> 
+                    }
                 </div>
             </div>
             <div class="form-group">
@@ -79,20 +77,21 @@
                         newField.innerHTML = `
                             <input type="hidden" name="FieldsValues[${fieldValueIndex + i}].Id" value="${item.id}" />
                             <label class="control-label">${item.key}</label>
-                            <input type="text" name="FieldsValues[${fieldValueIndex + i}].StringValue" class="form-control" />
+                            <input type="text" name="FieldsValues[${fieldValueIndex + i}].StringValue"  class="form-control" />
                         `;
                         fieldKeysList.append(newField);
                     });
                 } else {
-                    fieldKeysList.append('<li>No Fields found.</li>');
+                    fieldKeysList.append('<li class="my-2">No Fields.</li>');
                 }
             },
             error: function (xhr, textStatus, errorThrown) {
                 console.log('Error:', errorThrown);
             }
         });
+     
     });
-      $('#categoryTree').on('loaded.jstree', function() {
-                                    $('#categoryTree').jstree("select_node", '@Model.CategoryId');
-                              });
+       $('#categoryTree').on('loaded.jstree', function() {
+                                           $('#categoryTree').jstree("select_node", '@Model.CategoryId');
+                                     });
 </script>

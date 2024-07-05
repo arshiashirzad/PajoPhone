@@ -114,12 +114,10 @@ namespace PajoPhone.Controllers
                 var category = _context.Categories
                     .Include(c => c.FieldsKeys)
                     .FirstOrDefault(c => c.Id == model.Id) ?? new Category();
-             
                     category.Name = model.Name;
                     category.ParentCategoryId = model.ParentCategoryId;
                     _context.FieldsKeys.RemoveRange(category.FieldsKeys);
                     _context.SaveChanges();
-
                     category.FieldsKeys.Clear();
                     foreach (var field in model.FieldsKeys)
                     {
@@ -129,7 +127,6 @@ namespace PajoPhone.Controllers
                             CategoryId = category.Id
                         });
                     }
-
                     if (category.Id==0)
                     {
                         _context.Add(category);

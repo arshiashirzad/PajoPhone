@@ -24,7 +24,7 @@ public class ProductFactory : IProductFactory
         }
         else
         {
-            var productEditor = new ProductEditor(_mapper);
+            var productEditor = new ProductEditor(_mapper,_context);
             product = productEditor.Build(viewModel);
             productEditor.Finalize(product);
         }

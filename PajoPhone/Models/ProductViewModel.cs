@@ -12,5 +12,5 @@ public class ProductViewModel
     public ICollection<FieldsValueViewModel> FieldsValues { get; set; } = new List<FieldsValueViewModel>();
     public ICollection<Category> Categories { get; set; } = new List<Category>();
     public int CategoryId { get; set; }
-    public IFormFile ImageFile { get; set; }
+    public IFormFile? ImageFile { get; set; }
 }
