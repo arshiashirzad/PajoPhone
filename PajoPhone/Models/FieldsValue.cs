@@ -8,7 +8,7 @@ public class FieldsValue
     
     public int FieldKeyId { get; set; }
     public FieldsKey FieldKey { get; set; }
-
+    public DateTime? DeletedAt { get; set; }
     public int ProductId { get; set; }
     public Product Product { get; set; }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PajoPhone.Models;
 
@@ -10,9 +11,10 @@ using PajoPhone.Models;
 namespace PajoPhone.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240620105426_FieldsAndCategoriesUpdated")]
+    partial class FieldsAndCategoriesUpdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,18 +52,11 @@ namespace PajoPhone.Migrations
 
                     b.Property<string>("Key")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<bool>("isDisabled")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("CategoryId", "Key")
-                        .IsUnique()
-                        .HasFilter("[isDisabled] = 0");
 
                     b.ToTable("FieldsKeys");
                 });
@@ -71,9 +66,6 @@ namespace PajoPhone.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("FieldKeyId")
                         .HasColumnType("int");

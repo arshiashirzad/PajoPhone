@@ -1,0 +1,8 @@
+@model List<FieldsValueViewModel>
+@for (int i =0 ; i<Model.Count ; i++)
+{
+    <input type="hidden" name="FieldsValues[@i].ValueId" value="@Model[i].ValueId" />
+    <input type="hidden" name="FieldsValues[@i].KeyId" value="@Model[i].KeyId" />
+    <label class="control-label">@Model[i].Key</label>
+    <input type="text" name="FieldsValues[@i].StringValue" value="@Model[i].StringValue"  class="form-control" />
+}

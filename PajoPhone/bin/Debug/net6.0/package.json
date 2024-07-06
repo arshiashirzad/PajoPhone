@@ -1,0 +1,17 @@
+{
+    "scripts": {
+        "build:css": "tailwindcss -i ./wwwroot/css/tailwind.css -o ./wwwroot/css/output.css",
+        "watch:css": "tailwindcss -i ./wwwroot/css/tailwind.css -o ./wwwroot/css/output.css --watch"
+    },
+    "name": "pajophone",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "tailwind": "^4.0.0",
+        "tailwindcss": "^3.4.4"
+    }
+}

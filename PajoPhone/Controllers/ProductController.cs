@@ -50,10 +50,24 @@ namespace PajoPhone.Controllers
             return View(product);
         }
         [HttpGet]
-        public JsonResult GetFieldKeys(int categoryId)
+        public PartialViewResult GetKeyValueInputs(int productId,int categoryId)
         {
+            var items= new List<FieldsValueViewModel>();
             var keys = _context.FieldsKeys.Where(fk => fk.CategoryId == categoryId).ToList();
-            return Json(keys);
+            if (productId == 0)
+            {
+                 items = keys.Select(x => new FieldsValueViewModel(x))
+                    .ToList();
+            }
+            else
+            {
+                var query = _context.FieldsValues.Where(x => x.ProductId == productId && keys.Contains(x.FieldKey))
+                    .ToList();
+                items = items = query.Select(x => new FieldsValueViewModel(x))
+                    .ToList();
+            }
+            return PartialView("_KeyValueInputPartial",items);
+
         }
         // GET: Product/Create
         [HttpGet]

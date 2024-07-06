@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Net.Mime;
 using PajoPhone.Models;
 using AutoMapper;
@@ -24,7 +25,12 @@ public class ProductEditor: IProductBuilder
     }
     public Product Build(ProductViewModel viewModel, Product product)
     {
+        byte[] tempImg = product.Image;
          _mapper.Map(viewModel, product);
+         if (viewModel.ImageFile == null)
+         {
+             product.Image = tempImg; 
+         }
         return product;
     }
 }

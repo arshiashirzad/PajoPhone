@@ -15,8 +15,8 @@ public class ProductFactory : IProductFactory
     }
     public async Task<Product> Save(ProductViewModel viewModel)
     {
-        var product = await _context.Products
-            .SingleOrDefaultAsync(x => x.Id == viewModel.Id) 
+        var product = await _context.Products.Include(x=> x.FieldsValues)
+            .SingleOrDefaultAsync(x => x.Id == viewModel.Id)
                       ?? new Product();
         if (viewModel.Id == 0)
         {

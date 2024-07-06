@@ -11,14 +11,40 @@ namespace PajoPhone.AutoMapperProfiles
                     opt =>
                         opt.MapFrom(src => src.Image));
             CreateMap<ProductViewModel, Product>()
-                .ForMember(dest => dest.Image, opt => opt.Ignore())
+                .ForMember(dest => dest.FieldsValues, opt => opt.Ignore())
                 .AfterMap((src, dest) =>
                 {
-                    if (src.ImageFile != null)
+                    foreach (var fv in src.FieldsValues)
                     {
-                        dest.Image = GetByteArray(src.ImageFile);
+                        var currentFieldValue = dest.FieldsValues
+                            .FirstOrDefault(f => f.FieldKeyId == fv.ValueId);
+                        if (currentFieldValue != null)
+                        {
+                            currentFieldValue.StringValue = fv.StringValue;
+                            currentFieldValue.IntValue = fv.IntValue;
+                            currentFieldValue.DeletedAt = null;
+                        }
+                        else
+                        {
+                            dest.FieldsValues.Add(new FieldsValue
+                            {
+                                FieldKeyId = fv.ValueId,
+                                StringValue = fv.StringValue,
+                                IntValue = fv.IntValue,
+                                DeletedAt = null
+                            });
+                        }
+                    }
+                    foreach (var fieldValue in dest.FieldsValues)
+                    {
+                        if (src.FieldsValues.All(f => f.ValueId != fieldValue.Id))
+                        {
+                            fieldValue.DeletedAt = DateTime.Now;
+                        }
                     }
                 })
+                .ForMember(opt => opt.Image,
+                    dest => dest.MapFrom(x => GetByteArray(x.ImageFile)))
                 .ForMember(opt => opt.FieldsValues, src => src.MapFrom(x => x.FieldsValues.Select(f =>
                      new FieldsValue()
                     {
