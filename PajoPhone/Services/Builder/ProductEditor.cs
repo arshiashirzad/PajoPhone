@@ -37,9 +37,7 @@ public class ProductEditor: IProductBuilder
     }
     public Product Build(ProductViewModel viewModel)
     {
-        var product = _context.Products.Find(viewModel.Id);
-        product = _mapper.Map<Product>(viewModel);
+        Product product = _mapper.Map<Product>(viewModel);
         return product;
     }
-   
 }

@@ -110,8 +110,7 @@ namespace PajoPhone.Controllers
         {
             if (ModelState.IsValid)
             {
-                var product = await _productFactory.Save(productViewModel);
-                _context.SaveChanges();
+                Product product = await _productFactory.Save(productViewModel);
                 return RedirectToAction("Details", new { id = product.Id });
             }
             return View();
