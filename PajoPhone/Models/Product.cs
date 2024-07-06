@@ -11,6 +11,6 @@ public class Product
     public Category Category { get; set; }
     public int CategoryId { get; set; }
     
-    public ICollection<FieldsValue> FieldsValues { get; set; } = new List<FieldsValue>();
+    public  ICollection<FieldsValue> FieldsValues { get; set; } = new List<FieldsValue>();
 
 }

@@ -22,7 +22,7 @@ namespace PajoPhone.AutoMapperProfiles
                 .ForMember(opt => opt.FieldsValues, src => src.MapFrom(x => x.FieldsValues.Select(f =>
                      new FieldsValue()
                     {
-                        FieldKeyId = f.Id,
+                        FieldKeyId = f.ValueId,
                         StringValue = f.StringValue,
                         IntValue =f.IntValue
                     })));

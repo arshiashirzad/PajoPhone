@@ -21,9 +21,9 @@ public class ProductBuilder : IProductBuilder
         _context.Products.Add(product);
     }
 
-    public Product Build(ProductViewModel viewModel)
+    public Product Build(ProductViewModel viewModel , Product product)
     {
-        Product product = _mapper.Map<Product>(viewModel);
+        _mapper.Map(viewModel, product);
         return product;
     }
 }

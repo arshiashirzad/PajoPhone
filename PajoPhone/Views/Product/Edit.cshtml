@@ -46,8 +46,8 @@
                     @foreach(var f in @Model.FieldsValues)
                     {
                         <div class="form-group field-key-item d-flex mb-4 gap-2">
-                            <input type="hidden" name="@f.Id" value="@f.Id" />
-                            <input type="text" value="@f.StringValue" class="form-control" />
+                            <input type="hidden" name="@f.ValueId" value="@f.ValueId"/>
+                            <input type="text" value="@f.StringValue" class="form-control"/>
                         </div> 
                     }
                 </div>

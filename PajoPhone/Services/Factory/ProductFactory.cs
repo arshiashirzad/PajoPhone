@@ -15,18 +15,19 @@ public class ProductFactory : IProductFactory
     }
     public async Task<Product> Save(ProductViewModel viewModel)
     {
-        var product = await _context.Products.FindAsync(viewModel.Id) ?? new Product();
+        var product = await _context.Products
+            .SingleOrDefaultAsync(x => x.Id == viewModel.Id) 
+                      ?? new Product();
         if (viewModel.Id == 0)
         {
             var productBuilder = new ProductBuilder(_mapper,_context);
-             product = productBuilder.Build(viewModel);
+             product = productBuilder.Build(viewModel , product);
              productBuilder.Finalize(product);
         }
         else
         {
             var productEditor = new ProductEditor(_mapper,_context);
-            product = productEditor.Build(viewModel);
-            productEditor.Finalize(product);
+            product = productEditor.Build(viewModel, product);
         }
         return product;
     }

@@ -14,19 +14,6 @@ public class ProductEditor: IProductBuilder
         _mapper = mapper;
         _context = dbContext;
     }
-
-    public void SetName(string name)
-    {
-        
-    }
-    public void SetDescription(string description)
-    {
-        
-    }   
-    public void SetPrice(double Price)
-    {
-        
-    }
     public IProductBuilder SetImage(IFormFile image)
     {
         return this;
@@ -35,9 +22,9 @@ public class ProductEditor: IProductBuilder
     public void Finalize(Product product)
     {
     }
-    public Product Build(ProductViewModel viewModel)
+    public Product Build(ProductViewModel viewModel, Product product)
     {
-        Product product = _mapper.Map<Product>(viewModel);
+         _mapper.Map(viewModel, product);
         return product;
     }
 }

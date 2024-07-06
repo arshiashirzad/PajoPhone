@@ -73,13 +73,16 @@ namespace PajoPhone.Controllers
             => Edit(viewModel);
 
         // GET: Product/Edit/5
-        public  IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var product =  _context.Products.Find(id);
+            var product =await _context.Products
+                .Include(x=> x.FieldsValues)
+                     .ThenInclude(x=> x.FieldKey)
+                .SingleAsync(x=> x.Id == id);
             if (product == null)
             {
                 return NotFound();
@@ -93,12 +96,7 @@ namespace PajoPhone.Controllers
                 Color = product.Color,
                 CategoryId = product.CategoryId,
                 FieldsValues = product.FieldsValues
-                    .Select(fk => new FieldsValueViewModel()
-                    {
-                        Id = fk.Id,
-                        StringValue = fk.StringValue,
-                        IntValue = fk.IntValue
-                    }).ToList()
+                    .Select(fk => new FieldsValueViewModel(fk)).ToList()
             };
             return View(productViewModel);
         }
@@ -111,6 +109,7 @@ namespace PajoPhone.Controllers
             if (ModelState.IsValid)
             {
                 Product product = await _productFactory.Save(productViewModel);
+                _context.SaveChanges();
                 return RedirectToAction("Details", new { id = product.Id });
             }
             return View();
