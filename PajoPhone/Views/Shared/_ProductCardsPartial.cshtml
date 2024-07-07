@@ -1,14 +1,13 @@
 @model ICollection<ProductViewModel>
         @foreach (var prod in Model)
         {
-            <div class="p-2 mt-3 transition-all bg-white hover:shadow-lg duration-50 rounded-xl">
+            <div data-id="@prod.Id" class="product-card p-2 mt-3 transition-all bg-white hover:shadow-lg duration-50 rounded-xl">
                 <div class="p-2 bg-gray-100 rounded-xl">
                     <img class="rounded-lg" src="@Url.Action("GetImage", "Product", new { id = @prod.Id })"/>
                 </div>
                 <div class="text-center mt-6 text-xs font-bold text-black sm:text-base">@prod.Name</div>
                 <div class="mb-3 text-sm font-medium text-center text-gray-600 sm:text-lg">@prod.Price $</div>
                 <hr class=""/>
-                <input class="hidden" name="ProductId" value="@prod.Id"/>
-                <button type="button" class="w-full py-2 my-2 font-bold text-orange-500 transition-all duration-500 rounded-lg modal-button hover:bg-gray-200 md:text-lg">مشاهده</button>
+                <button type="button"  class="show-modal w-full py-2 my-2 font-bold text-orange-500 transition-all duration-500 rounded-lg modal-button hover:bg-gray-200 md:text-lg">مشاهده</button>
             </div>
         }
