@@ -1,0 +1,73 @@
+@model PajoPhone.Models.Product
+<div id="backDrop" class="fixed inset-0 hidden bg-gray-500 opacity-50 modal-backdrop"></div>
+              <div  id="myModal" dir="rtl" class="modal hidden pd-overlay cursor-pointer w-full h-full fixed top-20 left-0 z-[60] overflow-hidden">
+                <div class="m-3 transition-all lg:max-w-4xl lg:w-full lg:mx-auto">
+                  <div class="flex flex-col px-5 py-4 bg-white rounded-2xl">
+                    <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+                      <h4 class="text-sm font-medium text-gray-900"></h4>
+                      <button class="block cursor-pointer close" >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M7.75732 7.75739L16.2426 16.2427M16.2426 7.75739L7.75732 16.2427" stroke="black" stroke-width="1.6" stroke-linecap="round"></path>
+                        </svg>
+                      </button>
+                    </div>
+                    <!--content-->
+                    <div class="grid grid-cols-12 w-full overflow-y-auto py-4 min-h-[100px] gap-x-6">
+                      <div class="grid col-span-4">
+                        <div class="grid items-center justify-center grid-cols-subgrid">
+                          <div class="grid col-span-12">
+                            <img class="rounded-lg" src="@Url.Action("GetImage", "Product", new { id = Model.Id })"/>
+                          </div>
+                          <div class="grid col-span-12">
+                            <h2 class="mx-auto font-bold text-orange-500">
+                              @Model.Price                           
+                              </h2>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="grid col-span-12 md:col-span-8">
+                        <div class="p-1 ">
+                          <p class="font-bold text-gray-600 ">
+                            @Model.Name
+                            </p>
+                          <p class="my-1 text-sm text-gray-400 text-">
+                            @Model.Category
+                          </p>
+                        </div>
+                        <div>
+                          <div class="grid grid-cols-12 my-2">
+                            <div class="flex justify-center col-span-2 rounded-lg bg-slate-100">
+                              <h1 class="pt-2 font-black text-gray-500 text-md">
+                                توضیحات
+                              </h1>
+                            </div>
+                            <div class="col-span-8 p-2 rounded-lg ">
+                              <p class="my-1 text-sm text-gray-700">
+                                @Model.Description
+                              </p>
+                            </div>
+                          </div>
+                          @foreach (var KeyVal in Model.FieldsValues)
+                          {
+                            <div class="grid grid-cols-12 my-2">
+                              <div class="flex items-center justify-center col-span-2">
+                                <h1 class="font-black text-gray-500 text-md">
+                                  @KeyVal.FieldKey.Key
+                                </h1>
+                              </div>
+                              <div class="col-span-8 p-2 rounded-lg bg-slate-100">
+                                <p class="text-sm text-gray-600">
+                                  @KeyVal.StringValue
+                                </p>
+                              </div>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex items-center justify-end pt-4 space-x-4 border-t border-gray-200">
+                      <button  type="button" class="py-2.5 px-5 text-xs  bg-orange-500 text-white rounded-full cursor-pointer font-semibold text-center shadow-xs transition-all duration-500 hover:bg-indigo-700"> بستن</button>
+                    </div>
+                  </div>
+                </div>
+                </div>

@@ -35,11 +35,13 @@ public class ApplicationDbContext : DbContext
                 .RuleFor(u => u.Name, f => f.Commerce.Department());
             var categories = categoryFaker.Generate(10);
             Categories.AddRange(categories);
+            // var fieldFaker = new Bogus.Faker<FieldsKey>()
+            //     .RuleFor(u=> u.Key , f=> f.Name.)
             var productFaker = new Bogus.Faker<Product>()
                 .RuleFor(u => u.Name, f => f.Name.FirstName())
                 .RuleFor(u => u.Color, f => f.Commerce.Color())
                 .RuleFor(u => u.Price, f => double.Parse(f.Commerce.Price()))
-                .RuleFor(u => u.Description, f => f.Lorem.Sentence())
+                .RuleFor(u => u.Description, f => f.Commerce.ProductDescription())
                 .RuleFor(u => u.Image, f =>
                 {
                     string url = "https://picsum.photos/640/480/";
