@@ -20,6 +20,7 @@ public class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<FieldsKey>().HasQueryFilter(f => f.DeletedAt==null);
         modelBuilder.Entity<FieldsValue>().HasQueryFilter(f => f.DeletedAt==null);
         modelBuilder.Entity<FieldsKey>().HasIndex(x => new {x.CategoryId, x.Key}).HasFilter("[isDisabled] = 0").IsUnique(true);
         modelBuilder.Entity<FieldsKey>().HasIndex(x =>  x.CategoryId);

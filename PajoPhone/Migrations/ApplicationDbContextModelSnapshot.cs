@@ -48,12 +48,12 @@ namespace PajoPhone.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Key")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
-
-                    b.Property<bool>("isDisabled")
-                        .HasColumnType("tinyint(1)");
 
                     b.HasKey("Id");
 

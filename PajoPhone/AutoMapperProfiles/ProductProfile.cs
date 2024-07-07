@@ -44,14 +44,7 @@ namespace PajoPhone.AutoMapperProfiles
                     }
                 })
                 .ForMember(opt => opt.Image,
-                    dest => dest.MapFrom(x => GetByteArray(x.ImageFile)))
-                .ForMember(opt => opt.FieldsValues, src => src.MapFrom(x => x.FieldsValues.Select(f =>
-                     new FieldsValue()
-                    {
-                        FieldKeyId = f.ValueId,
-                        StringValue = f.StringValue,
-                        IntValue =f.IntValue
-                    })));
+                    dest => dest.MapFrom(x => GetByteArray(x.ImageFile)));
         }
 
         public byte[] GetByteArray(IFormFile iformfile)

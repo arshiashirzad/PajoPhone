@@ -114,19 +114,34 @@ namespace PajoPhone.Controllers
                 var category = _context.Categories
                     .Include(c => c.FieldsKeys)
                     .FirstOrDefault(c => c.Id == model.Id) ?? new Category();
+                var modelFieldKeyIds = model.FieldsKeys.Select(fk => fk.Id).ToList();
                     category.Name = model.Name;
                     category.ParentCategoryId = model.ParentCategoryId;
-                    _context.FieldsKeys.RemoveRange(category.FieldsKeys);
-                    _context.SaveChanges();
-                    category.FieldsKeys.Clear();
-                    foreach (var field in model.FieldsKeys)
+                    foreach (var fv in model.FieldsKeys)
                     {
-                        category.FieldsKeys.Add(new FieldsKey
+                        var currentFieldKey = category.FieldsKeys
+                            .FirstOrDefault(f => f.Id == fv.Id);
+                        if (currentFieldKey != null)
                         {
-                            Key = field.Name,
-                            CategoryId = category.Id
-                        });
-                    }
+                            currentFieldKey.Key = fv.Name;
+                            currentFieldKey.DeletedAt = null;
+                        }
+                        else
+                        {
+                            category.FieldsKeys.Add(new FieldsKey()
+                            {
+                                Key = fv.Name,
+                                DeletedAt = null
+                            });
+                        }
+                        foreach (var existingFieldKey in category.FieldsKeys)
+                        {
+                            if (!modelFieldKeyIds.Contains(existingFieldKey.Id))
+                            {
+                                existingFieldKey.DeletedAt = DateTime.Now; 
+                            }
+                        }
+                    } 
                     if (category.Id==0)
                     {
                         _context.Add(category);
