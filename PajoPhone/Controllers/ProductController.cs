@@ -8,30 +8,86 @@ using Microsoft.EntityFrameworkCore;
 using PajoPhone.Models;
 using PajoPhone.Services.Factory;
 using System.Web;
-using AutoMapper;
 using Microsoft.CodeAnalysis.Differencing;
+using Microsoft.Extensions.Primitives;
 using Microsoft.VisualBasic;
 
 namespace PajoPhone.Controllers
 {
     public class ProductController : Controller
     {
-        private readonly ILogger<Product> _logger;
         private readonly ApplicationDbContext _context;
         private readonly IProductFactory _productFactory;
-        public ProductController(ApplicationDbContext context,IProductFactory productFactory)
+
+        public ProductController(ApplicationDbContext context, IProductFactory productFactory)
         {
+
             _context = context;
             _productFactory = productFactory;
         }
 
+        public async Task<IActionResult> GetProductModal(int productId)
+        {
+            var product = await _context.Products
+                .Include(x => x.FieldsValues)
+                .ThenInclude(x => x.FieldKey)
+                .SingleOrDefaultAsync(x => x.Id == productId);
+            return PartialView("_ProductModalPartial", product);
+        }
+
+        public async Task<IActionResult> GetProductCards(string searchValue="")
+        {
+            List<Product> products = new List<Product>();
+        if (searchValue =="")
+        {
+            products = await _context.Products
+                .Include(p => p.FieldsValues)
+                .ThenInclude(fv => fv.FieldKey)
+                .Include(c => c.Category)
+                .ToListAsync();
+        }
+        else
+        {
+            products = await _context.Products
+                .Include(p => p.FieldsValues)
+                .ThenInclude(fv => fv.FieldKey)
+                .Include(c => c.Category)
+                .Where(p => p.Name.Contains(searchValue))
+                .ToListAsync();
+            searchValue = "";
+        }
+        ICollection<ProductViewModel> productViewModels = new List<ProductViewModel>();
+            foreach (var product in products)
+            {
+                var productViewModel = new ProductViewModel
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Description = product.Description,
+                    Color = product.Color,
+                    Price = product.Price,
+                    Categories = new List<CategoryViewModel> 
+                    {
+                        new CategoryViewModel
+                        {
+                            Id = product.Category.Id,
+                            Name = product.Category.Name,
+                            ParentCategoryId = product.Category.ParentCategoryId
+                        }
+                    },
+                    CategoryId = product.CategoryId,
+                    FieldsValues = product.FieldsValues.Select(fv => new FieldsValueViewModel(fv)).ToList()
+                };
+                productViewModels.Add(productViewModel);
+            }
+            return PartialView("_ProductCardsPartial", productViewModels);
+        }
         // GET: Product
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Products.Include(p => p.Category);
-            return View(await applicationDbContext.ToListAsync());
+            var categories = await _context.Categories.ToListAsync();
+            return View(categories);
         }
-
         // GET: Product/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -73,13 +129,20 @@ namespace PajoPhone.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id");
+            var categories = await _context.Categories.ToListAsync();
+            var categoryViewModels = categories.Select(category => new CategoryViewModel
+            {
+                Id = category.Id,
+                Name = category.Name
+            }).ToList();
+            ViewData["CategoryId"] = new SelectList(categories, "Id", "Name");
             var viewModel = new ProductViewModel
             {
-                Categories = await _context.Categories.ToListAsync(),
+                Categories = categoryViewModels
             };
-            return View("Edit",viewModel);
+            return View("Edit", viewModel);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -125,7 +188,8 @@ namespace PajoPhone.Controllers
                 Product product = await _productFactory.Save(productViewModel);
                 _context.SaveChanges();
                 return RedirectToAction("Details", new { id = product.Id });
-            }
+            }   
+            
             return View();
         }
 
@@ -158,7 +222,14 @@ namespace PajoPhone.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        public IActionResult GetImage(int id)
+        {
+            var product = _context.Products.Single(p => p.Id == id);
+            byte[] fileContents = product.Image;
+            string contentType = "image/JPEG";
 
+            return File(fileContents, contentType);
+        }
         private bool ProductExists(int id)
         {
             return _context.Products.Any(e => e.Id == id);

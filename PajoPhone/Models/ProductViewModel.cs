@@ -10,7 +10,7 @@ public class ProductViewModel
     public string Color { get; set; }
     public double Price { get; set; }
     public ICollection<FieldsValueViewModel> FieldsValues { get; set; } = new List<FieldsValueViewModel>();
-    public ICollection<Category> Categories { get; set; } = new List<Category>();
+    public ICollection<CategoryViewModel> Categories { get; set; } = new List<CategoryViewModel>();
     public int CategoryId { get; set; }
     public IFormFile? ImageFile { get; set; }
 }

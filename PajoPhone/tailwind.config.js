@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './Views/Product/index.cshtml',
-    './Views/Shared/_Layout.cshtml',
+    './Views/Product/Index.cshtml',
+    './Views/Shared/_IndexLayout.cshtml',
     './wwwroot/**/*.html',
   ],
   theme: {
