@@ -120,6 +120,18 @@
  })
  $("#search-bar").on("keyup" , function(){
             var searchValue= $(this).val();
+            if (searchValue==""){
+                            $.ajax({
+                 url: '@Url.Action("GetProductCards", "Product")',
+                                type: 'GET',
+                                success: function (result) {
+                                    $('#products-container').html(result);
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error(error);
+                                }
+                                 });
+            }else{
             $.ajax({
                             url: '@Url.Action("GetProductCards", "product")' + "?searchValue=" + searchValue,
                             type: 'GET',
@@ -130,7 +142,7 @@
                                                 console.error(error);
                                             }
                         });
-            searchValue="";
+            }
  });
   </script>
     <script src="~/js/site.js"></script>
