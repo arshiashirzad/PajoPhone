@@ -9,7 +9,7 @@ public enum FilterType
 public class FilterViewModel
 {
     public string Name { get; set; }
-    public int FieldId { get; set; }
+    public int FieldKeyId { get; set; }
     public FilterType Type { get; set; }
     public string Value { get; set; }
 }

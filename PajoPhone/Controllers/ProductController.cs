@@ -14,6 +14,7 @@ using Microsoft.VisualBasic;
 
 namespace PajoPhone.Controllers
 {
+    [Route("/[action]")]
     public class ProductController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -53,8 +54,7 @@ namespace PajoPhone.Controllers
                 .ThenInclude(fv => fv.FieldKey)
                 .Include(c => c.Category)
                 .Where(p => p.Name.Contains(searchValue))
-                .ToListAsync();
-            searchValue = "";
+                .ToListAsync(); 
         }
         ICollection<ProductViewModel> productViewModels = new List<ProductViewModel>();
             foreach (var product in products)
@@ -83,6 +83,9 @@ namespace PajoPhone.Controllers
             return PartialView("_ProductCardsPartial", productViewModels);
         }
         // GET: Product
+        [Route("/")]
+        [Route("/Index")]
+        [Route("/Product/Index")]
         public async Task<IActionResult> Index()
         {
             var categories = await _context.Categories.ToListAsync();

@@ -27,35 +27,62 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<FieldsKey>().HasOne(x =>x.Category).WithMany(x=> x.FieldsKeys).HasForeignKey(x=> x.CategoryId).IsRequired(true);
     }
 
-    public void SeedData()
+   public void SeedData()
+{
+    if (Products.Count() < 50)
     {
-        if (Products.Count() < 50)
+        var categoryFaker = new Bogus.Faker<Category>()
+            .RuleFor(u => u.Name, f => f.Commerce.Department());
+        var categories = categoryFaker.Generate(10);
+        Categories.AddRange(categories);
+
+        var fieldsKeyFaker = new Bogus.Faker<FieldsKey>()
+            .RuleFor(u => u.Key, f => f.Lorem.Word())
+            .RuleFor(u => u.Category, f =>
+            {
+                Random rand = new Random();
+                return categories[rand.Next(0, categories.Count)];
+            });
+
+        var fieldsKeys = fieldsKeyFaker.Generate(20); 
+        FieldsKeys.AddRange(fieldsKeys);
+
+        
+        var productFaker = new Bogus.Faker<Product>()
+            .RuleFor(u => u.Name, f => f.Commerce.ProductName())
+            .RuleFor(u => u.Color, f => f.Commerce.Color())
+            .RuleFor(u => u.Price, f => double.Parse(f.Commerce.Price()))
+            .RuleFor(u => u.Description, f => f.Commerce.ProductDescription())
+            .RuleFor(u => u.Image, f =>
+            {
+                string url = "https://picsum.photos/640/480/";
+                var response = _httpClient.GetByteArrayAsync(url).Result;
+                return response;
+            })
+            .RuleFor(u => u.Category, f =>
+            {
+                Random rand = new Random();
+                return categories[rand.Next(0, categories.Count)];
+            });
+
+        var products = productFaker.Generate(100);
+        Products.AddRange(products);
+        foreach (var product in products)
         {
-            var categoryFaker = new Bogus.Faker<Category>()
-                .RuleFor(u => u.Name, f => f.Commerce.Department());
-            var categories = categoryFaker.Generate(10);
-            Categories.AddRange(categories);
-            // var fieldFaker = new Bogus.Faker<FieldsKey>()
-            //     .RuleFor(u=> u.Key , f=> f.Name.)
-            var productFaker = new Bogus.Faker<Product>()
-                .RuleFor(u => u.Name, f => f.Name.FirstName())
-                .RuleFor(u => u.Color, f => f.Commerce.Color())
-                .RuleFor(u => u.Price, f => double.Parse(f.Commerce.Price()))
-                .RuleFor(u => u.Description, f => f.Commerce.ProductDescription())
-                .RuleFor(u => u.Image, f =>
+            foreach (var fieldKey in product.Category.FieldsKeys)
+            {
+                var fieldValue = new FieldsValue
                 {
-                    string url = "https://picsum.photos/640/480/";
-                    var response = _httpClient.GetByteArrayAsync(url).Result;
-                    return response;
-                })
-                .RuleFor(u => u.Category, f =>
-                {
-                    Random rand = new Random();
-                    return categories[rand.Next(0, categories.Count)];
-                });
-            var products = productFaker.Generate(50);
-            Products.AddRange(products);
-            SaveChanges();
+                    StringValue = "String Value",
+                    IntValue = 0, 
+                    FieldKey = fieldKey,
+                    Product = product
+                };
+                FieldsValues.Add(fieldValue);
+            }
         }
+        SaveChanges();
     }
+}
+
 }

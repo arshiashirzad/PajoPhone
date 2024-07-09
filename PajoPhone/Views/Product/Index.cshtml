@@ -9,10 +9,30 @@
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Pajo Phone</title>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
       <link rel="stylesheet" href="~/css/output.css"/>
       <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
   </head>
+  <style>
+      #loading {
+          display: none;
+          position: absolute;
+          top: 50%;
+          left: 40%;
+          transform: translate(-50%, -50%);
+          border: 16px solid #f3f3f3;
+          border-radius: 50%;
+          border-top: 16px solid #FFA500;
+          width: 120px;
+          height: 120px;
+          animation: spin 1s linear infinite;
+      }
+  
+      @@keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+      }
+  </style>
   <body class="bg-gray-100" x-data="{ isOpen: false }">
   <!--  navbar -->
   <nav class="sticky top-0 z-10 block p-4 bg-white shadow-lg md:mb-8 ">
@@ -48,13 +68,13 @@
               <!-- Categories -->
               <div>
                   <div class="text-xl font-bold text-orange-500">دسته بندی ها</div>
-                  <div class="p-2">
+                  <div class="h-64 overflow-y-scroll rounded shadow p-2">
                       @foreach (var cat in Model)
                       {
                           if (cat.ParentCategoryId == null)
                           {
                               <a href="#" class="flex items-center py-2 rounded-md cursor-pointer hover:bg-gray-50 text-slate-800">
-                                  <span class="relative w-5 h-5 bg-gray-100 rounded-full">
+                                  <span class="relative w-5 h-5 bg-gray-100 rounded-full ml-2">
                                       <svg class="w-4 h-5 absolute top-1.5 right-1" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg">
                                           <path d="M13 4.75v7.5c0 3-.75 3.75-3.75 3.75h-4.5c-3 0-3.75-.75-3.75-3.75v-7.5C1 1.75 1.75 1 4.75 1h4.5c3 0 3.75.75 3.75 3.75ZM8.5 3.625h-3" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round"></path>
                                           <path d="M7 13.825A1.163 1.163 0 1 0 7 11.5a1.163 1.163 0 0 0 0 2.325Z" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -89,7 +109,9 @@
       <div  class="col-span-12 md:col-span-8 lg:col-span-9 xl:col-span-10">
           <div id="products-container" class="grid grid-cols-2 px-2 gap-x-2 gap-y-4 lg:grid-cols-4 md:p-0 sm:gap-x-4 md:gap-x-6 md:gap-y-10"></div>
       </div>
-                 <div id="modal-container"></div>
+      <div id="modal-container"></div>
+      <div id="loading" style="display: none;">
+      </div>
       </div>
   <script>
  $(document).ready(function () {
@@ -120,6 +142,9 @@
  })
  $("#search-bar").on("keyup" , function(){
             var searchValue= $(this).val();
+            $("#products-container").empty();
+            $("#loading").show();
+                        setTimeout(function() {
             if (searchValue==""){
                             $.ajax({
                  url: '@Url.Action("GetProductCards", "Product")',
@@ -129,8 +154,10 @@
                                 },
                                 error: function (xhr, status, error) {
                                     console.error(error);
-                                }
-                                 });
+                                },
+                            complete: function () {
+                                                $("#loading").hide();
+                            }});
             }else{
             $.ajax({
                             url: '@Url.Action("GetProductCards", "product")' + "?searchValue=" + searchValue,
@@ -140,9 +167,13 @@
                                             },
                                             error: function (xhr, status, error) {
                                                 console.error(error);
-                                            }
+                                            },
+                                            complete: function () {
+                                                                $("#loading").hide();
+                                                            }
                         });
-            }
+                }
+            },500);
  });
   </script>
     <script src="~/js/site.js"></script>
