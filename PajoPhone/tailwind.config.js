@@ -2,7 +2,7 @@
 module.exports = {
   content: [
     './Views/Product/Index.cshtml',
-    './Views/Shared/_IndexLayout.cshtml',
+    './Views/Shared/**.cshtml',
     './wwwroot/**/*.html',
   ],
   theme: {

@@ -32,6 +32,7 @@ namespace PajoPhone.Controllers
             var product = await _context.Products
                 .Include(x => x.FieldsValues)
                 .ThenInclude(x => x.FieldKey)
+                .Include(x=> x.Category)
                 .SingleOrDefaultAsync(x => x.Id == productId);
             return PartialView("_ProductModalPartial", product);
         }
@@ -43,7 +44,7 @@ namespace PajoPhone.Controllers
         {
             products = await _context.Products
                 .Include(p => p.FieldsValues)
-                .ThenInclude(fv => fv.FieldKey)
+                    .ThenInclude(fv => fv.FieldKey)
                 .Include(c => c.Category)
                 .ToListAsync();
         }
@@ -51,7 +52,7 @@ namespace PajoPhone.Controllers
         {
             products = await _context.Products
                 .Include(p => p.FieldsValues)
-                .ThenInclude(fv => fv.FieldKey)
+                    .ThenInclude(fv => fv.FieldKey)
                 .Include(c => c.Category)
                 .Where(p => p.Name.Contains(searchValue))
                 .ToListAsync(); 
