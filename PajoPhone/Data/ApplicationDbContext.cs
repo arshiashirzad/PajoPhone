@@ -31,10 +31,20 @@ public class ApplicationDbContext : DbContext
 {
     if (Products.Count() < 50)
     {
-        var categoryFaker = new Bogus.Faker<Category>()
-            .RuleFor(u => u.Name, f => f.Commerce.Department());
-        var categories = categoryFaker.Generate(10);
-        Categories.AddRange(categories);
+        var categories = new List<Category>();
+
+        if (!Categories.Any())
+        {
+            var categoryFaker = new Bogus.Faker<Category>()
+                .RuleFor(u => u.Name, f => f.Commerce.Department());
+             categories = categoryFaker.Generate(10);
+            Categories.AddRange(categories);
+            SaveChanges();
+        }
+        else
+        {
+            categories = Categories.ToList();
+        }
 
         var fieldsKeyFaker = new Bogus.Faker<FieldsKey>()
             .RuleFor(u => u.Key, f => f.Lorem.Word())
@@ -73,7 +83,6 @@ public class ApplicationDbContext : DbContext
 
         foreach (var product in products)
         {
-            
                 var productCategory = categories.First(c => c.Id == product.CategoryId);
                 foreach (var fieldKey in productCategory.FieldsKeys)
                 {

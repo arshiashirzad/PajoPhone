@@ -141,9 +141,8 @@ namespace PajoPhone.Controllers
                     .Where(fk => fk.FieldKey == key)
                     .Select(x=>x.StringValue)
                     .Distinct()
-                    .Take(10)
                     .ToListAsync();
-                items[key.Key] = values.Select(x => new SelectListItem(x, x)).ToList();
+                    items[key.Key] = values.Select(x => new SelectListItem(x, x)).ToList();
             }
                  return Json(items);
         }

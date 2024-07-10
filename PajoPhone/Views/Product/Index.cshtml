@@ -69,32 +69,33 @@
           <div :class="{ 'block': isOpen, 'hidden': !isOpen }" class="hidden md:block bg-white p-5 md:rounded-xl max-h-[calc(100vh_-_140px)] overflow-y-auto sticky md:top-28 md:static md:max-h-full">
               <!-- Categories -->
               <div>
-              <form>
-              <div class="text-xl font-bold text-orange-500">دسته بندی ها</div>
-              <div class="h-64 overflow-y-scroll p-3 mb-3">
-                  <input type="hidden" id="selectedCategoryId" name="CategoryId"/>
-                  @await Html.PartialAsync("_CategoryTreePartial")
-              </div>
-              <hr class="my-2" />
-                  <select class="w-20" id="key-inputs">
-                      
-                  </select>
-              <hr class="my-2" />
-                  <div>
-                      <div class="mb-5 text-xl font-bold text-orange-500">قیمت</div>
-                      <div class="mb-4">
-                          <input type="range" id="price-range" class="w-full accent-orange-500" min="0" max="1000" value="0" oninput="updatePrice(this.value)">
+                  <form>
+                      <input id="hidden-search-bar"/>
+                      <div class="text-xl font-bold text-orange-500">دسته بندی ها</div>
+                      <div class="h-64 overflow-y-scroll p-3 mb-3">
+                          <input type="hidden" id="selectedCategoryId" name="CategoryId"/>
+                          @await Html.PartialAsync("_CategoryTreePartial")
                       </div>
-                      <div class="flex justify-between text-gray-500">
-                          <span id="minPrice">$0</span>
-                          <span id="maxPrice">$1000</span>
+                      <hr class="my-2"/>
+                      <div class="w-20" id="select-container">
+
                       </div>
-                      <!-- Acc #3 Content -->
-                      <div x-show="isOpenPrice === true" class="flex flex-col px-2 gap-y-2"></div>
-                  </div>
-                  <input class="hidden" name="Term"/>
-                  <input type="hidden" name="PageNo" value="1" />
-              </form>
+                      <hr class="my-2"/>
+                      <div>
+                          <div class="mb-5 text-xl font-bold text-orange-500">قیمت</div>
+                          <div class="mb-4">
+                              <input type="range" id="price-range" class="w-full accent-orange-500" min="0" max="1000" value="0" oninput="updatePrice(this.value)">
+                          </div>
+                          <div class="flex justify-between text-gray-500">
+                              <span id="minPrice">$0</span>
+                              <span id="maxPrice">$1000</span>
+                          </div>
+                          <!-- Acc #3 Content -->
+                          <div x-show="isOpenPrice === true" class="flex flex-col px-2 gap-y-2"></div>
+                      </div>
+                      <input class="hidden" name="Term"/>
+                      <input type="hidden" name="PageNo" value="1"/>
+                  </form>
               <!-- Desktop Filters -->
           </div>
       </div>
@@ -137,6 +138,7 @@
       })
       $("#search-bar").on("keyup" , function(){
           var searchValue= $(this).val();
+          
           $("#products-container").empty();
           $("#loading").show();
           setTimeout(function() {
@@ -170,34 +172,46 @@
               }
           },500);
       });
-      $('#categoryTree').on("select_node.jstree", function (e, data) {
-              var categoryId = data.node.id;
-              $('#selectedCategoryId').val(categoryId); 
-              $.ajax({
+       $('#categoryTree').on("select_node.jstree", function (e, data) {
+                  var categoryId = data.node.id;
+                  $('#selectedCategoryId').val(categoryId);
+     
+                  $.ajax({
                       url: '@Url.Action("GetKeyValues", "Product")',
                       data: { categoryId: categoryId },
-                      success: function (keyVal) {
-                          debugger
-                          var option;
-                          var $keyInputs = $("#key-inputs");
-              
-                          $keyInputs.empty();
-              
-                          $.each(keyVal, function (index, kv) {
-                              option = $('<option>', {
-                                  value: kv.value, 
-                                  text: kv.text
+                      success: function (items) {
+                          var $container = $("#select-container"); 
+      
+                          $container.empty(); 
+      
+                         
+                          $.each(items, function (key, values) {
+                              
+                              var $select = $('<select>', {
+                                  class: 'form-control key-select', 
+                                  'data-key': key 
                               });
-                              $keyInputs.append(option);
+                              $select.append($('<option>', {
+                                  value: '',
+                                  text: 'Select an option'
+                              }));
+                              $.each(values, function (index, kv) {
+                                  var option = $('<option>', {
+                                      value: kv.value, 
+                                      text: kv.text
+                                  });
+                                  $select.append(option);
+                              });
+                              var $label = $('<label>').text(key);
+                              $container.append($label).append($select);
+                              $select.select2();
                           });
-              
-                          $keyInputs.select2();
                       },
                       error: function () {
                           console.error("Error retrieving key values.");
                       }
                   });
-          });
+              });
   </script>
   <script src="~/js/Index.js"></script>
   </body>
