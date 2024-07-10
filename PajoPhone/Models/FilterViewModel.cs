@@ -1,15 +1,10 @@
 namespace PajoPhone.Models;
 
-public enum FilterType
-{
-    Range,
-    Dropdown,
-    CheckBox
-}
 public class FilterViewModel
 {
-    public string Name { get; set; }
-    public int FieldKeyId { get; set; }
-    public FilterType Type { get; set; }
-    public string Value { get; set; }
+    public string Term { get; set; } = "";
+    public int PageNo { get; set; }
+    public int CategoryId { get; set; }
+    public int MinPrice { get; set; } 
+    public ICollection<FieldsValueViewModel> FieldsValueViewModels { get; set; } = new List<FieldsValueViewModel>();
 }

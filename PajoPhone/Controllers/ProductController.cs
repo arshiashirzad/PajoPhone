@@ -37,12 +37,12 @@ namespace PajoPhone.Controllers
                 .SingleOrDefaultAsync(x => x.Id == productId);
             return PartialView("_ProductModalPartial", product);
         }
-
-        public async Task<IActionResult> GetProductCards(SearchViewModel searchViewModel)
+        
+        public async Task<IActionResult> GetProductCards(FilterViewModel filterViewModel)
         {
             List<Product> products = new List<Product>();
-            var searchTerms = searchViewModel.Term.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-        if (searchViewModel.Term == "")
+            var searchTerms = filterViewModel.Term.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        if (filterViewModel.Term == "")
         {
             products = await _context.Products
                 .Include(p => p.FieldsValues)
@@ -91,8 +91,8 @@ namespace PajoPhone.Controllers
         [Route("/Product/Index")]
         public async Task<IActionResult> Index()
         {
-            SearchViewModel searchViewModel = new SearchViewModel();
-            return View(searchViewModel);
+            FilterViewModel filterViewModel = new FilterViewModel();
+            return View(filterViewModel);
         }
         // GET: Product/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -133,18 +133,20 @@ namespace PajoPhone.Controllers
         }
         public async Task<IActionResult> GetKeyValues(int categoryId)
         {
-            var keys = _context.FieldsKeys.Where(fk => fk.CategoryId == categoryId).ToList();
-            Dictionary<string, List<SelectListItem>> items = new();
+            var keys = await _context.FieldsKeys
+                .Where(fk => fk.CategoryId == categoryId)
+                .ToListAsync();
+            Dictionary<string, List<FieldsValueViewModel>> items = new();
             foreach (var key in keys)
             {
-                var values =await _context.FieldsValues
-                    .Where(fk => fk.FieldKey == key)
-                    .Select(x=>x.StringValue)
+                var values = await _context.FieldsValues
+                    .Where(fv => fv.FieldKeyId == key.Id)
                     .Distinct()
                     .ToListAsync();
-                    items[key.Key] = values.Select(x => new SelectListItem(x, x)).ToList();
+                var valueViewModels = values.Select(fv => new FieldsValueViewModel(fv)).ToList();
+                items[key.Key] = valueViewModels;
             }
-                 return Json(items);
+            return Json(items);
         }
         // GET: Product/Create
         [HttpGet]
