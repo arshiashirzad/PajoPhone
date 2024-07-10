@@ -70,15 +70,15 @@
               <!-- Categories -->
               <div>
                   <form>
-                      <input id="hidden-search-bar"/>
+                      <input class="hidden" id="hidden-search-bar"/>
                       <div class="text-xl font-bold text-orange-500">دسته بندی ها</div>
                       <div class="h-64 overflow-y-scroll p-3 mb-3">
                           <input type="hidden" id="selectedCategoryId" name="CategoryId"/>
                           @await Html.PartialAsync("_CategoryTreePartial")
                       </div>
                       <hr class="my-2"/>
-                      <div class="w-20" id="select-container">
-
+                      <div class="mb-2 text-xl font-bold text-orange-500">فیلتر ها</div>
+                      <div class="w-20 my-2" id="select-container">
                       </div>
                       <hr class="my-2"/>
                       <div>
@@ -90,13 +90,9 @@
                               <span id="minPrice">$0</span>
                               <span id="maxPrice">$1000</span>
                           </div>
-                          <!-- Acc #3 Content -->
-                          <div x-show="isOpenPrice === true" class="flex flex-col px-2 gap-y-2"></div>
                       </div>
-                      <input class="hidden" name="Term"/>
                       <input type="hidden" name="PageNo" value="1"/>
                   </form>
-              <!-- Desktop Filters -->
           </div>
       </div>
       
@@ -137,12 +133,12 @@
           });
       })
       $("#search-bar").on("keyup" , function(){
-          var searchValue= $(this).val();
-          
+          var term= $(this).val();
+          $("#hidden-search-bar").val(term);
           $("#products-container").empty();
           $("#loading").show();
           setTimeout(function() {
-              if (searchValue==""){
+              if (term==""){
                   $.ajax({
                       url: '@Url.Action("GetProductCards", "Product")',
                       type: 'GET',
@@ -157,7 +153,7 @@
                       }});
               }else{
                   $.ajax({
-                      url: '@Url.Action("GetProductCards", "product")' + "?searchValue=" + searchValue,
+                      url: '@Url.Action("GetProductCards", "product")' + "?searchValue=" + term,
                       type: 'GET',
                       success: function (result) {
                           $('#products-container').html(result);
@@ -175,22 +171,22 @@
        $('#categoryTree').on("select_node.jstree", function (e, data) {
                   var categoryId = data.node.id;
                   $('#selectedCategoryId').val(categoryId);
-     
                   $.ajax({
                       url: '@Url.Action("GetKeyValues", "Product")',
                       data: { categoryId: categoryId },
                       success: function (items) {
                           var $container = $("#select-container"); 
-      
                           $container.empty(); 
-      
-                         
                           $.each(items, function (key, values) {
-                              
-                              var $select = $('<select>', {
-                                  class: 'form-control key-select', 
-                                  'data-key': key 
-                              });
+                                var $label = $('<label>',{
+                                    text: key,
+                                    class: 'text-orange-500 ml-2'
+                                });
+                                var $select = $('<select>', {
+                                class: 'form-control key-select', 
+                                'data-key': key 
+                                });
+                              $container.append($label).append($select);
                               $select.append($('<option>', {
                                   value: '',
                                   text: 'Select an option'
@@ -202,8 +198,6 @@
                                   });
                                   $select.append(option);
                               });
-                              var $label = $('<label>').text(key);
-                              $container.append($label).append($select);
                               $select.select2();
                           });
                       },
