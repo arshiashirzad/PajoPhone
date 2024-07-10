@@ -10,7 +10,11 @@ for example:<input type="hidden" id="selectedParentCategoryId" name="WANTED_MODE
                 'data': {
                     'url': '@Url.Action("GetCategoryTreeData", "Category")',
                     'dataType': 'json'
-                }
+                },
+                "themes" : {
+                                        "dots" : false,
+                                        "icons" : false
+                                    },
             }
         }).on('select_node.jstree', function (e, data) {
             var selectedNodeId = data.node.id;

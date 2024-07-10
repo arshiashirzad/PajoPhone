@@ -5,7 +5,7 @@ public class FieldsValueViewModel
     public int ValueId { get; set; }
     public int KeyId { get; set; }
     public string? Key { get; set; }
-    public string StringValue { get; set; }
+    public string? StringValue { get; set; }
     public int IntValue { get; set; }
 
     public FieldsValueViewModel(){}

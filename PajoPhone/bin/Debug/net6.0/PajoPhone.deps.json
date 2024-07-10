@@ -16,7 +16,8 @@
           "Microsoft.EntityFrameworkCore.Sqlite": "6.0.0",
           "Microsoft.EntityFrameworkCore.Tools": "6.0.0",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "6.0.0",
-          "Pomelo.EntityFrameworkCore.MySql": "6.0.0"
+          "Pomelo.EntityFrameworkCore.MySql": "6.0.0",
+          "Select2.js": "4.0.13"
         },
         "runtime": {
           "PajoPhone.dll": {}
@@ -49,6 +50,7 @@
           }
         }
       },
+      "jQuery/1.7.0": {},
       "MessagePack/2.1.152": {
         "dependencies": {
           "MessagePack.Annotations": "2.1.152",
@@ -1530,6 +1532,11 @@
       "runtime.ubuntu.14.04-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
       "runtime.ubuntu.16.04-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
       "runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
+      "Select2.js/4.0.13": {
+        "dependencies": {
+          "jQuery": "1.7.0"
+        }
+      },
       "SQLitePCLRaw.bundle_e_sqlite3/2.0.6": {
         "dependencies": {
           "SQLitePCLRaw.core": "2.0.6",
@@ -2477,6 +2484,13 @@
       "path": "humanizer.core/2.8.26",
       "hashPath": "humanizer.core.2.8.26.nupkg.sha512"
     },
+    "jQuery/1.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UEZuBreHZNLao3z9zNPeSadyoPwKDP/5kFh+Mn1Pm9ZS0czk7bv0O6RreloGSIMAfTLZCiigNkuPb2bXKtUM+g==",
+      "path": "jquery/1.7.0",
+      "hashPath": "jquery.1.7.0.nupkg.sha512"
+    },
     "MessagePack/2.1.152": {
       "type": "package",
       "serviceable": true,
@@ -3155,6 +3169,13 @@
       "sha512": "sha512-VB5cn/7OzUfzdnC8tqAIMQciVLiq2epm2NrAm1E9OjNRyG4lVhfR61SMcLizejzQP8R8Uf/0l5qOIbUEi+RdEg==",
       "path": "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl/4.3.0",
       "hashPath": "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512"
+    },
+    "Select2.js/4.0.13": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-YbsIWar+HV75AXNqejfpKyO6gR6jQ5UJKE+QA5dmXcY+neMiw3EVZCj8/Z3l5Jn/AXE82+Eftweq8K1KlObxsw==",
+      "path": "select2.js/4.0.13",
+      "hashPath": "select2.js.4.0.13.nupkg.sha512"
     },
     "SQLitePCLRaw.bundle_e_sqlite3/2.0.6": {
       "type": "package",

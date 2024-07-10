@@ -67,19 +67,21 @@ public class ApplicationDbContext : DbContext
 
         var products = productFaker.Generate(100);
         Products.AddRange(products);
+        var fieldValueFaker = new Bogus.Faker<FieldsValue>()
+            .RuleFor(fv => fv.StringValue, f => f.Lorem.Word())
+            .RuleFor(fv => fv.IntValue, f => f.Random.Int(0, 100));
+
         foreach (var product in products)
         {
-            foreach (var fieldKey in product.Category.FieldsKeys)
-            {
-                var fieldValue = new FieldsValue
+            
+                var productCategory = categories.First(c => c.Id == product.CategoryId);
+                foreach (var fieldKey in productCategory.FieldsKeys)
                 {
-                    StringValue = "String Value",
-                    IntValue = 0, 
-                    FieldKey = fieldKey,
-                    Product = product
-                };
-                FieldsValues.Add(fieldValue);
-            }
+                    var fieldValue = fieldValueFaker.Generate();
+                    fieldValue.FieldKey = fieldKey;
+                    fieldValue.Product = product;
+                    FieldsValues.Add(fieldValue);
+                }
         }
         SaveChanges();
     }

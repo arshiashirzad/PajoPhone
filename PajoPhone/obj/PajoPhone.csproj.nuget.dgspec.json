@@ -77,6 +77,10 @@
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
               "version": "[6.0.0, )"
+            },
+            "Select2.js": {
+              "target": "Package",
+              "version": "[4.0.13, )"
             }
           },
           "imports": [

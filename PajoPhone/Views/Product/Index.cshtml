@@ -1,4 +1,4 @@
-@model ICollection<Category>
+@model SearchViewModel
 @{
     Layout = "_IndexLayout";
 }
@@ -9,8 +9,11 @@
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Pajo Phone</title>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
       <link rel="stylesheet" href="~/css/output.css"/>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />   
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+      <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+      <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
   </head>
   <style>
@@ -62,121 +65,141 @@
   <div class="container md:px-4 lg:px-6  mx-auto xl:max-w-screen-2xl grid grid-cols-12 md:grid-rows-[55px_minmax(500px,_1fr)] md:gap-8">
       <!-- sidebar -->
       <div class="col-span-12 row-span-2 md:block lg:col-span-3 xl:col-span-2">
-          <!-- Backdrop -->
           <div x-show="isOpen" class="fixed inset-0 bg-black bg-opacity-50 md:hidden" onclick="isOpen = false"></div>
           <div :class="{ 'block': isOpen, 'hidden': !isOpen }" class="hidden md:block bg-white p-5 md:rounded-xl max-h-[calc(100vh_-_140px)] overflow-y-auto sticky md:top-28 md:static md:max-h-full">
               <!-- Categories -->
               <div>
-                  <div class="text-xl font-bold text-orange-500">دسته بندی ها</div>
-                  <div class="h-64 overflow-y-scroll  p-2">
-                      @foreach (var cat in Model)
-                      {
-                          if (cat.ParentCategoryId == null)
-                          {
-                              <a href="#" class="flex items-center py-2 rounded-md cursor-pointer hover:bg-gray-50 text-slate-800">
-                                  <span class="relative w-5 h-5 bg-gray-100 rounded-full ml-2">
-                                      <svg class="w-4 h-5 absolute top-1.5 right-1" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                          <path d="M13 4.75v7.5c0 3-.75 3.75-3.75 3.75h-4.5c-3 0-3.75-.75-3.75-3.75v-7.5C1 1.75 1.75 1 4.75 1h4.5c3 0 3.75.75 3.75 3.75ZM8.5 3.625h-3" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round"></path>
-                                          <path d="M7 13.825A1.163 1.163 0 1 0 7 11.5a1.163 1.163 0 0 0 0 2.325Z" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round"></path>
-                                      </svg>
-                                  </span>
-                                  <span class="mr-2">@cat.Name</span>
-                              </a>
-                          }
-                      }
-                  </div>
+              <form>
+              <div class="text-xl font-bold text-orange-500">دسته بندی ها</div>
+              <div class="h-64 overflow-y-scroll p-3 mb-3">
+                  <input type="hidden" id="selectedCategoryId" name="CategoryId"/>
+                  @await Html.PartialAsync("_CategoryTreePartial")
               </div>
-              <!-- Desktop Filters -->
-              <div>
-                  <div class="mb-5 text-xl font-bold text-orange-500">فیلتر</div>
-                  <!-- ACC. No. 3 -->
-                  <div x-data="{ isOpenPrice: true }">
-                      <!-- ACC #3 header -->
-                      <div onclick="isOpenPrice = !isOpenPrice" class="flex items-center justify-between w-full p-2 mb-4 rounded-lg cursor-pointer hover:bg-gray-50">
-                          <div class="flex items-center">
-                              <div class="relative mb-6">
-                                  <label for="labels-range-input" class="sr-only">قیمت</label>
-                                  <input id="labels-range-input" type="range" value="1000" min="100" max="1500" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                              </div>
-                          </div>
+              <hr class="my-2" />
+                  <select class="w-20" id="key-inputs">
+                      
+                  </select>
+              <hr class="my-2" />
+                  <div>
+                      <div class="mb-5 text-xl font-bold text-orange-500">قیمت</div>
+                      <div class="mb-4">
+                          <input type="range" id="price-range" class="w-full accent-orange-500" min="0" max="1000" value="0" oninput="updatePrice(this.value)">
+                      </div>
+                      <div class="flex justify-between text-gray-500">
+                          <span id="minPrice">$0</span>
+                          <span id="maxPrice">$1000</span>
                       </div>
                       <!-- Acc #3 Content -->
                       <div x-show="isOpenPrice === true" class="flex flex-col px-2 gap-y-2"></div>
                   </div>
-              </div>
+                  <input class="hidden" name="Term"/>
+                  <input type="hidden" name="PageNo" value="1" />
+              </form>
+              <!-- Desktop Filters -->
           </div>
       </div>
+      
+  </div>
       <div  class="col-span-12 md:col-span-8 lg:col-span-9 xl:col-span-10">
           <div id="products-container" class="grid grid-cols-2 px-2 gap-x-2 gap-y-4 lg:grid-cols-4 md:p-0 sm:gap-x-4 md:gap-x-6 md:gap-y-10"></div>
       </div>
+      </div>
       <div id="modal-container"></div>
-      <div id="loading" style="display: none;">
-      </div>
-      </div>
+  <div id="loading" style="display: none;">
+  </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>    
   <script>
- $(document).ready(function () {
-            $.ajax({
-                url: '@Url.Action("GetProductCards", "Product")',
-                type: 'GET',
-                success: function (result) {
-                    $('#products-container').html(result);
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        });      
- $(document).on("click",".show-modal",function (e){
-     var id = $(e.target).parents(".product-card").attr("data-id");
-     $.ajax({
-     url: '@Url.Action("GetProductModal", "Product" )'+ "?productId=" + id,
-                     type: 'GET',
-                     success: function (result) {
-                         $('#modal-container').html(result);
-                            openModal();
-                     },
-                     error: function (xhr, status, error) {
-                         console.error(error);
-                     }
-     });
- })
- $("#search-bar").on("keyup" , function(){
-            var searchValue= $(this).val();
-            $("#products-container").empty();
-            $("#loading").show();
-                        setTimeout(function() {
-            if (searchValue==""){
-                            $.ajax({
-                 url: '@Url.Action("GetProductCards", "Product")',
-                                type: 'GET',
-                                success: function (result) {
-                                    $('#products-container').html(result);
-                                },
-                                error: function (xhr, status, error) {
-                                    console.error(error);
-                                },
-                            complete: function () {
-                                                $("#loading").hide();
-                            }});
-            }else{
-            $.ajax({
-                            url: '@Url.Action("GetProductCards", "product")' + "?searchValue=" + searchValue,
-                            type: 'GET',
-                            success: function (result) {
-                                                $('#products-container').html(result);
-                                            },
-                                            error: function (xhr, status, error) {
-                                                console.error(error);
-                                            },
-                                            complete: function () {
-                                                                $("#loading").hide();
-                                                            }
-                        });
-                }
-            },500);
- });
+      $(document).ready(function () {
+          $.ajax({
+              url: '@Url.Action("GetProductCards", "Product")',
+              type: 'GET',
+              success: function (result) {
+                  $('#products-container').html(result);
+              },
+              error: function (xhr, status, error) {
+                  console.error(error);
+              }
+          });
+      });
+      $(document).on("click",".show-modal",function (e){
+          var id = $(e.target).parents(".product-card").attr("data-id");
+          $.ajax({
+              url: '@Url.Action("GetProductModal", "Product" )'+ "?productId=" + id,
+              type: 'GET',
+              success: function (result) {
+                  $('#modal-container').html(result);
+                  openModal();
+              },
+              error: function (xhr, status, error) {
+                  console.error(error);
+              }
+          });
+      })
+      $("#search-bar").on("keyup" , function(){
+          var searchValue= $(this).val();
+          $("#products-container").empty();
+          $("#loading").show();
+          setTimeout(function() {
+              if (searchValue==""){
+                  $.ajax({
+                      url: '@Url.Action("GetProductCards", "Product")',
+                      type: 'GET',
+                      success: function (result) {
+                          $('#products-container').html(result);
+                      },
+                      error: function (xhr, status, error) {
+                          console.error(error);
+                      },
+                      complete: function () {
+                          $("#loading").hide();
+                      }});
+              }else{
+                  $.ajax({
+                      url: '@Url.Action("GetProductCards", "product")' + "?searchValue=" + searchValue,
+                      type: 'GET',
+                      success: function (result) {
+                          $('#products-container').html(result);
+                      },
+                      error: function (xhr, status, error) {
+                          console.error(error);
+                      },
+                      complete: function () {
+                          $("#loading").hide();
+                      }
+                  });
+              }
+          },500);
+      });
+      $('#categoryTree').on("select_node.jstree", function (e, data) {
+              var categoryId = data.node.id;
+              $('#selectedCategoryId').val(categoryId); 
+              $.ajax({
+                      url: '@Url.Action("GetKeyValues", "Product")',
+                      data: { categoryId: categoryId },
+                      success: function (keyVal) {
+                          debugger
+                          var option;
+                          var $keyInputs = $("#key-inputs");
+              
+                          $keyInputs.empty();
+              
+                          $.each(keyVal, function (index, kv) {
+                              option = $('<option>', {
+                                  value: kv.value, 
+                                  text: kv.text
+                              });
+                              $keyInputs.append(option);
+                          });
+              
+                          $keyInputs.select2();
+                      },
+                      error: function () {
+                          console.error("Error retrieving key values.");
+                      }
+                  });
+          });
   </script>
-    <script src="~/js/site.js"></script>
+  <script src="~/js/Index.js"></script>
   </body>
   </html>
   

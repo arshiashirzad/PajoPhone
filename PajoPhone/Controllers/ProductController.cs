@@ -15,6 +15,7 @@ using Microsoft.VisualBasic;
 namespace PajoPhone.Controllers
 {
     [Route("/[action]")]
+    [Route("/Product/[action]")]
     public class ProductController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -37,10 +38,11 @@ namespace PajoPhone.Controllers
             return PartialView("_ProductModalPartial", product);
         }
 
-        public async Task<IActionResult> GetProductCards(string searchValue="")
+        public async Task<IActionResult> GetProductCards(SearchViewModel searchViewModel)
         {
             List<Product> products = new List<Product>();
-        if (searchValue =="")
+            var searchTerms = searchViewModel.Term.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        if (searchViewModel.Term == "")
         {
             products = await _context.Products
                 .Include(p => p.FieldsValues)
@@ -54,7 +56,7 @@ namespace PajoPhone.Controllers
                 .Include(p => p.FieldsValues)
                     .ThenInclude(fv => fv.FieldKey)
                 .Include(c => c.Category)
-                .Where(p => p.Name.Contains(searchValue))
+                .Where(p => searchTerms.All(st=>p.Name.Contains(st)))
                 .ToListAsync(); 
         }
         ICollection<ProductViewModel> productViewModels = new List<ProductViewModel>();
@@ -89,8 +91,8 @@ namespace PajoPhone.Controllers
         [Route("/Product/Index")]
         public async Task<IActionResult> Index()
         {
-            var categories = await _context.Categories.ToListAsync();
-            return View(categories);
+            SearchViewModel searchViewModel = new SearchViewModel();
+            return View(searchViewModel);
         }
         // GET: Product/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -109,8 +111,9 @@ namespace PajoPhone.Controllers
             }
             return View(product);
         }
+        
         [HttpGet]
-        public PartialViewResult GetKeyValueInputs(int productId,int categoryId)
+        public PartialViewResult GetKeyValueInputs(int categoryId ,int productId)
         {
             var items= new List<FieldsValueViewModel>();
             var keys = _context.FieldsKeys.Where(fk => fk.CategoryId == categoryId).ToList();
@@ -123,11 +126,26 @@ namespace PajoPhone.Controllers
             {
                 var query = _context.FieldsValues.Where(x => x.ProductId == productId && keys.Contains(x.FieldKey))
                     .ToList();
-                items = items = query.Select(x => new FieldsValueViewModel(x))
+                items = query.Select(x => new FieldsValueViewModel(x))
                     .ToList();
             }
             return PartialView("_KeyValueInputPartial",items);
-
+        }
+        public async Task<IActionResult> GetKeyValues(int categoryId)
+        {
+            var keys = _context.FieldsKeys.Where(fk => fk.CategoryId == categoryId).ToList();
+            Dictionary<string, List<SelectListItem>> items = new();
+            foreach (var key in keys)
+            {
+                var values =await _context.FieldsValues
+                    .Where(fk => fk.FieldKey == key)
+                    .Select(x=>x.StringValue)
+                    .Distinct()
+                    .Take(10)
+                    .ToListAsync();
+                items[key.Key] = values.Select(x => new SelectListItem(x, x)).ToList();
+            }
+                 return Json(items);
         }
         // GET: Product/Create
         [HttpGet]
@@ -196,7 +214,6 @@ namespace PajoPhone.Controllers
             
             return View();
         }
-
         // GET: Product/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

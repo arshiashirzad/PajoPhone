@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "gZofHSkQCzAlpoo52sxbvgJPdaUEy+ZW6AKHT27HpzA=",
+  "Hash": "jFKYJTQSNwCdSgxT+yedQ++M7ZzqxdZAt6Fyi7uX4B8=",
   "Source": "PajoPhone",
   "BasePath": "_content/PajoPhone",
   "Mode": "Default",
@@ -131,12 +131,12 @@
       "OriginalItemSpec": "wwwroot/favicon.ico"
     },
     {
-      "Identity": "/Users/arshia/RiderProjects/PajoPhone/PajoPhone/wwwroot/js/site.js",
+      "Identity": "/Users/arshia/RiderProjects/PajoPhone/PajoPhone/wwwroot/js/Index.js",
       "SourceId": "PajoPhone",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/arshia/RiderProjects/PajoPhone/PajoPhone/wwwroot/",
       "BasePath": "_content/PajoPhone",
-      "RelativePath": "js/site.js",
+      "RelativePath": "js/Index.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -147,7 +147,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/js/site.js"
+      "OriginalItemSpec": "wwwroot/js/Index.js"
     },
     {
       "Identity": "/Users/arshia/RiderProjects/PajoPhone/PajoPhone/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.css",
