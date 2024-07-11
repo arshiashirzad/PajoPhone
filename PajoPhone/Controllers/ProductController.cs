@@ -38,51 +38,57 @@ namespace PajoPhone.Controllers
             return PartialView("_ProductModalPartial", product);
         }
         
-        public async Task<IActionResult> GetProductCards(FilterViewModel filterViewModel)
+        public async Task<IActionResult> GetProductCards([FromBody] FilterViewModel filterViewModel)
         {
-            List<Product> products = new List<Product>();
-            var searchTerms = filterViewModel.Term.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-        if (filterViewModel.Term == "")
-        {
-            products = await _context.Products
-                .Include(p => p.FieldsValues)
-                    .ThenInclude(fv => fv.FieldKey)
-                .Include(c => c.Category)
-                .ToListAsync();
-        }
-        else
-        {
-            products = await _context.Products
-                .Include(p => p.FieldsValues)
-                    .ThenInclude(fv => fv.FieldKey)
-                .Include(c => c.Category)
-                .Where(p => searchTerms.All(st=>p.Name.Contains(st)))
-                .ToListAsync(); 
-        }
-        ICollection<ProductViewModel> productViewModels = new List<ProductViewModel>();
-            foreach (var product in products)
+            if (filterViewModel == null)
             {
-                var productViewModel = new ProductViewModel
-                {
-                    Id = product.Id,
-                    Name = product.Name,
-                    Description = product.Description,
-                    Color = product.Color,
-                    Price = product.Price,
-                    Categories = new List<CategoryViewModel> 
-                    {
-                        new CategoryViewModel
-                        {
-                            Id = product.Category.Id,
-                            Name = product.Category.Name,
-                            ParentCategoryId = product.Category.ParentCategoryId
-                        }
-                    },
-                    CategoryId = product.CategoryId,
-                    FieldsValues = product.FieldsValues.Select(fv => new FieldsValueViewModel(fv)).ToList()
-                };
-                productViewModels.Add(productViewModel);
+                filterViewModel = new FilterViewModel();
             }
+            List<Product> products = new List<Product>();
+            if (string.IsNullOrEmpty(filterViewModel.Term))
+            {
+                products = await _context.Products
+                    .Include(p => p.FieldsValues)
+                    .ThenInclude(fv => fv.FieldKey)
+                    .Include(p => p.Category)
+                    .ToListAsync();
+            }
+            else
+            {
+                var searchTerms = filterViewModel.Term.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                var query = _context.Products
+                    .Include(p => p.FieldsValues)
+                    .ThenInclude(fv => fv.FieldKey)
+                    .Include(p => p.Category)
+                    .AsQueryable();
+
+                foreach (var term in searchTerms)
+                {
+                    query = query.Where(p => p.Name.Contains(term));
+                }
+
+                products = await query.ToListAsync();
+            }
+
+            var productViewModels = products.Select(product => new ProductViewModel
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Color = product.Color,
+                Price = product.Price,
+                Categories = new List<CategoryViewModel>
+                {
+                    new CategoryViewModel
+                    {
+                        Id = product.Category.Id,
+                        Name = product.Category.Name,
+                        ParentCategoryId = product.Category.ParentCategoryId
+                    }
+                },
+                CategoryId = product.CategoryId,
+                FieldsValues = product.FieldsValues.Select(fv => new FieldsValueViewModel(fv)).ToList()
+            }).ToList();
             return PartialView("_ProductCardsPartial", productViewModels);
         }
         // GET: Product

@@ -64,7 +64,7 @@
           <div :class="{ 'block': isOpen, 'hidden': !isOpen }" class="hidden md:block bg-white p-5 md:rounded-xl max-h-[calc(100vh_-_140px)] overflow-y-auto sticky md:top-28 md:static md:max-h-full">
               <!-- Categories -->
               <div>
-                  <form id="product-filter-form">
+                  <form id="product-filter-form"  enctype="application/x-www-form-urlencoded">
                       <input name="Term" class="hidden" id="hidden-search-bar"/>
                       <div class="text-xl font-bold text-orange-500">دسته بندی ها</div>
                       <input type="hidden" id="selectedCategoryId" name="CategoryId"/>
@@ -104,14 +104,11 @@
       $(document).ready(function () {
           $.ajax({
               url: '@Url.Action("GetProductCards", "Product")',
-              type: 'GET',
-              success: function (result) {
+              type: 'post',
+              contentType: 'application/json',
+                    success: function (result) {
                   $('#products-container').html(result);
               },
-              error: function (xhr, status, error) {
-                  console.error(error);
-              }
-          });
       });
       //filtering here:
     $('#product-filter-form').on('change', 'input, select, textarea, span', function () {
@@ -119,7 +116,7 @@
                 var data = {
                         Term: "",
                         PageNo: 1,
-                        CategoryId: 3,
+                        CategoryId: 0,
                         MinPrice: 0,
                         FieldsValueViewModels: []
                     };    
@@ -139,23 +136,26 @@
                     case "MinPrice":
                         data.MinPrice = parseInt(this.value, 10);
                         break;
-                    default:
+                    default:    
                         data.FieldsValueViewModels.push({
-                            Key: this.name,
-                            StringValue: this.value
+                            KeyId: this.value,
+                            StringValue: this.value,
                         });
                         break;
                 }       
                 });
+                 $("#products-container").empty();
+                          $("#loading").show();
+                          setTimeout(function() {
+                          $("#loading").hide();
+                          },500);
               $.ajax({
                   url: '@Url.Action("GetProductCards", "Product" )',
                   type: 'POST',
                   contentType: 'application/json',
                   data:JSON.stringify(data) ,
                   success: function(response) {
-                      if (response.success) {
-                          console.log('Form submitted successfully!');
-                      }
+                  $('#products-container').html(response);
                   },
                   error: function() {
                       console.error('An error occurred while submitting the form.');
@@ -179,11 +179,6 @@
       $("#search-bar").on("keyup" , function(){
           var term= $(this).val();
           $("#hidden-search-bar").val(term).change();
-          $("#products-container").empty();
-          $("#loading").show();
-          setTimeout(function() {
-          $("#loading").hide();
-          },500);
       });
       $('#categoryTree').on("select_node.jstree", function (e, data) {
           var categoryId = data.node.id;
@@ -235,6 +230,7 @@
                   console.error("Error retrieving key values.");
               }
           });
+      });
       });
 
          </script>
