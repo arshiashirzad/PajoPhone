@@ -86,7 +86,7 @@
                               <span id="maxPrice">$1000</span>
                           </div>
                       </div>
-                      <input type="hidden" name="PageNo" value="1"/>
+                      <input id="pagination" type="hidden" name="PageNo" value="1"/>
                   </form>
           </div>
       </div>
@@ -147,8 +147,7 @@
                  $("#products-container").empty();
                           $("#loading").show();
                           setTimeout(function() {
-                          $("#loading").hide();
-                          },500);
+                          $("#loading").hide(); 
               $.ajax({
                   url: '@Url.Action("GetProductCards", "Product" )',
                   type: 'POST',
@@ -161,6 +160,7 @@
                       console.error('An error occurred while submitting the form.');
                   }
               });
+               },500);
          });
       $(document).on("click",".show-modal",function (e){
           var id = $(e.target).parents(".product-card").attr("data-id");
@@ -232,7 +232,15 @@
           });
       });
       });
-
+        window.addEventListener('scroll', function() {
+            var pageNoInput = document.getElementById('pagination');
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+              var currentPageNo = parseInt(pageNoInput.value);
+              var newPageNo = currentPageNo + 1; 
+              pageNoInput.value = newPageNo;
+              console.log('Page number updated to ' + newPageNo);
+            }
+          });
          </script>
   <script src="~/js/Index.js"></script>
   </body>

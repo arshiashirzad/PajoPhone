@@ -20,11 +20,23 @@ public class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        modelBuilder.Entity<FieldsKey>().HasQueryFilter(f => f.DeletedAt==null);
-        modelBuilder.Entity<FieldsValue>().HasQueryFilter(f => f.DeletedAt==null);
-        modelBuilder.Entity<FieldsKey>().HasIndex(x => new {x.CategoryId, x.Key}).HasFilter("[isDisabled] = 0").IsUnique(true);
-        modelBuilder.Entity<FieldsKey>().HasIndex(x =>  x.CategoryId);
-        modelBuilder.Entity<FieldsKey>().HasOne(x =>x.Category).WithMany(x=> x.FieldsKeys).HasForeignKey(x=> x.CategoryId).IsRequired(true);
+        modelBuilder.Entity<FieldsKey>()
+            .HasQueryFilter(f => f.DeletedAt==null);
+        modelBuilder.Entity<FieldsValue>()
+            .HasQueryFilter(f => f.DeletedAt==null);
+        modelBuilder.Entity<FieldsKey>()
+            .HasIndex(x =>  x.CategoryId);
+        modelBuilder.Entity<FieldsKey>()
+            .HasOne(x =>x.Category).WithMany(x=> x.FieldsKeys).HasForeignKey(x=> x.CategoryId).IsRequired(true);
+        // modelBuilder.Entity<Product>()
+        //     .HasIndex(p => p.Name); 
+        // modelBuilder.Entity<Product>()
+        //     .HasIndex(p => p.CategoryId);
+        // modelBuilder.Entity<Product>()
+        //     .HasOne(p => p.Category)
+        //     .WithMany()
+        //     .HasForeignKey(p => p.CategoryId)
+        //     .IsRequired(true);
     }
 
    public void SeedData()

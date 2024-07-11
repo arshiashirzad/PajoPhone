@@ -134,11 +134,15 @@ namespace PajoPhone.Controllers
                                 DeletedAt = null
                             });
                         }
-                        foreach (var existingFieldKey in category.FieldsKeys)
+
+                        if (model.Id != 0)
                         {
-                            if (!modelFieldKeyIds.Contains(existingFieldKey.Id))
+                            foreach (var existingFieldKey in category.FieldsKeys)
                             {
-                                existingFieldKey.DeletedAt = DateTime.Now; 
+                                if (!modelFieldKeyIds.Contains(existingFieldKey.Id))
+                                {
+                                    existingFieldKey.DeletedAt = DateTime.Now;
+                                }
                             }
                         }
                     } 

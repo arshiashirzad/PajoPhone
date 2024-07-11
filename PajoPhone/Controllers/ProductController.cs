@@ -217,7 +217,6 @@ namespace PajoPhone.Controllers
                 _context.SaveChanges();
                 return RedirectToAction("Details", new { id = product.Id });
             }   
-            
             return View();
         }
         // GET: Product/Delete/5
