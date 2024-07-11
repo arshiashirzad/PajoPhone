@@ -20,6 +20,6 @@ public class FieldsValueViewModel
         IntValue = fieldsValue.IntValue;
         ValueId = fieldsValue.Id;
         KeyId = fieldsValue.FieldKeyId;
-        Key =fieldsValue.FieldKey.Key;
+        Key =fieldsValue.FieldKey!.Key;
     }
 }

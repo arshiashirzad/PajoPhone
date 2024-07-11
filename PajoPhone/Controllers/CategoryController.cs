@@ -99,7 +99,7 @@ namespace PajoPhone.Controllers
                     .Select(fk => new CategoryFieldViewModel()
                     {
                         Id = fk.Id,
-                        Name = fk.Key
+                        Name = fk.Key!
                     }).ToList()
             };
             return View(viewModel);
@@ -113,7 +113,10 @@ namespace PajoPhone.Controllers
             {
                 var category = _context.Categories
                     .Include(c => c.FieldsKeys)
-                    .FirstOrDefault(c => c.Id == model.Id) ?? new Category();
+                    .FirstOrDefault(c => c.Id == model.Id) ?? new Category()
+                {
+                    Name = string.Empty
+                };
                 var modelFieldKeyIds = model.FieldsKeys.Select(fk => fk.Id).ToList();
                     category.Name = model.Name;
                     category.ParentCategoryId = model.ParentCategoryId;
@@ -180,6 +183,10 @@ namespace PajoPhone.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var category = await _context.Categories.FindAsync(id);
+            if (category == null)
+            {
+                throw new Exception();
+            }
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

@@ -9,13 +9,14 @@ namespace PajoPhone.Models;
 public class ApplicationDbContext : DbContext
 {
     private readonly HttpClient _httpClient = new HttpClient();
-    public ApplicationDbContext(DbContextOptions options) : base(options)
+    public ApplicationDbContext(DbContextOptions options) : base(options) 
     {
     }
-    public DbSet<Product> Products { get; set; }
-    public DbSet<Category> Categories { get; set; }
-    public DbSet<FieldsKey> FieldsKeys{ get; set; }
-    public DbSet<FieldsValue> FieldsValues { get; set; }
+
+    public DbSet<Product> Products { get; set; } = null!;
+    public DbSet<Category> Categories { get; set; } = null!;
+    public DbSet<FieldsKey> FieldsKeys{ get; set; } = null!;
+    public DbSet<FieldsValue> FieldsValues { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

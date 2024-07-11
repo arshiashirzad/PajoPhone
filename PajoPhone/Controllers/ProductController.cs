@@ -79,7 +79,7 @@ namespace PajoPhone.Controllers
                 {
                     new CategoryViewModel
                     {
-                        Id = product.Category.Id,
+                        Id = product.Category!.Id,
                         Name = product.Category.Name,
                         ParentCategoryId = product.Category.ParentCategoryId
                     }
@@ -129,7 +129,7 @@ namespace PajoPhone.Controllers
             }
             else
             {
-                var query = _context.FieldsValues.Where(x => x.ProductId == productId && keys.Contains(x.FieldKey))
+                var query = _context.FieldsValues.Where(x => x.ProductId == productId && keys.Contains(x.FieldKey!))
                     .ToList();
                 items = query.Select(x => new FieldsValueViewModel(x))
                     .ToList();
@@ -149,7 +149,7 @@ namespace PajoPhone.Controllers
                     .Distinct()
                     .ToListAsync();
                 var valueViewModels = values.Select(fv => new FieldsValueViewModel(fv)).ToList();
-                items[key.Key] = valueViewModels;
+                items[key.Key!] = valueViewModels;
             }
             return Json(items);
         }
@@ -244,6 +244,10 @@ namespace PajoPhone.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var product = await _context.Products.FindAsync(id);
+            if (product == null)
+            {
+                throw new Exception("Product not found!");
+            }
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

@@ -31,7 +31,7 @@
                             @Model.Name
                             </p>
                           <p class="my-1 text-sm text-gray-400 text-">
-                            @Model.Category.Name
+                            @Model.Category!.Name
                           </p>
                         </div>
                         <div>
@@ -52,7 +52,7 @@
                             <div class="grid grid-cols-12 my-2">
                               <div class="flex items-center justify-center col-span-2">
                                 <h1 class="font-black text-gray-500 text-md">
-                                  @KeyVal.FieldKey.Key
+                                  @KeyVal.FieldKey!.Key
                                 </h1>
                               </div>
                               <div class="col-span-8 p-2 rounded-lg bg-slate-100">

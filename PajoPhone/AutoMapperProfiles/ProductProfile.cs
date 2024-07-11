@@ -21,7 +21,7 @@ namespace PajoPhone.AutoMapperProfiles
                             .FirstOrDefault(f => f.FieldKeyId == fv.KeyId);
                         if (currentFieldValue != null)
                         {
-                            currentFieldValue.StringValue = fv.StringValue;
+                            currentFieldValue.StringValue = fv.StringValue!;
                             currentFieldValue.IntValue = fv.IntValue;
                             currentFieldValue.DeletedAt = null;
                         }
@@ -30,7 +30,7 @@ namespace PajoPhone.AutoMapperProfiles
                             dest.FieldsValues.Add(new FieldsValue
                             {
                                 FieldKeyId = fv.KeyId,
-                                StringValue = fv.StringValue,
+                                StringValue = fv.StringValue!,
                                 IntValue = fv.IntValue,
                                 DeletedAt = null
                             });
@@ -45,7 +45,7 @@ namespace PajoPhone.AutoMapperProfiles
                     }
                 })
                 .ForMember(opt => opt.Image,
-                    dest => dest.MapFrom(x => GetByteArray(x.ImageFile)));
+                    dest => dest.MapFrom(x => GetByteArray(x.ImageFile!)));
         }
 
         public byte[] GetByteArray(IFormFile iformfile)
@@ -54,7 +54,7 @@ namespace PajoPhone.AutoMapperProfiles
             iformfile.CopyTo(ms);
             return ms.ToArray();
         }
-        public  IFormFile ConvertToIFormFile(byte[] fileBytes)
+        public  IFormFile? ConvertToIFormFile(byte[] fileBytes)
         {
             if (fileBytes == null || fileBytes.Length == 0)
             {
@@ -62,7 +62,7 @@ namespace PajoPhone.AutoMapperProfiles
             }
 
             var stream = new MemoryStream(fileBytes);
-            return new FormFile(stream, 0, stream.Length, null, "file")
+            return new FormFile(stream, 0, stream.Length, string.Empty, "file")
             {
                 Headers = new HeaderDictionary(),
                 ContentType = "application/octet-stream"

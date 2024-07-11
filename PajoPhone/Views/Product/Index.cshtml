@@ -104,13 +104,12 @@
       $(document).ready(function () {
           $.ajax({
               url: '@Url.Action("GetProductCards", "Product")',
-              type: 'post',
+              type: 'GET',
               contentType: 'application/json',
                     success: function (result) {
                   $('#products-container').html(result);
               },
       });
-      //filtering here:
     $('#product-filter-form').on('change', 'input, select, textarea, span', function () {
               var formData = $("#product-filter-form").serialize();
                  $("#products-container").empty();
