@@ -65,6 +65,15 @@ namespace PajoPhone.Controllers
                     query = query.Where(p => p.Name.Contains(term));
                 }
             }
+            if (filterViewModel.FieldsValueViewModels.Any())
+            {
+                foreach (var fieldsValue in filterViewModel.FieldsValueViewModels)
+                {
+                    query = query.Where(p => p.FieldsValues.Any(fv => 
+                        fv.FieldKeyId == fieldsValue.KeyId && 
+                        (fv.StringValue == fieldsValue.StringValue || fv.IntValue == fieldsValue.IntValue)));
+                }
+            }
             int pageSize = filterViewModel.PageNo *10;
             query = query.Take(pageSize);
             var products = await query.ToListAsync();

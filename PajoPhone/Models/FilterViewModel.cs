@@ -7,4 +7,4 @@ public class FilterViewModel
     public int CategoryId { get; set; }
     public int MinPrice { get; set; }
     public List<FieldsValueViewModel> FieldsValueViewModels { get; set; } = [];
-}
+}   
