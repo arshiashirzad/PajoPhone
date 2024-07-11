@@ -44,32 +44,30 @@ namespace PajoPhone.Controllers
             {
                 filterViewModel = new FilterViewModel();
             }
-            List<Product> products = new List<Product>();
-            if (string.IsNullOrEmpty(filterViewModel.Term))
+            var query = _context.Products
+                .Include(p => p.FieldsValues)
+                .ThenInclude(fv => fv.FieldKey)
+                .Include(p => p.Category)
+                .AsQueryable();
+            if (filterViewModel.MinPrice!=0)
             {
-                products = await _context.Products
-                    .Include(p => p.FieldsValues)
-                    .ThenInclude(fv => fv.FieldKey)
-                    .Include(p => p.Category)
-                    .ToListAsync();
+                query = query.Where(p => p.Price >= filterViewModel.MinPrice);
             }
-            else
+            if (filterViewModel.CategoryId!=0)
+            {
+                query = query.Where(p => p.CategoryId == filterViewModel.CategoryId);
+            }
+            if (!string.IsNullOrEmpty(filterViewModel.Term))
             {
                 var searchTerms = filterViewModel.Term.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                var query = _context.Products
-                    .Include(p => p.FieldsValues)
-                    .ThenInclude(fv => fv.FieldKey)
-                    .Include(p => p.Category)
-                    .AsQueryable();
-
                 foreach (var term in searchTerms)
                 {
                     query = query.Where(p => p.Name.Contains(term));
                 }
-
-                products = await query.ToListAsync();
             }
-
+            int pageSize = filterViewModel.PageNo *10;
+            query = query.Take(pageSize);
+            var products = await query.ToListAsync();
             var productViewModels = products.Select(product => new ProductViewModel
             {
                 Id = product.Id,
@@ -89,6 +87,7 @@ namespace PajoPhone.Controllers
                 CategoryId = product.CategoryId,
                 FieldsValues = product.FieldsValues.Select(fv => new FieldsValueViewModel(fv)).ToList()
             }).ToList();
+            
             return PartialView("_ProductCardsPartial", productViewModels);
         }
         // GET: Product
