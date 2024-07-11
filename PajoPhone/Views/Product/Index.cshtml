@@ -112,47 +112,15 @@
       });
       //filtering here:
     $('#product-filter-form').on('change', 'input, select, textarea, span', function () {
-              var formData = $("#product-filter-form").serializeArray();
-                var data = {
-                        Term: "",
-                        PageNo: 1,
-                        CategoryId: 0,
-                        MinPrice: 0,
-                        FieldsValueViewModels: []
-                    };    
-                $.each(formData, function() {
-                    switch (this.name) {
-                    case "Term":
-                        data.Term = this.value;
-                        break;
-                    case "PageNo":
-                        data.PageNo = parseInt(this.value, 10);
-                        break;
-                    case "CategoryId":
-                        if (this.value!=0){
-                        data.CategoryId = parseInt(this.value, 10);
-                        }
-                        break;
-                    case "MinPrice":
-                        data.MinPrice = parseInt(this.value, 10);
-                        break;
-                    default:    
-                        data.FieldsValueViewModels.push({
-                            KeyId: this.value,
-                            StringValue: this.value,
-                        });
-                        break;
-                }       
-                });
+              var formData = $("#product-filter-form").serialize();
                  $("#products-container").empty();
                           $("#loading").show();
                           setTimeout(function() {
                           $("#loading").hide(); 
               $.ajax({
-                  url: '@Url.Action("GetProductCards", "Product" )',
-                  type: 'POST',
+                  url: '@Url.Action("GetProductCards", "Product" )?' + formData,
+                  type: 'GET',
                   contentType: 'application/json',
-                  data:JSON.stringify(data) ,
                   success: function(response) {
                   $('#products-container').html(response);
                   },

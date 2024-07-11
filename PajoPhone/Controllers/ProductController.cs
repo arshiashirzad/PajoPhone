@@ -38,7 +38,7 @@ namespace PajoPhone.Controllers
             return PartialView("_ProductModalPartial", product);
         }
         
-        public async Task<IActionResult> GetProductCards([FromBody] FilterViewModel filterViewModel)
+        public async Task<IActionResult> GetProductCards(FilterViewModel filterViewModel)
         {
             if (filterViewModel == null)
             {
