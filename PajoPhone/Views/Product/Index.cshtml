@@ -36,7 +36,7 @@
   <nav class="sticky top-0 z-10 block p-4 bg-white shadow-lg md:mb-8 ">
       <div class="container flex items-center justify-between mx-auto max-w-screen-2xl">
           <div class="p-4 md:hidden">
-              <button onclick="isOpen =!isOpen" class="text-orange-500 focus:outline-none">
+              <button onclick="OpenFilterBar()" class="text-orange-500 focus:outline-none">
                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
                   </svg>
@@ -47,10 +47,8 @@
                   <a class="block px-4 py-2 font-bold text-orange-500 transition-all duration-500 rounded-md hover:bg-gray-100" href="#">PajoPhone</a>
               </li>
           </ul>
-          <!-- Search bar-->
           <div class="flex-1 max-w-xl mr-4">
               <div class="flex items-center p-1 bg-gray-100 rounded-lg">
-                  @* search bar*@
                   <input type="text" id="search-bar"  placeholder="نام محصول ..." class="w-full p-2 bg-transparent focus:outline-none text-slate-800" />
               </div>
           </div>
@@ -58,11 +56,9 @@
   </nav>
   <!-- content -->
   <div class="container md:px-4 lg:px-6  mx-auto xl:max-w-screen-2xl grid grid-cols-12 md:grid-rows-[55px_minmax(500px,_1fr)] md:gap-8">
-      <!-- sidebar -->
       <div class="col-span-12 row-span-2 md:block lg:col-span-3 xl:col-span-2">
-          <div x-show="isOpen" class="fixed inset-0 bg-black bg-opacity-50 md:hidden" onclick="isOpen = false"></div>
-          <div :class="{ 'block': isOpen, 'hidden': !isOpen }" class="hidden md:block bg-white p-5 md:rounded-xl max-h-[calc(100vh_-_140px)] overflow-y-auto sticky md:top-28 md:static md:max-h-full">
-              <!-- Categories -->
+          <div id="filtering-backdrop" class="hidden fixed inset-0 bg-black bg-opacity-50 md:hidden"></div>
+          <div id="filtering-bar" class="hidden md:block bg-white p-5 md:rounded-xl max-h-[calc(100vh_-_140px)] overflow-y-auto sticky md:top-28 md:static md:max-h-full">
               <div>
                   <form id="product-filter-form"  enctype="application/x-www-form-urlencoded">
                       <input name="Term" class="hidden" id="hidden-search-bar"/>
@@ -79,7 +75,7 @@
                       <div>
                           <div class="mb-5 text-xl font-bold text-orange-500">قیمت</div>
                           <div class="mb-4">
-                              <input type="range" id="price-range" name="MinPrice" class="w-full accent-orange-500" min="0" max="1000" value="0" oninput="updatePrice(this.value)">
+                              <input type="range" id="price-range" name="MinPrice" class="w-full accent-orange-500" min="0" max="1000" value="0" oninput="UpdatePrice(this.value)">
                           </div>
                           <div class="flex justify-between text-gray-500">
                               <span id="minPrice">$0</span>
@@ -111,7 +107,6 @@
       });
     $('#product-filter-form').on('change', 'input, select, textarea, span', function () {
               var formData = $("#product-filter-form").serialize();
-                 $("#products-container").empty();
                           $("#loading").show();
                           setTimeout(function() {
                           $("#loading").hide(); 
@@ -135,7 +130,7 @@
               type: 'GET',
               success: function (result) {
                   $('#modal-container').html(result);
-                  openModal();
+                  OpenModal();
               },
               error: function (xhr, status, error) {
                   console.error(error);
@@ -197,8 +192,7 @@
               }
           });
       });
-      });
-       
+      });     
          </script>
   <script src="~/js/Index.js"></script>
   </body>

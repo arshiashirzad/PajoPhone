@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -69,12 +70,15 @@ namespace PajoPhone.Controllers
             {
                 foreach (var fieldsValue in filterViewModel.FieldsValueViewModels)
                 {
-                    query = query.Where(p => p.FieldsValues.Any(fv => 
-                        fv.FieldKeyId == fieldsValue.KeyId && 
-                        (fv.StringValue == fieldsValue.StringValue || fv.IntValue == fieldsValue.IntValue)));
+                    if (!string.IsNullOrEmpty(fieldsValue.StringValue))
+                    {
+                        query = query.Where(p => p.FieldsValues.Any(fv =>
+                            fv.FieldKeyId == fieldsValue.KeyId &&
+                            (fv.StringValue == fieldsValue.StringValue || fv.IntValue == fieldsValue.IntValue)));
+                    }
                 }
             }
-            int pageSize = filterViewModel.PageNo *10;
+            int pageSize = filterViewModel.PageNo * 10;
             query = query.Take(pageSize);
             var products = await query.ToListAsync();
             var productViewModels = products.Select(product => new ProductViewModel
