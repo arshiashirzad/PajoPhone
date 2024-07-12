@@ -50,6 +50,7 @@
           <div class="flex-1 max-w-xl mr-4">
               <div class="flex items-center p-1 bg-gray-100 rounded-lg">
                   <input type="text" id="search-bar"  placeholder="نام محصول ..." class="w-full p-2 bg-transparent focus:outline-none text-slate-800" />
+                  <ul id="suggestions"></ul>
               </div>
           </div>
       </div>
@@ -137,9 +138,28 @@
               }
           });
       })
-      $("#search-bar").on("keyup" , function(){
+      $("#search-bar").on("change , keyup" , function(){
           var term= $(this).val();
           $("#hidden-search-bar").val(term).change();
+          if (term.length >= 2) {
+                      $.ajax({
+                          url: '@Url.Action("GetSuggestions" , "Product")' + "?term=" + term,
+                          type: 'GET',
+                          data: { term: term },
+                          success: function(data) {
+                              var suggestions = $("#suggestions");
+                              suggestions.empty();
+                              $.each(data, function(index, item) {
+                                  suggestions.append("<li>" + item + "</li>");
+                              });
+                          },
+                          error: function(xhr, status, error) {
+                              console.error('Error:', error);
+                          }
+                      });
+                  } else {
+                      $("#suggestions").empty();
+                  }
       });
       $('#categoryTree').on("select_node.jstree", function (e, data) {
           var categoryId = data.node.id;
@@ -193,6 +213,10 @@
           });
       });
       });     
+        $("#suggestions").on("click", "li", function() {
+              $("#search-bar").val($(this).text()).change();
+              $("#suggestions").empty();
+          });
          </script>
   <script src="~/js/Index.js"></script>
   </body>

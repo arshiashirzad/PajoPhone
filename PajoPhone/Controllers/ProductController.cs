@@ -38,6 +38,15 @@ namespace PajoPhone.Controllers
                 .SingleOrDefaultAsync(x => x.Id == productId);
             return PartialView("_ProductModalPartial", product);
         }
+        public async Task<IActionResult> GetSuggestions(string term)
+        {
+            var results = await _context.Products
+                .Where(p => p.Name.Contains(term))
+                .Select(p => p.Name )
+                .Take(5)
+                .ToListAsync();
+            return Ok(results);
+        }
         
         public async Task<IActionResult> GetProductCards(FilterViewModel filterViewModel)
         {
