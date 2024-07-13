@@ -77,7 +77,6 @@ namespace PajoPhone.Controllers
             {
                 return NotFound();
             }
-
             var viewModel = new CategoryViewModel
             {
                 Id = category.Id,

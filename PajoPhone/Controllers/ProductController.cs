@@ -24,7 +24,6 @@ namespace PajoPhone.Controllers
 
         public ProductController(ApplicationDbContext context, IProductFactory productFactory)
         {
-
             _context = context;
             _productFactory = productFactory;
         }
@@ -184,7 +183,6 @@ namespace PajoPhone.Controllers
                 Id = category.Id,
                 Name = category.Name
             }).ToList();
-            ViewData["CategoryId"] = new SelectList(categories, "Id", "Name");
             var viewModel = new ProductViewModel
             {
                 Categories = categoryViewModels
