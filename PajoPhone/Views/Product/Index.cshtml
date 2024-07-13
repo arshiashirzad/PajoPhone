@@ -47,12 +47,11 @@
                   <a class="block px-4 py-2 font-bold text-orange-500 transition-all duration-500 rounded-md hover:bg-gray-100" href="#">PajoPhone</a>
               </li>
           </ul>
-          <div class="flex-1 max-w-xl mr-4">
+          <div class="relative w-50 mr-4">
               <div class="flex items-center p-1 bg-gray-100 rounded-lg">
                   <input type="text" id="search-bar"  placeholder="نام محصول ..." class="w-full p-2 bg-transparent focus:outline-none text-slate-800" />
-              </div>
-                                <ul id="suggestions"></ul>
-
+              </div>    
+              <div id="suggestions" class="absolute w-full bg-white border border-gray-300 rounded-lg shadow-lg hidden "></div>
           </div>
       </div>
   </nav>
@@ -146,22 +145,31 @@
                       $.ajax({
                           url: '@Url.Action("GetSuggestions" , "Product")' + "?term=" + term,
                           type: 'GET',
-                          data: { term: term },
                           success: function(data) {
                               var suggestions = $("#suggestions");
-                              suggestions.empty();
-                              $.each(data, function(index, item) {
-                                  suggestions.append("<li>" + item + "</li>");
-                              });
-                          },
-                          error: function(xhr, status, error) {
-                              console.error('Error:', error);
-                          }
-                      });
+                                                  suggestions.empty();
+                                                  if (Array.isArray(data) && data.length > 0) {
+                                                      data.forEach(function(item) {
+                                                          suggestions.append("<div class='p-2 cursor-pointer hover:bg-gray-200'>" + item + "</div>");
+                                                      });
+                                                      suggestions.removeClass("hidden");
+                                                  } else {
+                                                      suggestions.addClass("hidden");
+                                                  }
+                                              },
+                                              error: function(xhr, status, error) {
+                                                  console.error('Error:', error);
+                                              }
+                      })
                   } else {
-                      $("#suggestions").empty();
+                        $("#suggestions").empty().addClass("hidden");
                   }
       });
+       $("#suggestions").on("click", "div", function() {
+                      $("#search-bar").val($(this).text());
+                      $("#suggestions").empty().addClass("hidden");
+                  });
+       
       $('#categoryTree').on("select_node.jstree", function (e, data) {
           var categoryId = data.node.id;
           $('#selectedCategoryId').val(categoryId).change();
@@ -214,10 +222,7 @@
           });
       });
       });     
-        $("#suggestions").on("click", "li", function() {
-              $("#search-bar").val($(this).text()).change();
-              $("#suggestions").empty();
-          });
+       
          </script>
   <script src="~/js/Index.js"></script>
   </body>
