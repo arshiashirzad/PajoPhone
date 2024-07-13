@@ -1,10 +1,8 @@
-using AutoMapper;   
 using PajoPhone.AutoMapperProfiles;
 using Microsoft.EntityFrameworkCore;
 using PajoPhone;
 using PajoPhone.Models;
 using PajoPhone.Services.Factory;
-using Product = PajoPhone.Models.Product;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -33,7 +31,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseMiddleware<LoggerMiddleWare>();
 app.UseAuthorization();
 
 app.MapControllerRoute(
