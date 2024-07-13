@@ -77,11 +77,8 @@ namespace PajoPhone.Controllers
             {
                 return NotFound();
             }
-            var viewModel = new CategoryViewModel
+            var viewModel = new CategoryViewModel(category.Id, category.Name , category.ParentCategoryId , null! , null!)
             {
-                Id = category.Id,
-                Name = category.Name,
-                ParentCategoryId = category.ParentCategoryId,
                 FieldsKeys = category.FieldsKeys.Select(fk => new CategoryFieldViewModel
                 {
                     Id = fk.Id,
@@ -101,7 +98,6 @@ namespace PajoPhone.Controllers
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 var category = new Category
@@ -109,9 +105,7 @@ namespace PajoPhone.Controllers
                     Id = viewModel.Id,
                     Name = viewModel.Name,
                     ParentCategoryId = viewModel.ParentCategoryId,
-                    // Initialize other properties as needed
                 };
-
                 try
                 {
                     await _categoryRepository.UpdateAsync(category);
@@ -129,7 +123,6 @@ namespace PajoPhone.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-
             viewModel.ParentCategories = await GetParentCategories();
             return View(viewModel);
         }

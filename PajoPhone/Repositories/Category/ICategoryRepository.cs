@@ -8,6 +8,5 @@ public interface ICategoryRepository
     Task UpdateAsync(Category category);
     Task DeleteAsync(int id);
     Task<List<object>> GetCategoryTreeAsync();
-    
     bool CategoryExists(int id);
 }

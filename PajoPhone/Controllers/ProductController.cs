@@ -1,18 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PajoPhone.Models;
 using PajoPhone.Services.Factory;
-using System.Web;
-using Microsoft.CodeAnalysis.Differencing;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Primitives;
-using Microsoft.VisualBasic;
 using PajoPhone.Loader;
 
 namespace PajoPhone.Controllers
