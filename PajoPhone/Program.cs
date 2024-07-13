@@ -2,6 +2,7 @@ using PajoPhone.AutoMapperProfiles;
 using Microsoft.EntityFrameworkCore;
 using PajoPhone;
 using PajoPhone.Models;
+using PajoPhone.Repositories.Category;
 using PajoPhone.Services.Factory;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 );
 builder.Services.AddScoped<IProductBuilder,ProductBuilder>()
     .AddScoped<IProductFactory,ProductFactory>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
 var app = builder.Build();
 //Seed Data
 SeedDataProvider.Initialize(app.Services);

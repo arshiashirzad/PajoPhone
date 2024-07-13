@@ -1,44 +1,30 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using PajoPhone.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using PajoPhone.Models;
+using PajoPhone.Repositories.Category;
 
 namespace PajoPhone.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        public CategoryController(ApplicationDbContext context)
+        private readonly ICategoryRepository _categoryRepository;
+
+        public CategoryController(ICategoryRepository categoryRepository)
         {
-            _context = context;
+            _categoryRepository = categoryRepository;
         }
-        
-        private List<object> GetCategoryTree(List<Category> categories, int? parentId)
-        {
-            return categories
-                .Where(c => c.ParentCategoryId == parentId)
-                .Select(c => new
-                {
-                    id = c.Id,
-                    text = c.Name,
-                    children = GetCategoryTree(categories, c.Id)
-                }).ToList<object>();
-        }
-        public async Task<IActionResult> GetCategoryTreeData()
-        {
-            var categories = await _context.Categories.ToListAsync();
-            var categoryTreeData = GetCategoryTree(categories, null);
-            return Json(categoryTreeData);
-        }
+
         // GET: Category
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            var categories = await _categoryRepository.GetAllAsync();
+            return View(categories);
         }
+
         // GET: Category/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -47,8 +33,7 @@ namespace PajoPhone.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var category = await _categoryRepository.GetByIdAsync(id.Value);
             if (category == null)
             {
                 return NotFound();
@@ -61,98 +46,93 @@ namespace PajoPhone.Controllers
         public async Task<IActionResult> Create()
         {
             var viewModel = new CategoryViewModel();
-            viewModel.ParentCategories =await _context.Categories
-                .Select(c => new CategoryViewModel
-                {
-                    Id = c.Id,
-                    Name = c.Name
-                })
-                .ToListAsync();            
-            return View("Edit",viewModel);
+            viewModel.ParentCategories = await GetParentCategories();
+            return View(nameof(Edit), viewModel);
         }
 
+        // POST: Category/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CategoryViewModel categoryViewModel)
-            => Edit(categoryViewModel);
+        public async Task<IActionResult> Create(CategoryViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var category = new Category
+                {
+                    Name = viewModel.Name,
+                    ParentCategoryId = viewModel.ParentCategoryId,
+                };
+                await _categoryRepository.AddAsync(category);
+                return RedirectToAction(nameof(Index));
+            }
+            viewModel.ParentCategories = await GetParentCategories();
+            return View(nameof(Edit),viewModel);
+        }
 
-        // GET: Categories/Edit/5
+        // GET: Category/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var category =await _context.Categories
-                .Include(c => c.FieldsKeys)
-                .FirstOrDefaultAsync(c => c.Id == id);
+            var category = await _categoryRepository.GetByIdAsync(id);
             if (category == null)
             {
                 return NotFound();
             }
+
             var viewModel = new CategoryViewModel
             {
                 Id = category.Id,
                 Name = category.Name,
                 ParentCategoryId = category.ParentCategoryId,
-                FieldsKeys = category.FieldsKeys
-                    .Select(fk => new CategoryFieldViewModel()
-                    {
-                        Id = fk.Id,
-                        Name = fk.Key!
-                    }).ToList()
+                FieldsKeys = category.FieldsKeys.Select(fk => new CategoryFieldViewModel
+                {
+                    Id = fk.Id,
+                    Name = fk.Key!
+                }).ToList()
             };
+            viewModel.ParentCategories = await GetParentCategories();
             return View(viewModel);
         }
-        
-        [ValidateAntiForgeryToken]
+
+        // POST: Category/Edit/5
         [HttpPost]
-        public IActionResult Edit(CategoryViewModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, CategoryViewModel viewModel)
         {
+            if (id != viewModel.Id)
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
-                var category = _context.Categories
-                    .Include(c => c.FieldsKeys)
-                    .FirstOrDefault(c => c.Id == model.Id) ?? new Category()
+                var category = new Category
                 {
-                    Name = string.Empty
+                    Id = viewModel.Id,
+                    Name = viewModel.Name,
+                    ParentCategoryId = viewModel.ParentCategoryId,
+                    // Initialize other properties as needed
                 };
-                var modelFieldKeyIds = model.FieldsKeys.Select(fk => fk.Id).ToList();
-                    category.Name = model.Name;
-                    category.ParentCategoryId = model.ParentCategoryId;
-                    foreach (var fv in model.FieldsKeys)
-                    {
-                        var currentFieldKey = category.FieldsKeys
-                            .FirstOrDefault(f => f.Id == fv.Id);
-                        if (currentFieldKey != null)
-                        {
-                            currentFieldKey.Key = fv.Name;
-                            currentFieldKey.DeletedAt = null;
-                        }
-                        else
-                        {
-                            category.FieldsKeys.Add(new FieldsKey()
-                            {
-                                Key = fv.Name,
-                                DeletedAt = null
-                            });
-                        }
 
-                        if (model.Id != 0)
-                        {
-                            foreach (var existingFieldKey in category.FieldsKeys)
-                            {
-                                if (!modelFieldKeyIds.Contains(existingFieldKey.Id))
-                                {
-                                    existingFieldKey.DeletedAt = DateTime.Now;
-                                }
-                            }
-                        }
-                    } 
-                    if (category.Id==0)
-                    {
-                        _context.Add(category);
-                    }
-                    _context.SaveChanges();
-                    return RedirectToAction("Index");
+                try
+                {
+                    await _categoryRepository.UpdateAsync(category);
                 }
-            return View(model);
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_categoryRepository.CategoryExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+
+            viewModel.ParentCategories = await GetParentCategories();
+            return View(viewModel);
         }
 
         // GET: Category/Delete/5
@@ -163,8 +143,7 @@ namespace PajoPhone.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var category = await _categoryRepository.GetByIdAsync(id.Value);
             if (category == null)
             {
                 return NotFound();
@@ -174,23 +153,29 @@ namespace PajoPhone.Controllers
         }
 
         // POST: Category/Delete/5
-        [HttpPost, ActionName(nameof(Delete))]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
-            {
-                throw new Exception();
-            }
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
+            await _categoryRepository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CategoryExists(int id)
+        // GET: Category/GetCategoryTreeData
+        public async Task<IActionResult> GetCategoryTreeData()
         {
-            return _context.Categories.Any(e => e.Id == id);
+            var categoryTreeData = await _categoryRepository.GetCategoryTreeAsync();
+            return Json(categoryTreeData);
+        }
+
+        private async Task<List<CategoryViewModel>> GetParentCategories()
+        {
+            var categories = await _categoryRepository.GetAllAsync();
+            return categories.Select(c => new CategoryViewModel
+            {
+                Id = c.Id,
+                Name = c.Name
+            }).ToList();
         }
     }
 }
