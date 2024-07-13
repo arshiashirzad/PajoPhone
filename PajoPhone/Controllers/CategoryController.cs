@@ -28,9 +28,9 @@ namespace PajoPhone.Controllers
                     children = GetCategoryTree(categories, c.Id)
                 }).ToList<object>();
         }
-        public IActionResult GetCategoryTreeData()
+        public async Task<IActionResult> GetCategoryTreeData()
         {
-            var categories = _context.Categories.ToList();
+            var categories = await _context.Categories.ToListAsync();
             var categoryTreeData = GetCategoryTree(categories, null);
             return Json(categoryTreeData);
         }
@@ -58,16 +58,16 @@ namespace PajoPhone.Controllers
         }
 
         // GET: Category/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var viewModel = new CategoryViewModel();
-            viewModel.ParentCategories = _context.Categories
+            viewModel.ParentCategories =await _context.Categories
                 .Select(c => new CategoryViewModel
                 {
                     Id = c.Id,
                     Name = c.Name
                 })
-                .ToList();            
+                .ToListAsync();            
             return View("Edit",viewModel);
         }
 
@@ -77,11 +77,11 @@ namespace PajoPhone.Controllers
             => Edit(categoryViewModel);
 
         // GET: Categories/Edit/5
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var category = _context.Categories
+            var category =await _context.Categories
                 .Include(c => c.FieldsKeys)
-                .FirstOrDefault(c => c.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == id);
             if (category == null)
             {
                 return NotFound();
@@ -174,7 +174,7 @@ namespace PajoPhone.Controllers
         }
 
         // POST: Category/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName(nameof(Delete))]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

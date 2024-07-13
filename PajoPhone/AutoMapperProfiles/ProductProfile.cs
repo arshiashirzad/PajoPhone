@@ -6,6 +6,8 @@ namespace PajoPhone.AutoMapperProfiles
     {
         public ProductProfile()
         {
+            CreateMap<Product, ProductViewModel>();
+
             CreateMap<ProductViewModel, Product>()
                 .ForMember(dest => dest.FieldsValues, opt => opt.Ignore())
                 .AfterMap((src, dest) =>
