@@ -8,7 +8,7 @@
 <hr />
 <div class="row d-grid">
     <div class="col-md-4">
-        <form  method="post" enctype="multipart/form-data">
+        <form  id="form" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -34,8 +34,9 @@
             </div>
             <div class="form-group mb-2">
                 <label asp-for="Price" class="control-label"></label>
+                <p id="suggested-price"></p>
                 <div class="d-flex">
-                    <input id="suggested-price" asp-for="Price" class="form-control"/>
+                    <input id="price-holder" asp-for="Price" class="form-control"/>
                     <div class="p-2" id="search-price">
                         <svg class="cursor-pointer" fill="#000000" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                              viewBox="0 0 488.4 488.4" xml:space="preserve">
@@ -50,6 +51,7 @@
                         </svg>
                     </div>
                 </div>
+                <span id="error-message" class="text-danger" style="display:none;">value not valid</span>
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div id="categoryTreeContainer" class="mb-3">
@@ -62,7 +64,7 @@
                 </div>
             </div>
             <div class="form-group">
-                        <button type="submit" class="btn btn-success">Save</button>
+                <button type="submit" class="btn btn-success">Save</button>
             </div>
         </form>
     </div>
@@ -96,7 +98,7 @@
                        url: '@Url.Action("GetPrice", "Product")'+ "?name=" + productName,
                        type: 'GET',
                        success: function(response) {
-                           $('#suggested-price').val(response);
+                           $('#suggested-price').html(response);
                        },
                        error: function() {
                            alert('Error fetching price.');
@@ -104,4 +106,21 @@
                    });
                }
            });
+        $('#form').on('submit', function(event) {
+                        var number = parseFloat($('#price-holder').val());
+                        var errorMessage = $('#error-message');
+                        var suggestedPrice = parseFloat($('#suggested-price').html());
+        
+                        if (!isNaN(suggestedPrice)) {
+                            if (number >= (suggestedPrice - suggestedPrice * 0.2) && number <= (suggestedPrice + suggestedPrice * 0.2)) {
+                                errorMessage.hide();
+                            } else {
+                                event.preventDefault();
+                                errorMessage.show();
+                            }
+                        } else {
+                            event.preventDefault();
+                            errorMessage.show();
+                        }
+                    });
 </script>

@@ -20,6 +20,7 @@ builder.Services.AddScoped<IProductBuilder,ProductBuilder>()
 builder.Services.AddScoped<IProductLoader, ProductLoader>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddHttpClient<GooshiShopScraper>();
+builder.Services.AddMemoryCache();
 var app = builder.Build();
 //Seed Data
 SeedDataProvider.Initialize(app.Services);

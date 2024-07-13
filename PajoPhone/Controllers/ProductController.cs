@@ -10,6 +10,7 @@ using PajoPhone.Models;
 using PajoPhone.Services.Factory;
 using System.Web;
 using Microsoft.CodeAnalysis.Differencing;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Primitives;
 using Microsoft.VisualBasic;
 using PajoPhone.Loader;
@@ -24,15 +25,18 @@ namespace PajoPhone.Controllers
         private readonly IProductFactory _productFactory;
         private readonly IProductLoader _productLoader;
         private readonly GooshiShopScraper _gooshiShopScraper;
+        private readonly IMemoryCache _memoryCache;
+
         public ProductController(ApplicationDbContext context,
             IProductFactory productFactory ,
             IProductLoader productLoader,
-            GooshiShopScraper gooshiShopScraper)
+            GooshiShopScraper gooshiShopScraper , IMemoryCache memoryCache)
         {
             _productLoader = productLoader;
             _context = context;
             _productFactory = productFactory;
             _gooshiShopScraper = gooshiShopScraper;
+            _memoryCache = memoryCache;
         }
         public async Task<IActionResult> GetProductModal(int productId)
         {
@@ -149,7 +153,18 @@ namespace PajoPhone.Controllers
         }
         public async Task<IActionResult> GetPrice(string name)
         {
-            var price = await _gooshiShopScraper.GetPriceAsync(name);
+            var cacheKey = $"price_{name}";
+            if (!_memoryCache.TryGetValue(cacheKey, out decimal price))
+            {
+                price = decimal.Parse(await _gooshiShopScraper.GetPriceAsync(name));
+                var cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
+                    SlidingExpiration = TimeSpan.FromMinutes(10)
+                };
+
+                _memoryCache.Set(cacheKey, price, cacheEntryOptions);
+            }
             return Ok(price);
         }
         // GET: Product
