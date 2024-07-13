@@ -12,7 +12,6 @@ public class ApplicationDbContext : DbContext
     public ApplicationDbContext(DbContextOptions options) : base(options) 
     {
     }
-
     public DbSet<Product> Products { get; set; } = null!;
     public DbSet<Category> Categories { get; set; } = null!;
     public DbSet<FieldsKey> FieldsKeys{ get; set; } = null!;
@@ -29,15 +28,6 @@ public class ApplicationDbContext : DbContext
             .HasIndex(x =>  x.CategoryId);
         modelBuilder.Entity<FieldsKey>()
             .HasOne(x =>x.Category).WithMany(x=> x.FieldsKeys).HasForeignKey(x=> x.CategoryId).IsRequired(true);
-        // modelBuilder.Entity<Product>()
-        //     .HasIndex(p => p.Name); 
-        // modelBuilder.Entity<Product>()
-        //     .HasIndex(p => p.CategoryId);
-        // modelBuilder.Entity<Product>()
-        //     .HasOne(p => p.Category)
-        //     .WithMany()
-        //     .HasForeignKey(p => p.CategoryId)
-        //     .IsRequired(true);
     }
 
    public void SeedData()
@@ -45,7 +35,6 @@ public class ApplicationDbContext : DbContext
     if (Products.Count() < 50)
     {
         var categories = new List<Category>();
-
         if (!Categories.Any())
         {
             var categoryFaker = new Bogus.Faker<Category>()
@@ -58,7 +47,6 @@ public class ApplicationDbContext : DbContext
         {
             categories = Categories.ToList();
         }
-
         var fieldsKeyFaker = new Bogus.Faker<FieldsKey>()
             .RuleFor(u => u.Key, f => f.Lorem.Word())
             .RuleFor(u => u.Category, f =>
@@ -108,5 +96,4 @@ public class ApplicationDbContext : DbContext
         SaveChanges();
     }
 }
-
 }

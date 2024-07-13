@@ -28,7 +28,6 @@ namespace PajoPhone.Controllers
             _context = context;
             _productFactory = productFactory;
         }
-
         public async Task<IActionResult> GetProductModal(int productId)
         {
             var product = await _context.Products
@@ -41,13 +40,12 @@ namespace PajoPhone.Controllers
         public async Task<IActionResult> GetSuggestions(string term)
         {
             var results = await _context.Products
-                .Where(p => p.Name.Contains(term))
+                .Where(p => p.Name.StartsWith(term))
                 .Select(p => p.Name )
                 .Take(5)
                 .ToListAsync();
             return Ok(results);
         }
-        
         public async Task<IActionResult> GetProductCards(FilterViewModel filterViewModel)
         {
             if (filterViewModel == null)
@@ -112,41 +110,13 @@ namespace PajoPhone.Controllers
             
             return PartialView("_ProductCardsPartial", productViewModels);
         }
-        // GET: Product
-        [Route("/")]
-        [Route("/Index")]
-        [Route("/Product/Index")]
-        public async Task<IActionResult> Index()
-        {
-            FilterViewModel filterViewModel = new FilterViewModel();
-            return View(filterViewModel);
-        }
-        // GET: Product/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Products
-                .Include(p => p.Category)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            return View(product);
-        }
-        
-        [HttpGet]
         public PartialViewResult GetKeyValueInputs(int categoryId ,int productId)
         {
             var items= new List<FieldsValueViewModel>();
             var keys = _context.FieldsKeys.Where(fk => fk.CategoryId == categoryId).ToList();
             if (productId == 0)
             {
-                 items = keys.Select(x => new FieldsValueViewModel(x))
+                items = keys.Select(x => new FieldsValueViewModel(x))
                     .ToList();
             }
             else
@@ -175,6 +145,35 @@ namespace PajoPhone.Controllers
             }
             return Json(items);
         }
+        // GET: Product
+        [Route("/")]
+        [Route("/Index")]
+        [Route("/Product/Index")]
+        public async Task<IActionResult> Index()
+        {
+            FilterViewModel filterViewModel = new FilterViewModel();
+            return View(filterViewModel);
+        }
+        // GET: Product/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var product = await _context.Products
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return View(product);
+        }
+        
+        [HttpGet]
+       
         // GET: Product/Create
         [HttpGet]
         public async Task<IActionResult> Create()

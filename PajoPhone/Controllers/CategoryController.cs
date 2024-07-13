@@ -12,16 +12,11 @@ namespace PajoPhone.Controllers
     public class CategoryController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private void PopulateParentCategories(CategoryViewModel viewModel)
+        public CategoryController(ApplicationDbContext context)
         {
-            viewModel.ParentCategories = _context.Categories
-                .Select(c => new CategoryViewModel
-                {
-                    Id = c.Id,
-                    Name = c.Name
-                })
-                .ToList();
+            _context = context;
         }
+        
         private List<object> GetCategoryTree(List<Category> categories, int? parentId)
         {
             return categories
@@ -39,16 +34,11 @@ namespace PajoPhone.Controllers
             var categoryTreeData = GetCategoryTree(categories, null);
             return Json(categoryTreeData);
         }
-        public CategoryController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
         // GET: Category
         public async Task<IActionResult> Index()
         {
             return View(await _context.Categories.ToListAsync());
         }
-
         // GET: Category/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -71,7 +61,13 @@ namespace PajoPhone.Controllers
         public IActionResult Create()
         {
             var viewModel = new CategoryViewModel();
-            PopulateParentCategories(viewModel); 
+            viewModel.ParentCategories = _context.Categories
+                .Select(c => new CategoryViewModel
+                {
+                    Id = c.Id,
+                    Name = c.Name
+                })
+                .ToList();            
             return View("Edit",viewModel);
         }
 

@@ -6,11 +6,6 @@ namespace PajoPhone.AutoMapperProfiles
     {
         public ProductProfile()
         {
-            CreateMap<Product, ProductViewModel>()
-                .ForMember(dest => dest.FieldsValues, opt => opt.MapFrom(src => src.FieldsValues))
-                .ForMember(dest => dest.ImageFile,
-                    opt =>
-                        opt.MapFrom(src => ConvertToIFormFile(src.Image)));
             CreateMap<ProductViewModel, Product>()
                 .ForMember(dest => dest.FieldsValues, opt => opt.Ignore())
                 .AfterMap((src, dest) =>
@@ -53,20 +48,6 @@ namespace PajoPhone.AutoMapperProfiles
             var ms = new MemoryStream();
             iformfile.CopyTo(ms);
             return ms.ToArray();
-        }
-        public  IFormFile? ConvertToIFormFile(byte[] fileBytes)
-        {
-            if (fileBytes == null || fileBytes.Length == 0)
-            {
-                return null;
-            }
-
-            var stream = new MemoryStream(fileBytes);
-            return new FormFile(stream, 0, stream.Length, string.Empty, "file")
-            {
-                Headers = new HeaderDictionary(),
-                ContentType = "application/octet-stream"
-            };
         }
 }
 }
