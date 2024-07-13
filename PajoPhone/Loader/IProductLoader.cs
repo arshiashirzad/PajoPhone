@@ -2,7 +2,7 @@ namespace PajoPhone.Loader;
 using PajoPhone.Models;
 public interface IProductLoader
 {
-        Task<Product> SingleAsync(int id,
+        Task<Product> LoadProductAsync(int productId,
             bool IncludeCategory = false,
             bool IncludeFieldsValues = false);
 }

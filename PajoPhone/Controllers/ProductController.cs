@@ -12,6 +12,7 @@ using System.Web;
 using Microsoft.CodeAnalysis.Differencing;
 using Microsoft.Extensions.Primitives;
 using Microsoft.VisualBasic;
+using PajoPhone.Loader;
 
 namespace PajoPhone.Controllers
 {
@@ -21,19 +22,21 @@ namespace PajoPhone.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IProductFactory _productFactory;
-
-        public ProductController(ApplicationDbContext context, IProductFactory productFactory)
+        private readonly IProductLoader _productLoader;
+        private readonly GooshiShopScraper _gooshiShopScraper;
+        public ProductController(ApplicationDbContext context,
+            IProductFactory productFactory ,
+            IProductLoader productLoader,
+            GooshiShopScraper gooshiShopScraper)
         {
+            _productLoader = productLoader;
             _context = context;
             _productFactory = productFactory;
+            _gooshiShopScraper = gooshiShopScraper;
         }
         public async Task<IActionResult> GetProductModal(int productId)
         {
-            var product = await _context.Products
-                .Include(x => x.FieldsValues)
-                .ThenInclude(x => x.FieldKey)
-                .Include(x=> x.Category)
-                .SingleOrDefaultAsync(x => x.Id == productId);
+            var product = await _productLoader.LoadProductAsync(productId,true  , true );
             return PartialView("_ProductModalPartial", product);
         }
         public async Task<IActionResult> GetSuggestions(string term)
@@ -144,6 +147,11 @@ namespace PajoPhone.Controllers
             }
             return Json(items);
         }
+        public async Task<IActionResult> GetPrice(string name)
+        {
+            var price = await _gooshiShopScraper.GetPriceAsync(name);
+            return Ok(price);
+        }
         // GET: Product
         [Route("/")]
         [Route("/Index")]
@@ -189,8 +197,6 @@ namespace PajoPhone.Controllers
             };
             return View("Edit", viewModel);
         }
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public Task<IActionResult> Create(ProductViewModel viewModel)

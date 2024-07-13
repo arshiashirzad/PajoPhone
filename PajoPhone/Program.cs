@@ -1,6 +1,7 @@
 using PajoPhone.AutoMapperProfiles;
 using Microsoft.EntityFrameworkCore;
 using PajoPhone;
+using PajoPhone.Loader;
 using PajoPhone.Models;
 using PajoPhone.Repositories.Category;
 using PajoPhone.Services.Factory;
@@ -16,8 +17,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 );
 builder.Services.AddScoped<IProductBuilder,ProductBuilder>()
     .AddScoped<IProductFactory,ProductFactory>();
+builder.Services.AddScoped<IProductLoader, ProductLoader>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-
+builder.Services.AddHttpClient<GooshiShopScraper>();
 var app = builder.Build();
 //Seed Data
 SeedDataProvider.Initialize(app.Services);

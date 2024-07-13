@@ -12,7 +12,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input id="product-name" asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -34,11 +34,26 @@
             </div>
             <div class="form-group mb-2">
                 <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
+                <div class="flex">
+                    <input id="suggested-price" asp-for="Price" class="form-control"/>
+                    <div class="p-2 cursor-pointer" id="search-price">
+                        <svg fill="#000000" height="20px" width="20px" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                             viewBox="0 0 488.4 488.4" xml:space="preserve">
+                            <g>
+                                <g>
+                                    <path d="M0,203.25c0,112.1,91.2,203.2,203.2,203.2c51.6,0,98.8-19.4,134.7-51.2l129.5,129.5c2.4,2.4,5.5,3.6,8.7,3.6
+                                         			s6.3-1.2,8.7-3.6c4.8-4.8,4.8-12.5,0-17.3l-129.6-129.5c31.8-35.9,51.2-83,51.2-134.7c0-112.1-91.2-203.2-203.2-203.2
+                                         			S0,91.15,0,203.25z M381.9,203.25c0,98.5-80.2,178.7-178.7,178.7s-178.7-80.2-178.7-178.7s80.2-178.7,178.7-178.7
+                                         			S381.9,104.65,381.9,203.25z"/>
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div id="categoryTreeContainer" class="mb-3">
-                <input type="hidden" id="selectedParentCategoryId" name="CategoryId"/>
+                <input type="hidden" id="selectedParentCategoryId" name="CategoryId"/> 
                 @await Html.PartialAsync("_CategoryTreePartial")
             </div>
             <div id="fieldKeysContainer">
@@ -73,4 +88,20 @@
        $('#categoryTree').on('loaded.jstree', function() {
                                            $('#categoryTree').jstree("select_node", '@Model.CategoryId');
                                      });
+       
+       $('#search-price').on('click', function() {
+               var productName = $("#product-name").val();
+               if (productName) {
+                   $.ajax({
+                       url: '@Url.Action("GetPrice", "Product")'+ "?name=" + productName,
+                       type: 'GET',
+                       success: function(response) {
+                           $('#suggested-price').val(response);
+                       },
+                       error: function() {
+                           alert('Error fetching price.');
+                       }
+                   });
+               }
+           });
 </script>

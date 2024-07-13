@@ -1,12 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using PajoPhone.Models;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PajoPhone.Loaders
+namespace PajoPhone.Loader
 {
-    public class ProductLoader
+    public class ProductLoader : IProductLoader
     {
         private readonly ApplicationDbContext _context;
 
@@ -15,21 +14,28 @@ namespace PajoPhone.Loaders
             _context = context;
         }
 
-        public async Task<Product> SingleAsync(
+        public async Task<Product> LoadProductAsync(int productId,
             bool includeCategory = false,
             bool includeFieldsValues = false)
         {
-            var model =_context.Products.AsQueryable();
+            var query = _context.Products.AsQueryable();
+
             if (includeCategory)
             {
-                model = model.Include(p => p.Category);
+                query = query.Include(p => p.Category);
             }
+
             if (includeFieldsValues)
             {
-                model = model.Include(p => p.FieldsValues)
-                    .ThenInclude(fk => fk.FieldKey);
+                query = query.Include(p => p.FieldsValues)
+                    .ThenInclude(fv => fv.FieldKey);
             }
-                return model;
+            var product = await query.FirstOrDefaultAsync(p => p.Id == productId);
+            if (product == null)
+            {
+                throw new Exception("product not found!");
+            }
+            return product;
         }
     }
 }

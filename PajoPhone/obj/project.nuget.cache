@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "xn30ANKhgB0VeuF06bfd2g9ufAXKt05FeOsXXs0OUYPuEV4379RiffwaE0V/jroqptOWIAPs1xGxywQeBHtrwg==",
+  "dgSpecHash": "PW48rUBBWec532sb9zQNmeIZdbmNvJBRThRtyuAFVrsXmY9b95VNg4scEi5I2gI/Zk8LMHTLFS3SItUOSq3fNQ==",
   "success": true,
   "projectFilePath": "/Users/arshia/RiderProjects/PajoPhone/PajoPhone/PajoPhone.csproj",
   "expectedPackageFiles": [
     "/Users/arshia/.nuget/packages/automapper/13.0.1/automapper.13.0.1.nupkg.sha512",
     "/Users/arshia/.nuget/packages/bogus/35.5.1/bogus.35.5.1.nupkg.sha512",
+    "/Users/arshia/.nuget/packages/htmlagilitypack/1.11.61/htmlagilitypack.1.11.61.nupkg.sha512",
     "/Users/arshia/.nuget/packages/humanizer.core/2.8.26/humanizer.core.2.8.26.nupkg.sha512",
     "/Users/arshia/.nuget/packages/jquery/1.7.0/jquery.1.7.0.nupkg.sha512",
     "/Users/arshia/.nuget/packages/messagepack/2.1.152/messagepack.2.1.152.nupkg.sha512",
