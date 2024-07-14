@@ -18,7 +18,6 @@ namespace PajoPhone.AutoMapperProfiles
                 .ForMember(opt => opt.Image,
                     dest => dest.MapFrom(x => GetByteArray(x.ImageFile!)));
         }
-
         public byte[] GetByteArray(IFormFile iformfile)
         {
             var ms = new MemoryStream();

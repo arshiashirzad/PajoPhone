@@ -6,12 +6,10 @@ namespace PajoPhone.Models
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {}
-
         public DbSet<Product> Products { get; set; } = null!;
         public DbSet<Category> Categories { get; set; } = null!;
         public DbSet<FieldsKey> FieldsKeys { get; set; } = null!;
         public DbSet<FieldsValue> FieldsValues { get; set; } = null!;
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -11,16 +11,10 @@ public class ProductBuilder : IProductBuilder
         _mapper = mapper;
         _context = dbContext;
     }
-    public IProductBuilder SetImage(IFormFile image)
-    {
-        return this;
-    }
-
     public void Finalize(Product product)
     {
         _context.Products.Add(product);
     }
-
     public Product Build(ProductViewModel viewModel , Product product)
     {
         _mapper.Map(viewModel, product);

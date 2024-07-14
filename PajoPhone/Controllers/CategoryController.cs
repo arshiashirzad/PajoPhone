@@ -17,7 +17,6 @@ namespace PajoPhone.Controllers
         {
             _categoryRepository = categoryRepository;
         }
-
         // GET: Category
         public async Task<IActionResult> Index()
         {
@@ -100,7 +99,6 @@ namespace PajoPhone.Controllers
             }
             return View(viewModel);
         }
-
         // GET: Category/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -116,16 +114,14 @@ namespace PajoPhone.Controllers
             }
             return View(category);
         }
-
         // POST: Category/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public  IActionResult Delete(int id)
+        public  IActionResult DeleteConfirmed(int id)
         {
              _categoryRepository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
-
         // GET: Category/GetCategoryTreeData
         public async Task<IActionResult> GetCategoryTreeData()
         {

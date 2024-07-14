@@ -15,14 +15,6 @@ public class ProductEditor: IProductBuilder
         _mapper = mapper;
         _context = dbContext;
     }
-    public IProductBuilder SetImage(IFormFile image)
-    {
-        return this;
-    }
-    
-    public void Finalize(Product product)
-    {
-    }
     public Product Build(ProductViewModel viewModel, Product product)
     {
         byte[] tempImg = product.Image;

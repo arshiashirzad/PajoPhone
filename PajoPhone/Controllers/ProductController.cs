@@ -6,6 +6,7 @@ using PajoPhone.Services.Factory;
 using Microsoft.Extensions.Caching.Memory;
 using PajoPhone.Cache;
 using PajoPhone.Loader;
+using PajoPhone.Repositories.Product;
 
 namespace PajoPhone.Controllers
 {
@@ -14,25 +15,29 @@ namespace PajoPhone.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IProductFactory _productFactory;
         private readonly IProductLoader _productLoader;
+        private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
         private readonly PriceCacheManager _priceCacheManager;
         public ProductController(ApplicationDbContext context,
             IProductFactory productFactory ,
             IProductLoader productLoader,
-            IMapper mapper, PriceCacheManager priceCacheManager)
+            IMapper mapper,
+            PriceCacheManager priceCacheManager,
+            IProductRepository productRepository)
         {
             _productLoader = productLoader;
             _context = context;
             _productFactory = productFactory;
             _mapper = mapper;
             _priceCacheManager = priceCacheManager;
+            _productRepository = productRepository;
         }
         public async Task<IActionResult> GetProductModal(int productId)
         {
-            var product = await _productLoader.LoadProductAsync(productId,true  , true );
+            var product =  _productLoader.LoadSingleProduct(productId,true  , true );
             return PartialView("_ProductModalPartial", product);
         }
-        public async Task<IActionResult> GetSuggestions(string term)
+        public async Task<IActionResult> GetSearchSuggestions(string term)
         {
             var results = await _context.Products
                 .Where(p => p.Name.StartsWith(term))
@@ -43,101 +48,17 @@ namespace PajoPhone.Controllers
         }
         public async Task<IActionResult> GetProductCards(FilterViewModel filterViewModel)
         {
-            if (filterViewModel == null)
-            {
-                filterViewModel = new FilterViewModel();
-            }
-            var query =  _context.Products
-                .Include(p => p.FieldsValues)
-                .ThenInclude(fv => fv.FieldKey)
-                .Include(p => p.Category)
-                .AsQueryable();
-            if (filterViewModel.MinPrice!=0)
-            {
-                query = query.Where(p => p.Price >= filterViewModel.MinPrice);
-            }
-            if (filterViewModel.CategoryId!=0)
-            {
-                query = query.Where(p => p.CategoryId == filterViewModel.CategoryId);
-            }
-            if (!string.IsNullOrEmpty(filterViewModel.Term))
-            {
-                var searchTerms = filterViewModel.Term.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var term in searchTerms)
-                {
-                    query = query.Where(p => p.Name.Contains(term));
-                }
-            }
-            if (filterViewModel.FieldsValueViewModels.Any())
-            {
-                foreach (var fieldsValue in filterViewModel.FieldsValueViewModels)
-                {
-                    if (!string.IsNullOrEmpty(fieldsValue.StringValue))
-                    {
-                        query = query.Where(p => p.FieldsValues.Any(fv =>
-                            fv.FieldKeyId == fieldsValue.KeyId &&
-                            (fv.StringValue == fieldsValue.StringValue || fv.IntValue == fieldsValue.IntValue)));
-                    }
-                }
-            }
-            int pageSize = filterViewModel.PageNo * 10;
-            query = query.Take(pageSize);
-            var products = await query.ToListAsync();
-            var productViewModels = products.Select(product => new ProductViewModel
-            {
-                Id = product.Id,
-                Name = product.Name,
-                Description = product.Description,
-                Color = product.Color,
-                Price = product.Price,
-                Categories = new List<CategoryViewModel>
-                {
-                    new CategoryViewModel
-                    {
-                        Id = product.Category!.Id,
-                        Name = product.Category.Name,
-                        ParentCategoryId = product.Category.ParentCategoryId
-                    }
-                },
-                CategoryId = product.CategoryId,
-                FieldsValues = product.FieldsValues.Select(fv => new FieldsValueViewModel(fv)).ToList()
-            }).ToList();
-            
+            var productViewModels =await _productRepository.FilterProducts(filterViewModel);
             return PartialView("_ProductCardsPartial", productViewModels);
         }
         public async Task<PartialViewResult> GetKeyValueInputs(int categoryId ,int productId)
         {
-            var items= new List<FieldsValueViewModel>();
-            var keys =await _context.FieldsKeys.Where(fk => fk.CategoryId == categoryId).ToListAsync();
-            if (productId == 0)
-            {
-                items = keys.Select(x => new FieldsValueViewModel(x))
-                    .ToList();
-            }
-            else
-            {
-                var query =await _context.FieldsValues.Where(x => x.ProductId == productId && keys.Contains(x.FieldKey!))
-                    .ToListAsync();
-                items = query.Select(x => new FieldsValueViewModel(x))
-                    .ToList();
-            }
+            var items =await _productRepository.GetKeyValueInputs(categoryId, productId);
             return PartialView("_KeyValueInputPartial",items);
         }
         public async Task<IActionResult> GetKeyValues(int categoryId)
         {
-            var keys = await _context.FieldsKeys
-                .Where(fk => fk.CategoryId == categoryId)
-                .ToListAsync();
-            Dictionary<string, List<FieldsValueViewModel>> items = new();
-            foreach (var key in keys)
-            {
-                var values = await _context.FieldsValues
-                    .Where(fv => fv.FieldKeyId == key.Id)
-                    .Distinct()
-                    .ToListAsync();
-                var valueViewModels = values.Select(fv => new FieldsValueViewModel(fv)).ToList();
-                items[key.Key!] = valueViewModels;
-            }
+            var items = _productRepository.GetKeyValueItems(categoryId);
             return Json(items);
         }
         public async Task<IActionResult> GetPrice(string name)
@@ -163,9 +84,7 @@ namespace PajoPhone.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
-                .Include(p => p.Category)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var product =  _productLoader.LoadSingleProduct(id.Value, true );
             if (product == null)
             {
                 return NotFound();
@@ -192,7 +111,6 @@ namespace PajoPhone.Controllers
         [ValidateAntiForgeryToken]
         public Task<IActionResult> Create(ProductViewModel viewModel)
             => Edit(viewModel);
-
         // GET: Product/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -200,15 +118,11 @@ namespace PajoPhone.Controllers
             {
                 return NotFound();
             }
-            var product =await _context.Products
-                .Include(x=> x.FieldsValues)
-                     .ThenInclude(x=> x.FieldKey)
-                .SingleAsync(x=> x.Id == id);
+            var product = _productLoader.LoadSingleProduct(id.Value, true, true);
             if (product == null)
             {
                 return NotFound();
             }
-
             ProductViewModel productViewModel = new ProductViewModel();
             _mapper.Map(product, productViewModel);
             return View(productViewModel);
@@ -235,8 +149,7 @@ namespace PajoPhone.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
-                .Include(p => p.Category)
+            var product = await _productLoader.LoadProductList(true)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (product == null)
             {
@@ -262,15 +175,10 @@ namespace PajoPhone.Controllers
         }
         public IActionResult GetImage(int id)
         {
-            var product = _context.Products.Single(p => p.Id == id);
+            var product = _productLoader.LoadSingleProduct(id);
             byte[] fileContents = product.Image;
             string contentType = "image/JPEG";
-
             return File(fileContents, contentType);
-        }
-        private async Task<bool> ProductExists(int id)
-        {
-            return await _context.Products.AnyAsync(e => e.Id == id);
         }
     }
 }

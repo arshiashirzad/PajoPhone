@@ -1,4 +1,5 @@
 using Bogus.DataSets;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PajoPhone.Models;
@@ -51,17 +52,13 @@ public class CategoryRepository : ICategoryRepository
     }
     public async Task DeleteAsync(int id)
     {
-        var category = await _context.Categories.FindAsync(id);
+        var category = await _context.Categories.Where(c => c.Id == id).SingleOrDefaultAsync();
+        Console.WriteLine("salam");
         if (category != null)
         {
             category.DeletedAt =DateTime.Now;
-            _context.Categories.Update(category);
-            await _context.SaveChangesAsync();
         }
-        else
-        {
-            throw new Exception("category not found!");
-        }
+        await _context.SaveChangesAsync();
     }
     public async Task<List<object>> GetCategoryTreeAsync()
     {

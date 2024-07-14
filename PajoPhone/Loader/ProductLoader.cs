@@ -14,7 +14,7 @@ namespace PajoPhone.Loader
             _context = context;
         }
 
-        public async Task<Product> LoadProductAsync(int productId,
+        public  Product LoadSingleProduct(int productId,
             bool includeCategory = false,
             bool includeFieldsValues = false)
         {
@@ -30,12 +30,29 @@ namespace PajoPhone.Loader
                 query = query.Include(p => p.FieldsValues)
                     .ThenInclude(fv => fv.FieldKey);
             }
-            var product = await query.FirstOrDefaultAsync(p => p.Id == productId);
+            var product =  query.FirstOrDefault(p => p.Id == productId);
             if (product == null)
             {
                 throw new Exception("product not found!");
             }
             return product;
+        }
+
+        public IQueryable<Product> LoadProductList(bool includeCategory = false, bool includeFieldsValues = false)
+        {
+            IQueryable<Product> query = _context.Products.AsQueryable();
+
+            if (includeCategory)
+            {
+                query = query.Include(p => p.Category);
+            }
+
+            if (includeFieldsValues)
+            {
+                query = query.Include(p => p.FieldsValues)
+                    .ThenInclude(fv => fv.FieldKey);
+            }
+            return  query;
         }
     }
 }
