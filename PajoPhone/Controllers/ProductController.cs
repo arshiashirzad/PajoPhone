@@ -48,7 +48,7 @@ namespace PajoPhone.Controllers
             {
                 filterViewModel = new FilterViewModel();
             }
-            var query = _context.Products
+            var query =  _context.Products
                 .Include(p => p.FieldsValues)
                 .ThenInclude(fv => fv.FieldKey)
                 .Include(p => p.Category)
@@ -106,10 +106,10 @@ namespace PajoPhone.Controllers
             
             return PartialView("_ProductCardsPartial", productViewModels);
         }
-        public PartialViewResult GetKeyValueInputs(int categoryId ,int productId)
+        public async Task<PartialViewResult> GetKeyValueInputs(int categoryId ,int productId)
         {
             var items= new List<FieldsValueViewModel>();
-            var keys = _context.FieldsKeys.Where(fk => fk.CategoryId == categoryId).ToList();
+            var keys =await _context.FieldsKeys.Where(fk => fk.CategoryId == categoryId).ToListAsync();
             if (productId == 0)
             {
                 items = keys.Select(x => new FieldsValueViewModel(x))
@@ -117,8 +117,8 @@ namespace PajoPhone.Controllers
             }
             else
             {
-                var query = _context.FieldsValues.Where(x => x.ProductId == productId && keys.Contains(x.FieldKey!))
-                    .ToList();
+                var query =await _context.FieldsValues.Where(x => x.ProductId == productId && keys.Contains(x.FieldKey!))
+                    .ToListAsync();
                 items = query.Select(x => new FieldsValueViewModel(x))
                     .ToList();
             }
@@ -244,7 +244,7 @@ namespace PajoPhone.Controllers
             if (ModelState.IsValid)
             {
                 Product product = await _productFactory.Save(productViewModel);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return RedirectToAction("Details", new { id = product.Id });
             }   
             return View();
@@ -278,7 +278,7 @@ namespace PajoPhone.Controllers
             {
                 throw new Exception("Product not found!");
             }
-            _context.Products.Remove(product);
+             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -290,9 +290,9 @@ namespace PajoPhone.Controllers
 
             return File(fileContents, contentType);
         }
-        private bool ProductExists(int id)
+        private async Task<bool> ProductExists(int id)
         {
-            return _context.Products.Any(e => e.Id == id);
+            return await _context.Products.AnyAsync(e => e.Id == id);
         }
     }
 }
