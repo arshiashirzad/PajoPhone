@@ -1,3 +1,5 @@
+using Bogus.DataSets;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PajoPhone.Models;
 
@@ -37,7 +39,6 @@ public class CategoryRepository : ICategoryRepository
         }
         return category;
     }
-
     public async Task AddAsync(Models.Category category)
     {
         _context.Categories.Add(category);
@@ -62,13 +63,12 @@ public class CategoryRepository : ICategoryRepository
             throw new Exception("category not found!");
         }
     }
-
     public async Task<List<object>> GetCategoryTreeAsync()
     {
         var categories = await _context.Categories.ToListAsync();
-        return GetCategoryTree(categories, null);
+        var categoryTreeData = GetCategoryTree(categories, null);
+        return categoryTreeData;
     }
-
     public List<object> GetCategoryTree(List<Models.Category> categories, int? parentId)
     {
         return categories
@@ -78,6 +78,54 @@ public class CategoryRepository : ICategoryRepository
                 id = c.Id,
                 text = c.Name,
                 children = GetCategoryTree(categories, c.Id)
-            }).Cast<object>().ToList();
+            }).ToList<object>();
+    }
+
+    public Models.Category Update(CategoryViewModel categoryViewModel)
+    {
+        var category = _context.Categories
+            .Include(c => c.FieldsKeys)
+            .FirstOrDefault(c => c.Id == categoryViewModel.Id) ?? new Models.Category()
+        {
+            Name = string.Empty
+        };
+        var modelFieldKeyIds = categoryViewModel.FieldsKeys.Select(fk => fk.Id).ToList();
+        category.Name = categoryViewModel.Name;
+        category.ParentCategoryId = categoryViewModel.ParentCategoryId;
+        foreach (var fv in categoryViewModel.FieldsKeys)
+        {
+            var currentFieldKey = category.FieldsKeys
+                .FirstOrDefault(f => f.Id == fv.Id);
+            if (currentFieldKey != null)
+            {
+                currentFieldKey.Key = fv.Name;
+                currentFieldKey.DeletedAt = null;
+            }
+            else
+            {
+                category.FieldsKeys.Add(new FieldsKey()
+                {
+                    Key = fv.Name,
+                    DeletedAt = null
+                });
+            }
+
+            if (categoryViewModel.Id != 0)
+            {
+                foreach (var existingFieldKey in category.FieldsKeys)
+                {
+                    if (!modelFieldKeyIds.Contains(existingFieldKey.Id))
+                    {
+                        existingFieldKey.DeletedAt = DateTime.Now;
+                    }
+                }
+            }
+        } 
+        if (category.Id==0)
+        {
+            _context.Add(category);
+        }
+        _context.SaveChanges();
+        return category;
     }
 }

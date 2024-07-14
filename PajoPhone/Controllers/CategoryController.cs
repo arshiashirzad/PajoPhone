@@ -93,28 +93,11 @@ namespace PajoPhone.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, CategoryViewModel viewModel)
         {
-            Category model;
             if (ModelState.IsValid)
             {
-                if (id != 0)
-                {
-                    model = await _categoryRepository.GetByIdAsync(id);
-                }
-                else
-                {
-                    model = new Category()
-                    {
-                        Name = "",
-                        ParentCategoryId = null,
-                    };
-                }
-
-                model.Name = viewModel.Name;
-                
-                await _categoryRepository.UpdateAsync(model);
-                return RedirectToAction(nameof(Index));
+                _categoryRepository.Update(viewModel);
+                return RedirectToAction("Index");
             }
-            viewModel.ParentCategories = await _categoryRepository.GetParentCategories();
             return View(viewModel);
         }
 
@@ -149,7 +132,5 @@ namespace PajoPhone.Controllers
             var categoryTreeData = await _categoryRepository.GetCategoryTreeAsync();
             return Json(categoryTreeData);
         }
-
-        
     }
 }
