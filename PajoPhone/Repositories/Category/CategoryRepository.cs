@@ -50,32 +50,36 @@ public class CategoryRepository : ICategoryRepository
         _context.Categories.Update(category);
         await _context.SaveChangesAsync();
     }
-    public async Task DeleteAsync(int id)
+    public void DeleteAsync(int id)
     {
-        var category = await _context.Categories.Where(c => c.Id == id).SingleOrDefaultAsync();
+        var category =  _context.Categories.Where(c => c.Id == id).SingleOrDefault();
         Console.WriteLine("salam");
         if (category != null)
         {
             category.DeletedAt =DateTime.Now;
         }
-        await _context.SaveChangesAsync();
+         _context.SaveChanges();
     }
-    public async Task<List<object>> GetCategoryTreeAsync()
+    public async Task<List<CategoryViewModel>> GetCategoryTreeAsync()
     {
         var categories = await _context.Categories.ToListAsync();
         var categoryTreeData = GetCategoryTree(categories, null);
         return categoryTreeData;
     }
-    public List<object> GetCategoryTree(List<Models.Category> categories, int? parentId)
+
+    private List<CategoryViewModel> GetCategoryTree(List<Models.Category> categories, int? parentId)
     {
         return categories
             .Where(c => c.ParentCategoryId == parentId)
-            .Select(c => new
+            .Select(c => new CategoryViewModel
             {
-                id = c.Id,
-                text = c.Name,
-                children = GetCategoryTree(categories, c.Id)
-            }).ToList<object>();
+                Id = c.Id,
+                Name = c.Name,
+                ParentCategoryId = c.ParentCategoryId,
+                ParentCategories = GetCategoryTree(categories, c.Id),
+                FieldsKeys = new List<CategoryFieldViewModel>() 
+            })
+            .ToList();
     }
 
     public Models.Category Update(CategoryViewModel categoryViewModel)

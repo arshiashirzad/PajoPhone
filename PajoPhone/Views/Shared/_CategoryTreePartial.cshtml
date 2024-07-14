@@ -1,9 +1,8 @@
 <div id="categoryTree"></div>
 @* yo have to define an input under the div for each page in the way you want to have the data of it
 for example:<input type="hidden" id="selectedParentCategoryId" name="WANTED_MODEL"/*@
-    
-
 <script>
+
     $(document).ready(function () {
         $('#categoryTree').jstree({
             'core': {
@@ -12,9 +11,9 @@ for example:<input type="hidden" id="selectedParentCategoryId" name="WANTED_MODE
                     'dataType': 'json'
                 },
                 "themes" : {
-                                        "dots" : false,
-                                        "icons" : false
-                                    },
+                "dots" : false,
+                "icons" : false
+                },
             }
         }).on('select_node.jstree', function (e, data) {
             var selectedNodeId = data.node.id;

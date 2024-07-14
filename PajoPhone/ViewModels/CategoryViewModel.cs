@@ -7,6 +7,8 @@ public class CategoryViewModel
     public int? ParentCategoryId { get; set; }
     public List<CategoryViewModel> ParentCategories { get; set; } = new List<CategoryViewModel>();
     public List<CategoryFieldViewModel> FieldsKeys { get; set; } = new List<CategoryFieldViewModel>();
+    public string text => Name;
+    public List<CategoryViewModel> children => ParentCategories;
     public CategoryViewModel()
     {
     }

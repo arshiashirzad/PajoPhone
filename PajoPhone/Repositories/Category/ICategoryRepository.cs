@@ -6,10 +6,9 @@ public interface ICategoryRepository
     Task<Category> GetByIdAsync(int id);
     Task AddAsync(Category category);
     Task UpdateAsync(Category category);
-    Task DeleteAsync(int id);
+    void DeleteAsync(int id);
     bool CategoryExists(int id);
     Task<List<CategoryViewModel>> GetParentCategories();
-    Task<List<object>> GetCategoryTreeAsync();
-    List<object> GetCategoryTree(List<Category> categories, int? parentId);
+    Task<List<CategoryViewModel>> GetCategoryTreeAsync();
     Category Update(CategoryViewModel category);
 }

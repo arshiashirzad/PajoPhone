@@ -58,7 +58,7 @@ namespace PajoPhone.Controllers
         }
         public async Task<IActionResult> GetKeyValues(int categoryId)
         {
-            var items = _productRepository.GetKeyValueItems(categoryId);
+            var items =await _productRepository.GetKeyValueItems(categoryId);
             return Json(items);
         }
         public async Task<IActionResult> GetPrice(string name)
@@ -83,8 +83,7 @@ namespace PajoPhone.Controllers
             {
                 return NotFound();
             }
-
-            var product =  _productLoader.LoadSingleProduct(id.Value, true );
+            var product = _productLoader.LoadSingleProduct(id.Value, true );
             if (product == null)
             {
                 return NotFound();
@@ -148,7 +147,6 @@ namespace PajoPhone.Controllers
             {
                 return NotFound();
             }
-
             var product = await _productLoader.LoadProductList(true)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (product == null)
