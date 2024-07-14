@@ -15,6 +15,8 @@ namespace PajoPhone.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Category>()
+                .HasQueryFilter(c => c.DeletedAt == null);
             modelBuilder.Entity<FieldsKey>()
                 .HasQueryFilter(f => f.DeletedAt == null);
             modelBuilder.Entity<FieldsValue>()

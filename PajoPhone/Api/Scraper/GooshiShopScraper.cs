@@ -15,14 +15,14 @@ public class GooshiShopScraper: IScraper
         _httpClient = httpClient;
         _logger = logger;
     }
-    public override async Task<string> GetPriceAsync(string productName)
+    public  async Task<string> GetPriceAsync(string productName)
     {
         string url = $"https://gooshishop.com/search/q-{productName}";
         try
         {
             HtmlWeb web = new HtmlWeb();
             HtmlDocument doc = web.Load(url);
-            var spanNode = doc.DocumentNode.SelectSingleNode("//span[contains(@class, 'price actual-price h4 mb-0')]"); 
+            var spanNode = doc.DocumentNode.SelectSingleNode("//span[contains(@class, 'price actual-price h4')]"); 
             string innerHtml = spanNode.InnerHtml.Trim();
             string price = Regex.Replace(innerHtml, "[^0-9]", "");
             return price;

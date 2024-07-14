@@ -9,4 +9,6 @@ public interface ICategoryRepository
     Task DeleteAsync(int id);
     Task<List<object>> GetCategoryTreeAsync();
     bool CategoryExists(int id);
+    Task<List<CategoryViewModel>> GetParentCategories();
+    List<object> GetCategoryTree(List<Models.Category> categories, int? parentId);
 }

@@ -25,6 +25,9 @@ namespace PajoPhone.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -52,16 +55,11 @@ namespace PajoPhone.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("CategoryId", "Key")
-                        .IsUnique()
-                        .HasFilter("[isDisabled] = 0");
 
                     b.ToTable("FieldsKeys");
                 });
@@ -85,7 +83,6 @@ namespace PajoPhone.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("StringValue")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");

@@ -1,32 +1,31 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PajoPhone.Models;
 using PajoPhone.Services.Factory;
 using Microsoft.Extensions.Caching.Memory;
+using PajoPhone.Cache;
 using PajoPhone.Loader;
 
 namespace PajoPhone.Controllers
 {
-    [Route("/[action]")]
-    [Route("/Product/[action]")]
     public class ProductController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly IProductFactory _productFactory;
         private readonly IProductLoader _productLoader;
-        private readonly GooshiShopScraper _gooshiShopScraper;
-        private readonly IMemoryCache _memoryCache;
-
+        private readonly IMapper _mapper;
+        private readonly PriceCacheManager _priceCacheManager;
         public ProductController(ApplicationDbContext context,
             IProductFactory productFactory ,
             IProductLoader productLoader,
-            GooshiShopScraper gooshiShopScraper , IMemoryCache memoryCache)
+            IMapper mapper, PriceCacheManager priceCacheManager)
         {
             _productLoader = productLoader;
             _context = context;
             _productFactory = productFactory;
-            _gooshiShopScraper = gooshiShopScraper;
-            _memoryCache = memoryCache;
+            _mapper = mapper;
+            _priceCacheManager = priceCacheManager;
         }
         public async Task<IActionResult> GetProductModal(int productId)
         {
@@ -144,17 +143,7 @@ namespace PajoPhone.Controllers
         public async Task<IActionResult> GetPrice(string name)
         {
             var cacheKey = $"price_{name}";
-            if (!_memoryCache.TryGetValue(cacheKey, out decimal price))
-            {
-                price = decimal.Parse(await _gooshiShopScraper.GetPriceAsync(name));
-                var cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
-                    SlidingExpiration = TimeSpan.FromMinutes(10)
-                };
-
-                _memoryCache.Set(cacheKey, price, cacheEntryOptions);
-            }
+            var price = _priceCacheManager.GetCachedPrice(cacheKey) ;
             return Ok(price);
         }
         // GET: Product
@@ -183,9 +172,6 @@ namespace PajoPhone.Controllers
             }
             return View(product);
         }
-        
-        [HttpGet]
-       
         // GET: Product/Create
         [HttpGet]
         public async Task<IActionResult> Create()
@@ -222,17 +208,9 @@ namespace PajoPhone.Controllers
             {
                 return NotFound();
             }
-            var productViewModel = new ProductViewModel()
-            {
-                Id = product.Id,
-                Name = product.Name,
-                Price = product.Price,
-                Description = product.Description,
-                Color = product.Color,
-                CategoryId = product.CategoryId,
-                FieldsValues = product.FieldsValues
-                    .Select(fk => new FieldsValueViewModel(fk)).ToList()
-            };
+
+            ProductViewModel productViewModel = new ProductViewModel();
+            _mapper.Map(product, productViewModel);
             return View(productViewModel);
         }
 
@@ -246,7 +224,7 @@ namespace PajoPhone.Controllers
                 Product product = await _productFactory.Save(productViewModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Details", new { id = product.Id });
-            }   
+            }
             return View();
         }
         // GET: Product/Delete/5

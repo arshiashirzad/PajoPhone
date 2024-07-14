@@ -11,6 +11,15 @@ public class CategoryRepository : ICategoryRepository
     {
         _context = context;
     }
+    public async Task<List<CategoryViewModel>> GetParentCategories()
+    {
+        var categories = await GetAllAsync();
+        return categories.Select(c => new CategoryViewModel
+        {
+            Id = c.Id,
+            Name = c.Name
+        }).ToList();
+    }
     public bool CategoryExists(int id)
     {
         return _context.Categories.Any(e => e.Id == id);
@@ -44,8 +53,13 @@ public class CategoryRepository : ICategoryRepository
         var category = await _context.Categories.FindAsync(id);
         if (category != null)
         {
-            _context.Categories.Remove(category);
+            category.DeletedAt =DateTime.Now;
+            _context.Categories.Update(category);
             await _context.SaveChangesAsync();
+        }
+        else
+        {
+            throw new Exception("category not found!");
         }
     }
 
@@ -55,7 +69,7 @@ public class CategoryRepository : ICategoryRepository
         return GetCategoryTree(categories, null);
     }
 
-    private List<object> GetCategoryTree(List<Models.Category> categories, int? parentId)
+    public List<object> GetCategoryTree(List<Models.Category> categories, int? parentId)
     {
         return categories
             .Where(c => c.ParentCategoryId == parentId)

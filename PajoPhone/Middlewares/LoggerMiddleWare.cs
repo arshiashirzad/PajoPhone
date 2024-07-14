@@ -1,12 +1,9 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
+namespace PajoPhone.Middlewares;
 
 public class LoggerMiddleWare
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<LoggerMiddleWare> _logger;
-
     public LoggerMiddleWare(RequestDelegate next, ILogger<LoggerMiddleWare> logger)
     {
         _next = next;

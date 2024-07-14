@@ -46,10 +46,9 @@ namespace PajoPhone.Controllers
         public async Task<IActionResult> Create()
         {
             var viewModel = new CategoryViewModel();
-            viewModel.ParentCategories = await GetParentCategories();
+            viewModel.ParentCategories = await _categoryRepository.GetParentCategories();
             return View(nameof(Edit), viewModel);
         }
-
         // POST: Category/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -65,7 +64,7 @@ namespace PajoPhone.Controllers
                 await _categoryRepository.AddAsync(category);
                 return RedirectToAction(nameof(Index));
             }
-            viewModel.ParentCategories = await GetParentCategories();
+            viewModel.ParentCategories = await _categoryRepository.GetParentCategories();
             return View(nameof(Edit),viewModel);
         }
 
@@ -85,7 +84,7 @@ namespace PajoPhone.Controllers
                     Name = fk.Key!
                 }).ToList()
             };
-            viewModel.ParentCategories = await GetParentCategories();
+            viewModel.ParentCategories = await _categoryRepository.GetParentCategories();
             return View(viewModel);
         }
 
@@ -94,36 +93,28 @@ namespace PajoPhone.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, CategoryViewModel viewModel)
         {
-            if (id != viewModel.Id)
-            {
-                return NotFound();
-            }
+            Category model;
             if (ModelState.IsValid)
             {
-                var category = new Category
+                if (id != 0)
                 {
-                    Id = viewModel.Id,
-                    Name = viewModel.Name,
-                    ParentCategoryId = viewModel.ParentCategoryId,
-                };
-                try
-                {
-                    await _categoryRepository.UpdateAsync(category);
+                    model = await _categoryRepository.GetByIdAsync(id);
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!_categoryRepository.CategoryExists(id))
+                    model = new Category()
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                        Name = "",
+                        ParentCategoryId = null,
+                    };
                 }
+
+                model.Name = viewModel.Name;
+                
+                await _categoryRepository.UpdateAsync(model);
                 return RedirectToAction(nameof(Index));
             }
-            viewModel.ParentCategories = await GetParentCategories();
+            viewModel.ParentCategories = await _categoryRepository.GetParentCategories();
             return View(viewModel);
         }
 
@@ -140,16 +131,15 @@ namespace PajoPhone.Controllers
             {
                 return NotFound();
             }
-
             return View(category);
         }
 
         // POST: Category/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public  IActionResult Delete(int id)
         {
-            await _categoryRepository.DeleteAsync(id);
+             _categoryRepository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -160,14 +150,6 @@ namespace PajoPhone.Controllers
             return Json(categoryTreeData);
         }
 
-        private async Task<List<CategoryViewModel>> GetParentCategories()
-        {
-            var categories = await _categoryRepository.GetAllAsync();
-            return categories.Select(c => new CategoryViewModel
-            {
-                Id = c.Id,
-                Name = c.Name
-            }).ToList();
-        }
+        
     }
 }
