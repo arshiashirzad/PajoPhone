@@ -2,14 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PajoPhone.Loader;
 using PajoPhone.Models;
-
 namespace PajoPhone.Repositories.Product;
 
 public class ProductRepository : IProductRepository
 {
     private readonly IProductLoader _productLoader;
     private readonly ApplicationDbContext _context;
-    ProductRepository(IProductLoader productLoader , ApplicationDbContext context)
+    public ProductRepository(IProductLoader productLoader, ApplicationDbContext context)
     {
         _productLoader=productLoader;
         _context = context;
@@ -34,7 +33,7 @@ public class ProductRepository : IProductRepository
 
     public async Task<List<FieldsValueViewModel>> GetKeyValueInputs(int categoryId, int productId)
     {
-        var items= new List<FieldsValueViewModel>();
+        List<FieldsValueViewModel> items= new List<FieldsValueViewModel>();
         var keys =await _context.FieldsKeys.Where(fk => fk.CategoryId == categoryId).ToListAsync();
         if (productId == 0)
         {
@@ -50,13 +49,8 @@ public class ProductRepository : IProductRepository
         }
         return items;
     }
-
     public async Task<List<ProductViewModel>> FilterProducts(FilterViewModel filterViewModel)
     {
-        if (filterViewModel == null)
-            {
-                filterViewModel = new FilterViewModel();
-            }
             var query = _productLoader.LoadProductList(true, true);
             if (filterViewModel.MinPrice!=0)
             {

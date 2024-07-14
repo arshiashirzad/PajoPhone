@@ -6,6 +6,7 @@ using PajoPhone.Loader;
 using PajoPhone.Middlewares;
 using PajoPhone.Models;
 using PajoPhone.Repositories.Category;
+using PajoPhone.Repositories.Product;
 using PajoPhone.Services.Factory;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IProductBuilder,ProductBuilder>()
     .AddScoped<IProductFactory,ProductFactory>();
 builder.Services.AddScoped<IProductLoader, ProductLoader>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<PriceCacheManager>();
 builder.Services.AddHttpClient<GooshiShopScraper>();
@@ -32,7 +34,6 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

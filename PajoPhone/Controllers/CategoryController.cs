@@ -1,10 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PajoPhone.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using PajoPhone.Repositories.Category;
 
 namespace PajoPhone.Controllers
@@ -86,7 +81,6 @@ namespace PajoPhone.Controllers
             viewModel.ParentCategories = await _categoryRepository.GetParentCategories();
             return View(viewModel);
         }
-
         // POST: Category/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
