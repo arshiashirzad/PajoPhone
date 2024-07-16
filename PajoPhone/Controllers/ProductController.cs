@@ -63,15 +63,14 @@ namespace PajoPhone.Controllers
         }
         public async Task<IActionResult> GetPrice(string name)
         {
-            var cacheKey = $"price_{name}";
-            var price = _priceCacheManager.GetCachedPrice(cacheKey) ;
+            var price =await _priceCacheManager.GetCachedPrice(name) ;
             return Ok(price);
         }
         // GET: Product
         [Route("/")]
         [Route("/Index")]
         [Route("/Product/Index")]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             FilterViewModel filterViewModel = new FilterViewModel();
             return View(filterViewModel);

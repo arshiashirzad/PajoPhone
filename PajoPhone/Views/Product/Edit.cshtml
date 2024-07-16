@@ -110,7 +110,6 @@
                         var number = parseFloat($('#price-holder').val());
                         var errorMessage = $('#error-message');
                         var suggestedPrice = parseFloat($('#suggested-price').html());
-        
                         if (!isNaN(suggestedPrice)) {
                             if (number >= (suggestedPrice - suggestedPrice * 0.2) && number <= (suggestedPrice + suggestedPrice * 0.2)) {
                                 errorMessage.hide();
@@ -118,9 +117,6 @@
                                 event.preventDefault();
                                 errorMessage.show();
                             }
-                        } else {
-                            event.preventDefault();
-                            errorMessage.show();
                         }
                     });
 </script>

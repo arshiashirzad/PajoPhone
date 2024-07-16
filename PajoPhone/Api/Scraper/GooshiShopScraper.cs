@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
-using Microsoft.Extensions.Logging;
-using PajoPhone.Api.Scraper;
+
+namespace PajoPhone.Api.Scraper;
+
 public class GooshiShopScraper: IScraper
 {
     private readonly HttpClient _httpClient;
@@ -22,7 +19,7 @@ public class GooshiShopScraper: IScraper
         {
             HtmlWeb web = new HtmlWeb();
             HtmlDocument doc = web.Load(url);
-            var spanNode = doc.DocumentNode.SelectSingleNode("//span[contains(@class, 'price actual-price')]"); 
+            var spanNode = doc.DocumentNode.SelectSingleNode("//span[contains(@class, 'price actual-price h4 mb-0')]"); 
             string innerHtml = spanNode.InnerHtml.Trim();
             string price = Regex.Replace(innerHtml, "[^0-9]", "");
             return price;

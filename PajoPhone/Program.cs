@@ -1,6 +1,7 @@
 using PajoPhone.AutoMapperProfiles;
 using Microsoft.EntityFrameworkCore;
 using PajoPhone;
+using PajoPhone.Api.Scraper;
 using PajoPhone.Cache;
 using PajoPhone.Loader;
 using PajoPhone.Middlewares;

@@ -33,7 +33,8 @@ public class CategoryRepository : ICategoryRepository
     }
     public async Task<Models.Category> GetByIdAsync(int id)
     {
-        var category = await _context.Categories.FindAsync(id);
+        var category = await _context.Categories.Include(fk => fk.FieldsKeys)
+            .FirstOrDefaultAsync(c=> c.Id == id);
         if (category == null)
         {
             throw new ApplicationException($"Category with id {id} not found.");
@@ -52,13 +53,12 @@ public class CategoryRepository : ICategoryRepository
     }
     public void DeleteAsync(int id)
     {
-        var category =  _context.Categories.Where(c => c.Id == id).SingleOrDefault();
-        Console.WriteLine("salam");
+        var category =  _context.Categories.SingleOrDefault(c => c.Id == id);
         if (category != null)
         {
             category.DeletedAt =DateTime.Now;
         }
-         _context.SaveChanges();
+        _context.SaveChanges();
     }
     public async Task<List<CategoryViewModel>> GetCategoryTreeAsync()
     {
@@ -97,20 +97,6 @@ public class CategoryRepository : ICategoryRepository
         {
             var currentFieldKey = category.FieldsKeys
                 .FirstOrDefault(f => f.Id == fv.Id);
-            if (currentFieldKey != null)
-            {
-                currentFieldKey.Key = fv.Name;
-                currentFieldKey.DeletedAt = null;
-            }
-            else
-            {
-                category.FieldsKeys.Add(new FieldsKey()
-                {
-                    Key = fv.Name,
-                    DeletedAt = null
-                });
-            }
-
             if (categoryViewModel.Id != 0)
             {
                 foreach (var existingFieldKey in category.FieldsKeys)
@@ -120,6 +106,19 @@ public class CategoryRepository : ICategoryRepository
                         existingFieldKey.DeletedAt = DateTime.Now;
                     }
                 }
+            }
+            if (currentFieldKey != null)
+            {
+                currentFieldKey.Key = fv.Name;
+                currentFieldKey.DeletedAt = null;
+            }
+            else
+            {                
+                category.FieldsKeys.Add(new FieldsKey()
+                {
+                    Key = fv.Name,
+                    DeletedAt = null
+                });
             }
         } 
         if (category.Id==0)

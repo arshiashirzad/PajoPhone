@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Caching.Memory;
+using PajoPhone.Api.Scraper;
 
 namespace PajoPhone.Cache;
 
@@ -14,7 +15,8 @@ public class PriceCacheManager
     }
     public async Task<decimal> GetCachedPrice(string name)
     {
-        if (_memoryCache.TryGetValue(name, out decimal value))
+        var cacheKey = $"price_{name}";
+        if (_memoryCache.TryGetValue(cacheKey, out decimal value))
         {
             return value;
         }
@@ -24,7 +26,7 @@ public class PriceCacheManager
             AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
             SlidingExpiration = TimeSpan.FromMinutes(10)
         };
-        _memoryCache.Set(name, value, cacheEntryOptions);
+        _memoryCache.Set(cacheKey, value, cacheEntryOptions);
         return value;
     }
 }
