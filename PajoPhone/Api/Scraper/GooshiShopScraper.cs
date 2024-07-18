@@ -7,18 +7,20 @@ public class GooshiShopScraper: IScraper
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<GooshiShopScraper> _logger;
-    public GooshiShopScraper(HttpClient httpClient, ILogger<GooshiShopScraper> logger)
+    private readonly IConfiguration _configuration;
+    public GooshiShopScraper(HttpClient httpClient, ILogger<GooshiShopScraper> logger,IConfiguration configuration)
     {
         _httpClient = httpClient;
         _logger = logger;
+        _configuration = configuration;
     }
     public  async Task<string> GetPriceAsync(string productName)
     {
-        string url = $"https://gooshishop.com/search/q-{productName}";
+        string url =string.Format(_configuration["ScrapingSettings:gooshiShopUrl"]!, productName);
         try
         {
             HtmlWeb web = new HtmlWeb();
-            HtmlDocument doc = web.Load(url);
+            HtmlDocument doc =await web.LoadFromWebAsync(url);
             var spanNode = doc.DocumentNode.SelectSingleNode("//span[contains(@class, 'price actual-price h4 mb-0')]"); 
             string innerHtml = spanNode.InnerHtml.Trim();
             string price = Regex.Replace(innerHtml, "[^0-9]", "");

@@ -23,9 +23,9 @@ public class CategoryRepository : ICategoryRepository
             Name = c.Name
         }).ToList();
     }
-    public bool CategoryExists(int id)
+    public async Task<bool> CategoryExists(int id)
     {
-        return _context.Categories.Any(e => e.Id == id);
+        return await _context.Categories.AnyAsync(e => e.Id == id);
     }
     public async Task<List<Models.Category>> GetAllAsync()
     {
@@ -56,7 +56,7 @@ public class CategoryRepository : ICategoryRepository
         var category =  _context.Categories.SingleOrDefault(c => c.Id == id);
         if (category != null)
         {
-            category.DeletedAt =DateTime.Now;
+            category.DeletedAt =DateTime.UtcNow;
         }
         _context.SaveChanges();
     }
@@ -66,7 +66,6 @@ public class CategoryRepository : ICategoryRepository
         var categoryTreeData = GetCategoryTree(categories, null);
         return categoryTreeData;
     }
-
     private List<CategoryViewModel> GetCategoryTree(List<Models.Category> categories, int? parentId)
     {
         return categories

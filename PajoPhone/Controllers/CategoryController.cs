@@ -28,13 +28,7 @@ namespace PajoPhone.Controllers
             {
                 return NotFound();
             }
-
             var category = await _categoryRepository.GetByIdAsync(id.Value);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
             return View(category);
         }
 
@@ -68,10 +62,6 @@ namespace PajoPhone.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var category = await _categoryRepository.GetByIdAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
             var viewModel = new CategoryViewModel(category.Id, category.Name , category.ParentCategoryId , null! , null!)
             {
                 FieldsKeys = category.FieldsKeys.Select(fk => new CategoryFieldViewModel
@@ -86,7 +76,7 @@ namespace PajoPhone.Controllers
         // POST: Category/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, CategoryViewModel viewModel)
+        public IActionResult Edit(int id, CategoryViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
@@ -102,12 +92,7 @@ namespace PajoPhone.Controllers
             {
                 return NotFound();
             }
-
             var category = await _categoryRepository.GetByIdAsync(id.Value);
-            if (category == null)
-            {
-                return NotFound();
-            }
             return View(category);
         }
         // POST: Category/Delete/5

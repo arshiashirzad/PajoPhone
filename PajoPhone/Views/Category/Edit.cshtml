@@ -39,44 +39,59 @@
 
 @section Scripts {
     <script>
-        let fieldKeyIndex = @Model.FieldsKeys.Count;
-
-        document.getElementById('add-field-button').addEventListener('click', function () {
-            const container = document.getElementById('field-keys-container');
-            const newField = document.createElement('div');
-            newField.className = 'form-group field-key-item d-flex mb-4 gap-2';
-            newField.innerHTML = `
-                <input type="hidden" name="FieldsKeys[${fieldKeyIndex}].Id" value="${fieldKeyIndex + 1}" />
-                <input type="text" name="FieldsKeys[${fieldKeyIndex}].Name" class="form-control" />
-                <button type="button" class="btn btn-danger remove-field-button">Remove</button>
-            `;
-            container.appendChild(newField);
-            fieldKeyIndex++;
-            addRemoveEventListeners();
-        });
-        function addRemoveEventListeners() {
-            document.querySelectorAll('.remove-field-button').forEach(button => {
-                button.removeEventListener('click', removeField);
-                button.addEventListener('click', removeField);
-            });
-        }
-
-        function removeField(event) {
-            event.target.closest('.field-key-item').remove();
-            reindexFields();
-        }
-
-        function reindexFields() {
-            const fieldItems = document.querySelectorAll('.field-key-item');
-            fieldItems.forEach((item, index) => {
-                item.querySelector('input[type="hidden"]').setAttribute('name', `FieldsKeys[${index}].Id`);
-                item.querySelector('input[type="hidden"]').value = index + 1;
-                item.querySelector('input[type="text"]').setAttribute('name', `FieldsKeys[${index}].Name`);
-            });
-            fieldKeyIndex = fieldItems.length;
-        }
-        $('#categoryTree').on('loaded.jstree', function() {
-                                $('#categoryTree').jstree("select_node", '@Model.ParentCategoryId');
-                          });
+       let fieldKeyIndex = @Model.FieldsKeys.Count;
+       
+       document.getElementById('add-field-button').addEventListener('click', function () {
+           addField();
+           addRemoveEventListeners();
+       });
+       
+       function addField() {
+           const container = document.getElementById('field-keys-container');
+           const newField = createFieldElement(fieldKeyIndex);
+           container.appendChild(newField);
+           fieldKeyIndex++;
+       }
+       
+       function createFieldElement(index) {
+           const field = document.createElement('div');
+           field.className = 'form-group field-key-item d-flex mb-4 gap-2';
+           field.innerHTML = `
+               <input type="hidden" name="FieldsKeys[${index}].Id" value="${index + 1}" />
+               <input type="text" name="FieldsKeys[${index}].Name" class="form-control" />
+               <button type="button" class="btn btn-danger remove-field-button">Remove</button>
+           `;
+           return field;
+       }
+       
+       function addRemoveEventListeners() {
+           document.querySelectorAll('.remove-field-button').forEach(button => {
+               button.removeEventListener('click', removeField);
+               button.addEventListener('click', removeField);
+           });
+       }
+       
+       function removeField(event) {
+           event.target.closest('.field-key-item').remove();
+           reindexFields();
+       }
+       
+       function reindexFields() {
+           const fieldItems = document.querySelectorAll('.field-key-item');
+           fieldItems.forEach((item, index) => {
+               updateFieldElement(item, index);
+           });
+           fieldKeyIndex = fieldItems.length;
+       }
+       
+       function updateFieldElement(item, index) {
+           item.querySelector('input[type="hidden"]').setAttribute('name', `FieldsKeys[${index}].Id`);
+           item.querySelector('input[type="hidden"]').value = index + 1;
+           item.querySelector('input[type="text"]').setAttribute('name', `FieldsKeys[${index}].Name`);
+       }
+       
+       $('#categoryTree').on('loaded.jstree', function() {
+           $('#categoryTree').jstree("select_node", '@Model.ParentCategoryId');
+       });
     </script>
 }

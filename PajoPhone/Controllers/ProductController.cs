@@ -82,11 +82,7 @@ namespace PajoPhone.Controllers
             {
                 return NotFound();
             }
-            var product = _productLoader.LoadSingleProduct(id.Value, true );
-            if (product == null)
-            {
-                return NotFound();
-            }
+            var product = _productLoader.LoadSingleProduct(id.Value, true);
             return View(product);
         }
         // GET: Product/Create
@@ -117,10 +113,6 @@ namespace PajoPhone.Controllers
                 return NotFound();
             }
             var product = _productLoader.LoadSingleProduct(id.Value, true, true);
-            if (product == null)
-            {
-                return NotFound();
-            }
             ProductViewModel productViewModel = new ProductViewModel();
             _mapper.Map(product, productViewModel);
             return View(productViewModel);
@@ -152,7 +144,6 @@ namespace PajoPhone.Controllers
             {
                 return NotFound();
             }
-
             return View(product);
         }
 
@@ -166,7 +157,7 @@ namespace PajoPhone.Controllers
             {
                 throw new Exception("Product not found!");
             }
-             _context.Products.Remove(product);
+            _context.Products.Remove(product);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

@@ -48,7 +48,7 @@ namespace PajoPhone.Models
 
                 var fieldsKeys = fieldsKeyFaker.Generate(20);
                 dbContext.FieldsKeys.AddRange(fieldsKeys);
-
+                var counter = 0;
                 var productFaker = new Faker<Product>()
                     .RuleFor(u => u.Name, f => f.Commerce.ProductName())
                     .RuleFor(u => u.Color, f => f.Commerce.Color())
@@ -56,8 +56,27 @@ namespace PajoPhone.Models
                     .RuleFor(u => u.Description, f => f.Commerce.ProductDescription())
                     .RuleFor(u => u.Image, f =>
                     {
-                        string url = "https://picsum.photos/640/480/";
-                        var response = _httpClient.GetByteArrayAsync(url).Result;
+                        byte[] response=[];
+                        var isDone = false;
+                        string url = "https://picsum.photos/200/100/";
+                        while (!isDone)
+                        {
+                            try
+                            {
+                                response = _httpClient.GetByteArrayAsync(url).Result;
+                                isDone = true;
+                            }
+                            catch (Exception e)
+                            {
+                                
+                            }
+                        }
+
+                        counter++;
+                        if (counter % 100 == 0)
+                        {
+                            Console.WriteLine($"*** product {counter} of 50000");
+                        }
                         return response;
                     })
                     .RuleFor(u => u.Category, f =>
@@ -66,7 +85,7 @@ namespace PajoPhone.Models
                         return categories[rand.Next(0, categories.Count)];
                     });
 
-                var products = productFaker.Generate(100);
+                var products = productFaker.Generate(5000);
                 dbContext.Products.AddRange(products);
 
                 var fieldValueFaker = new Faker<FieldsValue>()

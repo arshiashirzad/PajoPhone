@@ -9,7 +9,6 @@ public class LoggerMiddleWare
         _next = next;
         _logger = logger;
     }
-
     public async Task Invoke(HttpContext context)
     {
         var routeData = context.GetRouteData();
