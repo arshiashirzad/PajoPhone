@@ -20,6 +20,7 @@
           "net8.0"
         ],
         "sources": {
+          "/Users/arshia/.nuget/packages\t": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -105,7 +106,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/x64/sdk/8.0.404/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

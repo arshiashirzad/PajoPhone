@@ -16,7 +16,7 @@ public class PriceCacheManager
     public async Task<decimal> GetCachedPrice(string name)
     {
         var cacheKey = $"price_{name}";
-        if (_memoryCache.TryGetValue(cacheKey, out decimal value))
+        if (_memoryCache.TryGetValue(name, out decimal value))
         {
             return value;
         }
@@ -26,7 +26,7 @@ public class PriceCacheManager
             AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
             SlidingExpiration = TimeSpan.FromMinutes(10)
         };
-        _memoryCache.Set(cacheKey, value, cacheEntryOptions);
+        _memoryCache.Set(name, value, cacheEntryOptions);
         return value;
     }
 }

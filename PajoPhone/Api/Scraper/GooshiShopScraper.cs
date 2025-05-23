@@ -16,7 +16,7 @@ public class GooshiShopScraper: IScraper
     }
     public  async Task<string> GetPriceAsync(string productName)
     {
-        string url =string.Format(_configuration["ScrapingSettings:gooshiShopUrl"]!, productName);
+        string url =_configuration["ScrapingSettings:gooshiShopUrl"]+ productName;
         try
         {
             HtmlWeb web = new HtmlWeb();

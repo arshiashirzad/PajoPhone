@@ -51,21 +51,25 @@ namespace PajoPhone.Controllers
             var productViewModels =await _productRepository.FilterProducts(filterViewModel);
             return PartialView("_ProductCardsPartial", productViewModels);
         }
+        
         public async Task<PartialViewResult> GetKeyValueInputs(int categoryId ,int productId)
         {
             var items =await _productRepository.GetKeyValueInputs(categoryId, productId);
             return PartialView("_KeyValueInputPartial",items);
         }
+        
         public async Task<IActionResult> GetKeyValues(int categoryId)
         {
             var items =await _productRepository.GetKeyValueItems(categoryId);
             return Json(items);
         }
+        
         public async Task<IActionResult> GetPrice(string name)
         {
             var price =await _priceCacheManager.GetCachedPrice(name) ;
             return Ok(price);
         }
+        
         // GET: Product
         [Route("/")]
         [Route("/Index")]
@@ -112,12 +116,12 @@ namespace PajoPhone.Controllers
             {
                 return NotFound();
             }
+            
             var product = _productLoader.LoadSingleProduct(id.Value, true, true);
             ProductViewModel productViewModel = new ProductViewModel();
             _mapper.Map(product, productViewModel);
             return View(productViewModel);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -131,6 +135,7 @@ namespace PajoPhone.Controllers
             }
             return View();
         }
+        
         // GET: Product/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

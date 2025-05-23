@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "WxRNRIQwrCgkczEQO8R1CIUsL/aZt5yNhKQ440+faP0Z18WvWUweDPm3CGTtQ/Kks2ePSrK75jcXh3ggVjywfQ==",
+  "dgSpecHash": "2+vpvybSLQnt4BVSXqVqGi3k0e9/S3N11wNRBay0r5yW/+r+Tc6E5Zyq/yDS7YcU4c0PSDiBC6IrFj+SOLqBWA==",
   "success": true,
   "projectFilePath": "/Users/arshia/RiderProjects/PajoPhone/PajoPhone/PajoPhone.csproj",
   "expectedPackageFiles": [
@@ -194,5 +194,16 @@
     "/Users/arshia/.nuget/packages/system.xml.readerwriter/4.3.0/system.xml.readerwriter.4.3.0.nupkg.sha512",
     "/Users/arshia/.nuget/packages/system.xml.xdocument/4.3.0/system.xml.xdocument.4.3.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'Microsoft.Extensions.Caching.Memory' 8.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-qj66-m88j-hmgj",
+      "libraryId": "Microsoft.Extensions.Caching.Memory",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
 }
