@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "2+vpvybSLQnt4BVSXqVqGi3k0e9/S3N11wNRBay0r5yW/+r+Tc6E5Zyq/yDS7YcU4c0PSDiBC6IrFj+SOLqBWA==",
+  "dgSpecHash": "35ptxW8QguhsN+Kzh6zlUUYKoTxytrnrkmvTVyEy8VY1A0Piq0QFwM0+SOv8pf5l7E4nIQcu2qM1/WM9WHTa5w==",
   "success": true,
-  "projectFilePath": "/Users/arshia/RiderProjects/PajoPhone/PajoPhone/PajoPhone.csproj",
+  "projectFilePath": "/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/PajoPhone.csproj",
   "expectedPackageFiles": [
     "/Users/arshia/.nuget/packages/automapper/13.0.1/automapper.13.0.1.nupkg.sha512",
     "/Users/arshia/.nuget/packages/bogus/35.5.1/bogus.35.5.1.nupkg.sha512",

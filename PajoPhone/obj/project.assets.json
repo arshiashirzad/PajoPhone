@@ -10772,11 +10772,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/arshia/RiderProjects/PajoPhone/PajoPhone/PajoPhone.csproj",
+      "projectUniqueName": "/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/PajoPhone.csproj",
       "projectName": "PajoPhone",
-      "projectPath": "/Users/arshia/RiderProjects/PajoPhone/PajoPhone/PajoPhone.csproj",
+      "projectPath": "/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/PajoPhone.csproj",
       "packagesPath": "/Users/arshia/.nuget/packages/",
-      "outputPath": "/Users/arshia/RiderProjects/PajoPhone/PajoPhone/obj/",
+      "outputPath": "/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/arshia/.nuget/NuGet/NuGet.Config"
