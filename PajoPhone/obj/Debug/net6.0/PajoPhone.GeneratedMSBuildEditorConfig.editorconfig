@@ -5,95 +5,92 @@ build_property.UsingMicrosoftNETSdkWeb = true
 build_property.ProjectTypeGuids = 
 build_property.InvariantGlobalization = 
 build_property.PlatformNeutralAssembly = 
-build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = PajoPhone
 build_property.RootNamespace = PajoPhone
-build_property.ProjectDir = /Users/arshia/RiderProjects/PajoPhone/PajoPhone/
-build_property.EnableComHosting = 
-build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.ProjectDir = /Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = /Users/arshia/RiderProjects/PajoPhone/PajoPhone
+build_property.MSBuildProjectDirectory = /Users/arshia/Workspace/db proj/PajoPhone/PajoPhone
 build_property._RazorSourceGeneratorDebug = 
 
-[/Users/arshia/RiderProjects/PajoPhone/PajoPhone/Views/Category/Delete.cshtml]
+[/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/Views/Category/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2F0ZWdvcnkvRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/arshia/RiderProjects/PajoPhone/PajoPhone/Views/Category/Details.cshtml]
+[/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/Views/Category/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2F0ZWdvcnkvRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/arshia/RiderProjects/PajoPhone/PajoPhone/Views/Category/Edit.cshtml]
+[/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/Views/Category/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2F0ZWdvcnkvRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/arshia/RiderProjects/PajoPhone/PajoPhone/Views/Category/Index.cshtml]
+[/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/Views/Category/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2F0ZWdvcnkvSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/arshia/RiderProjects/PajoPhone/PajoPhone/Views/Home/Index.cshtml]
+[/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/arshia/RiderProjects/PajoPhone/PajoPhone/Views/Home/Privacy.cshtml]
+[/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9Qcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/arshia/RiderProjects/PajoPhone/PajoPhone/Views/Product/Delete.cshtml]
+[/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/Views/Product/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9EZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/arshia/RiderProjects/PajoPhone/PajoPhone/Views/Product/Details.cshtml]
+[/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/Views/Product/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9EZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/arshia/RiderProjects/PajoPhone/PajoPhone/Views/Product/Edit.cshtml]
+[/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/Views/Product/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9FZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/arshia/RiderProjects/PajoPhone/PajoPhone/Views/Product/Index.cshtml]
+[/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/Views/Product/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/arshia/RiderProjects/PajoPhone/PajoPhone/Views/Shared/Error.cshtml]
+[/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0Vycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/arshia/RiderProjects/PajoPhone/PajoPhone/Views/Shared/_CategoryTreePartial.cshtml]
+[/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/Views/Shared/_CategoryTreePartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19DYXRlZ29yeVRyZWVQYXJ0aWFsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/arshia/RiderProjects/PajoPhone/PajoPhone/Views/Shared/_IndexLayout.cshtml]
+[/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/Views/Shared/_IndexLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19JbmRleExheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/arshia/RiderProjects/PajoPhone/PajoPhone/Views/Shared/_KeyValueInputPartial.cshtml]
+[/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/Views/Shared/_KeyValueInputPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19LZXlWYWx1ZUlucHV0UGFydGlhbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/arshia/RiderProjects/PajoPhone/PajoPhone/Views/Shared/_ProductCardsPartial.cshtml]
+[/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/Views/Shared/_ProductCardsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19Qcm9kdWN0Q2FyZHNQYXJ0aWFsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/arshia/RiderProjects/PajoPhone/PajoPhone/Views/Shared/_ProductModalPartial.cshtml]
+[/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/Views/Shared/_ProductModalPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19Qcm9kdWN0TW9kYWxQYXJ0aWFsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/arshia/RiderProjects/PajoPhone/PajoPhone/Views/Shared/_ValidationScriptsPartial.cshtml]
+[/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/arshia/RiderProjects/PajoPhone/PajoPhone/Views/_ViewImports.cshtml]
+[/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/arshia/RiderProjects/PajoPhone/PajoPhone/Views/_ViewStart.cshtml]
+[/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/arshia/RiderProjects/PajoPhone/PajoPhone/Views/Shared/_Layout.cshtml]
+[/Users/arshia/Workspace/db proj/PajoPhone/PajoPhone/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-yr1vfy82s8

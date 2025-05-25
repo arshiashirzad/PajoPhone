@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using PajoPhone.AutoMapperProfiles;
 using Microsoft.EntityFrameworkCore;
 using PajoPhone;
@@ -9,6 +10,8 @@ using PajoPhone.Models;
 using PajoPhone.Repositories.Category;
 using PajoPhone.Repositories.Product;
 using PajoPhone.Services.Factory;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -19,6 +22,22 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString ,ServerVersion.AutoDetect(connectionString) )
 );
+// Identity with Roles
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+    {
+        // Password settings
+        options.Password.RequireDigit = true;
+        options.Password.RequireLowercase = true;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequiredLength = 6;
+
+        // User settings
+        options.User.RequireUniqueEmail = true;
+    })
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
 builder.Services.AddScoped<IProductBuilder,ProductBuilder>()
     .AddScoped<IProductFactory,ProductFactory>();
 builder.Services.AddScoped<IProductLoader, ProductLoader>();
@@ -29,7 +48,7 @@ builder.Services.AddHttpClient<GooshiShopScraper>();
 builder.Services.AddMemoryCache();
 var app = builder.Build();
 //Seed Data
-SeedDataProvider.Initialize(app.Services);
+await SeedDataProvider.InitializeAsync(app.Services);
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
