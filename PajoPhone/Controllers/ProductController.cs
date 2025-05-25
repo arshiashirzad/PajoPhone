@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PajoPhone.Models;
@@ -32,11 +33,13 @@ namespace PajoPhone.Controllers
             _priceCacheManager = priceCacheManager;
             _productRepository = productRepository;
         }
+        [Authorize(Roles = "Admin,Customer")]
         public async Task<IActionResult> GetProductModal(int productId)
         {
             var product =  _productLoader.LoadSingleProduct(productId,true  , true );
             return PartialView("_ProductModalPartial", product);
         }
+        [Authorize(Roles = "Admin,Customer")]
         public async Task<IActionResult> GetSearchSuggestions(string term)
         {
             var results = await _context.Products
@@ -46,24 +49,25 @@ namespace PajoPhone.Controllers
                 .ToListAsync();
             return Ok(results);
         }
+        [Authorize(Roles = "Admin,Customer")]
         public async Task<IActionResult> GetProductCards(FilterViewModel filterViewModel)
         {
             var productViewModels =await _productRepository.FilterProducts(filterViewModel);
             return PartialView("_ProductCardsPartial", productViewModels);
         }
-        
+        [Authorize(Roles = "Admin,Customer")]
         public async Task<PartialViewResult> GetKeyValueInputs(int categoryId ,int productId)
         {
             var items =await _productRepository.GetKeyValueInputs(categoryId, productId);
             return PartialView("_KeyValueInputPartial",items);
         }
-        
+        [Authorize(Roles = "Admin,Customer")]
         public async Task<IActionResult> GetKeyValues(int categoryId)
         {
             var items =await _productRepository.GetKeyValueItems(categoryId);
             return Json(items);
         }
-        
+        [Authorize(Roles = "Admin,Customer")]
         public async Task<IActionResult> GetPrice(string name)
         {
             var price =await _priceCacheManager.GetCachedPrice(name) ;
@@ -74,12 +78,14 @@ namespace PajoPhone.Controllers
         [Route("/")]
         [Route("/Index")]
         [Route("/Product/Index")]
+        [Authorize(Roles = "Admin,Customer")]
         public IActionResult Index()
         {
             FilterViewModel filterViewModel = new FilterViewModel();
             return View(filterViewModel);
         }
         // GET: Product/Details/5
+        [Authorize(Roles = "Admin,Customer")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -91,6 +97,7 @@ namespace PajoPhone.Controllers
         }
         // GET: Product/Create
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             var categories = await _context.Categories.ToListAsync();
@@ -125,6 +132,7 @@ namespace PajoPhone.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(ProductViewModel productViewModel)
         {
             if (ModelState.IsValid)
@@ -137,6 +145,7 @@ namespace PajoPhone.Controllers
         }
         
         // GET: Product/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -155,6 +164,7 @@ namespace PajoPhone.Controllers
         // POST: Product/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var product = await _context.Products.FindAsync(id);
@@ -166,6 +176,7 @@ namespace PajoPhone.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        [Authorize(Roles = "Admin,Customer")]
         public IActionResult GetImage(int id)
         {
             var product = _productLoader.LoadSingleProduct(id);

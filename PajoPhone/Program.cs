@@ -46,9 +46,21 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<PriceCacheManager>();
 builder.Services.AddHttpClient<GooshiShopScraper>();
 builder.Services.AddMemoryCache();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.AccessDeniedPath = "/Account/AccessDenied";
+});
+
 var app = builder.Build();
 //Seed Data
-await SeedDataProvider.InitializeAsync(app.Services);
+using (var scope = app.Services.CreateScope())
+{
+    var scopedProvider = scope.ServiceProvider;
+    await SeedDataProvider.InitializeAsync(scopedProvider);
+}
+
+
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -59,6 +71,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseMiddleware<LoggerMiddleWare>();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

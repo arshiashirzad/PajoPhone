@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NuGet.Protocol;
@@ -15,6 +16,7 @@ namespace PajoPhone.Controllers
             _categoryRepository = categoryRepository;
         }
         // GET: Category
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var categories = await _categoryRepository.GetAllAsync();
@@ -22,6 +24,7 @@ namespace PajoPhone.Controllers
         }
 
         // GET: Category/Details/5
+        [Authorize(Roles = "Admin,Customer")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,6 +36,7 @@ namespace PajoPhone.Controllers
         }
 
         // GET: Category/Create
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             var viewModel = new CategoryViewModel();
@@ -42,6 +46,7 @@ namespace PajoPhone.Controllers
         // POST: Category/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(CategoryViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -59,6 +64,7 @@ namespace PajoPhone.Controllers
         }
 
         // GET: Category/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
             var category = await _categoryRepository.GetByIdAsync(id);
@@ -75,6 +81,7 @@ namespace PajoPhone.Controllers
         }
         // POST: Category/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, CategoryViewModel viewModel)
         {
@@ -86,6 +93,7 @@ namespace PajoPhone.Controllers
             return View(viewModel);
         }
         // GET: Category/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -96,6 +104,7 @@ namespace PajoPhone.Controllers
             return View(category);
         }
         // POST: Category/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public  IActionResult DeleteConfirmed(int id)
@@ -104,6 +113,7 @@ namespace PajoPhone.Controllers
             return RedirectToAction(nameof(Index));
         }
         // GET: Category/GetCategoryTreeData
+        [Authorize(Roles = "Admin,Customer")]
         public async Task<IActionResult> GetCategoryTreeData()
         {
             var categoryTreeData = await _categoryRepository.GetCategoryTreeAsync();

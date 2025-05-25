@@ -50,15 +50,19 @@
               "target": "Package",
               "version": "[8.0.0, )"
             },
+            "Microsoft.CodeAnalysis.Common": {
+              "target": "Package",
+              "version": "[4.5.0, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.13, )"
+              "version": "[8.0.0, )"
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[6.0.0, )"
+              "version": "[8.0.0, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
@@ -72,7 +76,7 @@
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[6.0.0, )"
+              "version": "[8.0.0, )"
             },
             "Microsoft.Extensions.Caching.Memory": {
               "target": "Package",
@@ -80,11 +84,11 @@
             },
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
-              "version": "[6.0.0, )"
+              "version": "[8.0.0, )"
             },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
-              "version": "[8.0.3, )"
+              "version": "[8.0.0, )"
             },
             "Select2.js": {
               "target": "Package",

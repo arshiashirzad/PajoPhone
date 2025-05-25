@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PajoPhone.Models;
 
@@ -13,6 +14,7 @@ public class HomeController : Controller
         _logger = logger;
     }
 
+    [Authorize(Roles = "Admin,Customer")]
     public IActionResult Index()
     {
         return View();

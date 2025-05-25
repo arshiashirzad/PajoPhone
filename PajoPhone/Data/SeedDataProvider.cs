@@ -15,22 +15,15 @@ namespace PajoPhone.Models
 
         public static async Task InitializeAsync(IServiceProvider serviceProvider)
         {
-            using (var scope = serviceProvider.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                using var httpClient = new HttpClient();
-                await SeedDataAsync(dbContext, serviceProvider, httpClient);
-            }
+            var dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var httpClient = serviceProvider.GetService<HttpClient>() ?? new HttpClient();
+            await SeedDataAsync(dbContext, roleManager, userManager, httpClient);
         }
 
-public static async Task SeedDataAsync(
-    ApplicationDbContext dbContext, 
-    IServiceProvider serviceProvider,
-    HttpClient httpClient)
-{
-    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
-
+        public static async Task SeedDataAsync(ApplicationDbContext dbContext, RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager, HttpClient httpClient)
+        {
     string[] roles = { "Admin", "Customer" };
     foreach (var role in roles)
     {

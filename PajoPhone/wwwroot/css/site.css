@@ -16,3 +16,14 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-50px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+@keyframes fadeIn {
+  from { opacity: 0;}
+  to { opacity: 1;}
+}
+.fadeInDown { animation: fadeInDown 1s; }
+.fadeIn { animation: fadeIn 1.2s; }
